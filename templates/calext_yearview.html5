@@ -1,5 +1,5 @@
 
-<div class="yearview" class="full>
+<div class="yearview full">
 
 	<?php if ($this->use_navigation): ?>
 		<div class="yearview_navi">

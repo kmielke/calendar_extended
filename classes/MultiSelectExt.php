@@ -29,6 +29,7 @@ namespace Contao;
  * Class MultiSelectWizard 
  *
  * Ich habe die Klasse nach Rücksprache mit Yanick in mein Modul aufgenommen.
+ * MultiSelectWizard wird wohl nicht weiter gepflegt.
  *
  * @copyright  Kester Mielke 2010-2013 
  * @author     Kester Mielke 

@@ -274,6 +274,7 @@ class ModuleTimeTableExt extends \EventsExt
         }
 
         list($objTemplate->weekday, $objTemplate->times) = $this->compileDays();
+
         $this->Template->calendar = $objTemplate->parse();
     }
 
