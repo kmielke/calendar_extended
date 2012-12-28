@@ -313,14 +313,13 @@ class ModuleCalendarExt extends \EventsExt
             {
                 foreach ($v as $vv)
                 {
-                    $vv['style'] = "";
                     if ($this->calBG[$vv['pid']])
                     {
-                        $vv['bgstyle'] .= $this->calBG[$vv['pid']];
+                        $vv['bgstyle'] = $this->calBG[$vv['pid']];
                     }
                     if ($this->calFG[$vv['pid']])
                     {
-                        $vv['fgstyle'] .= $this->calFG[$vv['pid']];
+                        $vv['fgstyle'] = $this->calFG[$vv['pid']];
                     }
                     $arrEvents[] = $vv;
                 }
