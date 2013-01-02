@@ -38,6 +38,12 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions']	= array('Aussnahme
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEnd']			= array('Ende der Wiederholungen', 'Datum der letzten Wiederholung dieses Events.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['weekday']			= array('Wochentag', 'Wochentag, an dem das Event stattfindet');
 
+$GLOBALS['TL_LANG']['tl_calendar_events']['location_legend']    = 'Veranstaltungsort und Kontakt';
+$GLOBALS['TL_LANG']['tl_calendar_events']['location_name']      = array('Veranstaltungsort', 'Name, oder kurze Beschreibung des Veranstaltungsorts.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['location_link']      = array('Link auf Veranstaltungsort', 'z.B. ein Link auf eine Webseite des Veranstaltungsorts (http://www.link.de)');
+$GLOBALS['TL_LANG']['tl_calendar_events']['location_contact']   = array('Kontaktperson', 'Name einer Kontaktperson.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['location_mail']      = array('E-Mail', 'E-Mail Adresse der Kontaktperson.');
+
 $GLOBALS['TL_LANG']['tl_calendar_events']['first']		= 'Jeden ersten';
 $GLOBALS['TL_LANG']['tl_calendar_events']['second']		= 'Jeden zweiten';
 $GLOBALS['TL_LANG']['tl_calendar_events']['third']		= 'Jeden dritten';

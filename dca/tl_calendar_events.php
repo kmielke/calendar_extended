@@ -30,7 +30,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
 (
     '{recurring_legend},recurring;',
-    '{recurring_legend},recurring;{recurring_legend_ext},recurringExt;',
+    '{location_legend},location_name,location_link,location_contact,location_mail;{recurring_legend},recurring;{recurring_legend_ext},recurringExt;',
     $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default']
 );
 
@@ -103,6 +103,46 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['recurringExt'] = array
     (
         array('tl_calendar_events_ext', 'checkRecurring')
     )
+);
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['location_name'] = array
+(
+    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_name'],
+    'exclude'           => true,
+    'search'            => true,
+    'inputType'         => 'text',
+    'eval'              => array('maxlength'=>255, 'tl_class'=>'w50'),
+    'sql'               => "varchar(255) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['location_link'] = array
+(
+    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_link'],
+    'exclude'           => true,
+    'search'            => true,
+    'inputType'         => 'text',
+    'eval'              => array('maxlength'=>255, 'tl_class'=>'w50'),
+    'sql'               => "varchar(255) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['location_contact'] = array
+(
+    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_contact'],
+    'exclude'           => true,
+    'search'            => true,
+    'inputType'         => 'text',
+    'eval'              => array('maxlength'=>255, 'tl_class'=>'w50'),
+    'sql'               => "varchar(255) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['location_mail'] = array
+(
+    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_mail'],
+    'exclude'           => true,
+    'search'            => true,
+    'inputType'         => 'text',
+    'eval'              => array('rgxp'=>'email', 'maxlength'=>255, 'unique'=>true, 'decodeEntities'=>true, 'tl_class'=>'w50'),
+    'sql'               => "varchar(255) NOT NULL default ''"
 );
 
 // new repeat options for events

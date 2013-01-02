@@ -38,6 +38,12 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions']	= array('Define ex
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEnd']  		= array('End of the recurrences', 'Date of the last recurrence.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['weekday']			= array('Weekday', 'Day of week');
 
+$GLOBALS['TL_LANG']['tl_calendar_events']['location_legend']    = 'Location and Contact';
+$GLOBALS['TL_LANG']['tl_calendar_events']['location_name']      = array('Location', 'Name or short description of the location.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['location_link']      = array('Link to location', 'e.g. a link to a webpage of the location. (http://www.link.de)');
+$GLOBALS['TL_LANG']['tl_calendar_events']['location_contact']   = array('Contact', 'Name of a contact.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['location_mail']      = array('E-Mail', 'E-Mail Address of the contact.');
+
 $GLOBALS['TL_LANG']['tl_calendar_events']['first']		= 'Every first';
 $GLOBALS['TL_LANG']['tl_calendar_events']['second']		= 'Every second';
 $GLOBALS['TL_LANG']['tl_calendar_events']['third']		= 'Every third';
