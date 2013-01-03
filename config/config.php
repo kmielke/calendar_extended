@@ -20,6 +20,11 @@ $GLOBALS['TL_CONFIG']['tl_calendar_events']['maxRepeatExecptions'] = 365;
 $GLOBALS['TL_CONFIG']['tl_calendar_events']['moveDays'] = 7;
 
 /**
+ * array of reasons for the exceptions
+ */
+$GLOBALS['TL_CONFIG']['tl_calendar_events']['moveReasons'][0] = '-';
+
+/**
  * the start, end and interval of times for the move time option
  * 00:00|23:59|30 means start at 00:00 and add 30 min. to the time
  *

@@ -35,8 +35,7 @@ class ModuleYearViewExt extends \EventsExt
     protected $Date;
     protected $yearBegin;
     protected $yearEnd;
-    protected $calBG = array();
-    protected $calFG = array();
+    protected $calConf = array();
 
     /**
      * Redirect URL
@@ -85,23 +84,24 @@ class ModuleYearViewExt extends \EventsExt
             $objBG = $this->Database->prepare("select bg_color, fg_color from tl_calendar where id = ?")
                 ->limit(1)->executeUncached($cal);
 
+            $this->calConf[$cal]['calendar'] = $objBG->title;
             if ($objBG->bg_color)
             {
                 $cssBgValues = deserialize($objBG->bg_color);
-                $this->calBG[$cal] = 'background-color:#'.$cssBgValues[0].';';
+                $this->calConf[$cal]['background'] = 'background-color:#'.$cssBgValues[0].';';
                 if ($cssBgValues[1] > 0)
                 {
-                    $this->calBG[$cal] .= ' opacity:'.((int)$cssBgValues[1]/100).';';
+                    $this->calConf[$cal]['background'] .= ' opacity:'.((int)$cssBgValues[1]/100).';';
                 }
             }
 
             if ($objBG->fg_color)
             {
                 $cssFgValues = deserialize($objBG->fg_color);
-                $this->calFG[$cal] = 'color:#'.$cssFgValues[0].';';
+                $this->calConf[$cal]['foreground'] = 'color:#'.$cssFgValues[0].';';
                 if ($cssFgValues[1] > 0)
                 {
-                    $this->calFG[$cal] .= ' opacity:'.((int)$cssFgValues[1]/100).';';
+                    $this->calConf[$cal]['foreground'] .= ' opacity:'.((int)$cssFgValues[1]/100).';';
                 }
             }
         }
@@ -112,23 +112,24 @@ class ModuleYearViewExt extends \EventsExt
             $objBG = $this->Database->prepare("select bg_color, fg_color from tl_calendar where id = ?")
                 ->limit(1)->executeUncached($cal);
 
+            $this->calConf[$cal]['calendar'] = $objBG->title;
             if ($objBG->bg_color)
             {
                 $cssBgValues = deserialize($objBG->bg_color);
-                $this->calBG[$cal] = 'background-color:#'.$cssBgValues[0].';';
+                $this->calConf[$cal]['background'] = 'background-color:#'.$cssBgValues[0].';';
                 if ($cssBgValues[1] > 0)
                 {
-                    $this->calBG[$cal] .= ' opacity:'.((int)$cssBgValues[1]/100).';';
+                    $this->calConf[$cal]['background'] .= ' opacity:'.((int)$cssBgValues[1]/100).';';
                 }
             }
 
             if ($objBG->fg_color)
             {
                 $cssFgValues = deserialize($objBG->fg_color);
-                $this->calFG[$cal] = 'color:#'.$cssFgValues[0].';';
+                $this->calConf[$cal]['foreground'] = 'color:#'.$cssFgValues[0].';';
                 if ($cssFgValues[1] > 0)
                 {
-                    $this->calFG[$cal] .= ' opacity:'.((int)$cssFgValues[1]/100).';';
+                    $this->calConf[$cal]['foreground'] .= ' opacity:'.((int)$cssFgValues[1]/100).';';
                 }
             }
         }
@@ -313,13 +314,15 @@ class ModuleYearViewExt extends \EventsExt
                             }
 
                             // set color from calendar
-                            if ($this->calBG[$vv['pid']])
+                            $vv['pname'] = $this->calConf[$vv['pid']]['calendar'];
+
+                            if ($this->calConf[$vv['pid']]['background'])
                             {
-                                $vv['bgstyle'] = $this->calBG[$vv['pid']];
+                                $vv['bgstyle'] = $this->calConf[$vv['pid']]['background'];
                             }
-                            if ($this->calFG[$vv['pid']])
+                            if ($this->calConf[$vv['pid']]['foreground'])
                             {
-                                $vv['fgstyle'] = $this->calFG[$vv['pid']];
+                                $vv['fgstyle'] = $this->calConf[$vv['pid']]['foreground'];
                             }
                             $arrEvents[] = $vv;
                         }

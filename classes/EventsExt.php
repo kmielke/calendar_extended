@@ -200,16 +200,31 @@ class EventsExt extends \Events
                                 }
                                 else if ($action == "move")
                                 {
+                                    //just add the css class to the event
+                                    $objEvents->cssClass .= "moved";
+
                                     // keep old date. we have to reset it later for the next recurrence
                                     $oldDate['startTime'] = $objEvents->startTime;
                                     $oldDate['endTime'] = $objEvents->endTime;
 
+                                    // also keep the old values in the row
+                                    $objEvents->oldDate = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->startTime);
+
                                     // value to add to the old date
                                     $newDate = $skipDates['new_exception'][$r];
+
+                                    // store the reason for the move
+                                    if ((int)$skipDates['reason'][$r] > 0)
+                                    {
+                                        $objEvents->moveReason = $GLOBALS['TL_CONFIG']['tl_calendar_events']['moveReasons'][$skipDates['reason'][$r]];
+                                    }
 
                                     // check if we have to change the time of the event
                                     if ($skipDates['new_start'][$r])
                                     {
+                                        $objEvents->oldStartTime = $this->parseDate($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->startTime);
+                                        $objEvents->oldEndTime = $this->parseDate($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->endTime);
+
                                         // get the date of the event and add the new time to the new date
                                         $newStart = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->startTime)
                                             . ' ' . $skipDates['new_start'][$r];
@@ -257,6 +272,10 @@ class EventsExt extends \Events
                             $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
                         }
 
+                        $objEvents->moveReason = NULL;
+                        $objEvents->oldDate = NULL;
+                        $objEvents->oldStartTime = NULL;
+                        $objEvents->oldEndTime = NULL;
                         // in case of a move we have to reset the original date
                         if ($oldDate)
                         {

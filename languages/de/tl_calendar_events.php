@@ -70,3 +70,4 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['hide']		= 'nicht anzeigen';
 $GLOBALS['TL_LANG']['tl_calendar_events']['mark']		= 'CSS Class hinzufügen';
 $GLOBALS['TL_LANG']['tl_calendar_events']['new_start']	= 'Startzeit';
 $GLOBALS['TL_LANG']['tl_calendar_events']['new_end']	= 'Endzeit';
+$GLOBALS['TL_LANG']['tl_calendar_events']['reason']	    = 'Grund';

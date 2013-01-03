@@ -33,8 +33,7 @@ class ModuleEventListExt extends \EventsExt
      * @var integer
      */
     protected $Date;
-    protected $calBG = array();
-    protected $calFG = array();
+    protected $calConf = array();
 
     /**
      * Template
@@ -77,23 +76,24 @@ class ModuleEventListExt extends \EventsExt
             $objBG = $this->Database->prepare("select bg_color, fg_color from tl_calendar where id = ?")
                 ->limit(1)->executeUncached($cal);
 
+            $this->calConf[$cal]['calendar'] = $objBG->title;
             if ($objBG->bg_color)
             {
                 $cssBgValues = deserialize($objBG->bg_color);
-                $this->calBG[$cal] = 'background-color:#'.$cssBgValues[0].';';
+                $this->calConf[$cal]['background'] = 'background-color:#'.$cssBgValues[0].';';
                 if ($cssBgValues[1] > 0)
                 {
-                    $this->calBG[$cal] .= ' opacity:'.((int)$cssBgValues[1]/100).';';
+                    $this->calConf[$cal]['background'] .= ' opacity:'.((int)$cssBgValues[1]/100).';';
                 }
             }
 
             if ($objBG->fg_color)
             {
                 $cssFgValues = deserialize($objBG->fg_color);
-                $this->calFG[$cal] = 'color:#'.$cssFgValues[0].';';
+                $this->calConf[$cal]['foreground'] = 'color:#'.$cssFgValues[0].';';
                 if ($cssFgValues[1] > 0)
                 {
-                    $this->calFG[$cal] .= ' opacity:'.((int)$cssFgValues[1]/100).';';
+                    $this->calConf[$cal]['foreground'] .= ' opacity:'.((int)$cssFgValues[1]/100).';';
                 }
             }
         }
@@ -104,23 +104,24 @@ class ModuleEventListExt extends \EventsExt
             $objBG = $this->Database->prepare("select bg_color, fg_color from tl_calendar where id = ?")
                 ->limit(1)->executeUncached($cal);
 
+            $this->calConf[$cal]['calendar'] = $objBG->title;
             if ($objBG->bg_color)
             {
                 $cssBgValues = deserialize($objBG->bg_color);
-                $this->calBG[$cal] = 'background-color:#'.$cssBgValues[0].';';
+                $this->calConf[$cal]['background'] = 'background-color:#'.$cssBgValues[0].';';
                 if ($cssBgValues[1] > 0)
                 {
-                    $this->calBG[$cal] .= ' opacity:'.((int)$cssBgValues[1]/100).';';
+                    $this->calConf[$cal]['background'] .= ' opacity:'.((int)$cssBgValues[1]/100).';';
                 }
             }
 
             if ($objBG->fg_color)
             {
                 $cssFgValues = deserialize($objBG->fg_color);
-                $this->calFG[$cal] = 'color:#'.$cssFgValues[0].';';
+                $this->calConf[$cal]['foreground'] = 'color:#'.$cssFgValues[0].';';
                 if ($cssFgValues[1] > 0)
                 {
-                    $this->calFG[$cal] .= ' opacity:'.((int)$cssFgValues[1]/100).';';
+                    $this->calConf[$cal]['foreground'] .= ' opacity:'.((int)$cssFgValues[1]/100).';';
                 }
             }
         }
@@ -228,13 +229,15 @@ class ModuleEventListExt extends \EventsExt
                     $event['firstDate'] = $this->parseDate($objPage->dateFormat, $day);
                     $event['datetime'] = date('Y-m-d', $day);
 
-                    if ($this->calBG[$event['pid']])
+                    $event['pname'] = $this->calConf[$event['pid']]['calendar'];
+
+                    if ($this->calConf[$event['pid']]['background'])
                     {
-                        $event['bgstyle'] = $this->calBG[$event['pid']];
+                        $event['bgstyle'] = $this->calConf[$event['pid']]['background'];
                     }
-                    if ($this->calFG[$event['pid']])
+                    if ($this->calConf[$event['pid']]['foreground'])
                     {
-                        $event['fgstyle'] = $this->calFG[$event['pid']];
+                        $event['fgstyle'] = $this->calConf[$event['pid']]['foreground'];
                     }
 
                     $arrEvents[] = $event;

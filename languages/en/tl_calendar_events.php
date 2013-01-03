@@ -71,3 +71,4 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['hide']		= 'don\'t show';
 $GLOBALS['TL_LANG']['tl_calendar_events']['mark']		= 'add css class';
 $GLOBALS['TL_LANG']['tl_calendar_events']['new_start']	= 'Start time';
 $GLOBALS['TL_LANG']['tl_calendar_events']['new_end']	= 'End time';
+$GLOBALS['TL_LANG']['tl_calendar_events']['reason']	    = 'Reason';

@@ -503,40 +503,47 @@ class tl_calendar_events_ext extends \Backend
         }
 
         $columnsData = array('columns' =>
-        array
-        (
-            'key'    => 'exception',
-            'label'  => $GLOBALS['TL_LANG']['tl_calendar_events']['exception'],
-            'source' => $arrSource1,
-            'style'  => 'width:120px'
-        ),
+            array
+            (
+                'key'    => 'exception',
+                'label'  => $GLOBALS['TL_LANG']['tl_calendar_events']['exception'],
+                'source' => $arrSource1,
+                'style'  => 'width:95px'
+            ),
             array
             (
                 'key'    => 'action',
                 'label'  => $GLOBALS['TL_LANG']['tl_calendar_events']['action'],
                 'source' => $arrSource2,
-                'style'  => 'width:120px'
+                'style'  => 'width:110px'
             ),
             array
             (
                 'key'    => 'new_exception',
                 'label'  => $GLOBALS['TL_LANG']['tl_calendar_events']['new_exception'],
                 'source' => $arrSource3,
-                'style'  => 'width:100px'
+                'style'  => 'width:95px'
             ),
             array
             (
                 'key'    => 'new_start',
                 'label'  => $GLOBALS['TL_LANG']['tl_calendar_events']['new_start'],
                 'source' => $arrSource4,
-                'style'  => 'width:80px'
+                'style'  => 'width:75px'
             ),
             array
             (
                 'key'    => 'new_end',
                 'label'  => $GLOBALS['TL_LANG']['tl_calendar_events']['new_end'],
                 'source' => $arrSource4,
-                'style'  => 'width:80px'
+                'style'  => 'width:75px'
+            ),
+            array
+            (
+                'key'    => 'reason',
+                'label'  => $GLOBALS['TL_LANG']['tl_calendar_events']['reason'],
+                'source' => $GLOBALS['TL_CONFIG']['tl_calendar_events']['moveReasons'],
+                'style'  => 'width:130px'
             )
         );
 
