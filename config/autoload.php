@@ -3,10 +3,10 @@
 /**
  * Contao Open Source CMS
  * 
- * Copyright (C) 2005-2012 Leo Feyer
+ * Copyright (C) 2005-2013 Leo Feyer
  * 
  * @package Calendar_extended
- * @link    http://contao.org
+ * @link    https://contao.org
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
@@ -17,16 +17,19 @@
 ClassLoader::addClasses(array
 (
 	// Classes
-	'Contao\EventsExt'          => 'system/modules/calendar_extended/classes/EventsExt.php',
-	'Contao\MultiSelectExt'     => 'system/modules/calendar_extended/classes/MultiSelectExt.php',
-	'Contao\TimePeriodExt'      => 'system/modules/calendar_extended/classes/TimePeriodExt.php',
+	'Contao\EventsExt'              => 'system/modules/calendar_extended/classes/EventsExt.php',
+	'Contao\TimePeriodExt'          => 'system/modules/calendar_extended/classes/TimePeriodExt.php',
+
+	// Models
+	'Contao\CalendarEventsModelExt' => 'system/modules/calendar_extended/models/CalendarEventsModelExt.php',
 
 	// Modules
-	'Contao\ModuleCalendarExt'  => 'system/modules/calendar_extended/modules/ModuleCalendarExt.php',
-	'Contao\ModuleEventListExt' => 'system/modules/calendar_extended/modules/ModuleEventListExt.php',
-	'Contao\ModuleEventMenuExt' => 'system/modules/calendar_extended/modules/ModuleEventMenuExt.php',
-	'Contao\ModuleTimeTableExt' => 'system/modules/calendar_extended/modules/ModuleTimeTableExt.php',
-	'Contao\ModuleYearViewExt'  => 'system/modules/calendar_extended/modules/ModuleYearViewExt.php',
+	'Contao\ModuleCalendarExt'      => 'system/modules/calendar_extended/modules/ModuleCalendarExt.php',
+	'Contao\ModuleEventListExt'     => 'system/modules/calendar_extended/modules/ModuleEventListExt.php',
+	'Contao\ModuleEventMenuExt'     => 'system/modules/calendar_extended/modules/ModuleEventMenuExt.php',
+	'Contao\ModuleEventReaderExt'   => 'system/modules/calendar_extended/modules/ModuleEventReaderExt.php',
+	'Contao\ModuleTimeTableExt'     => 'system/modules/calendar_extended/modules/ModuleTimeTableExt.php',
+	'Contao\ModuleYearViewExt'      => 'system/modules/calendar_extended/modules/ModuleYearViewExt.php',
 ));
 
 

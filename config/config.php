@@ -36,6 +36,14 @@ $GLOBALS['TL_CONFIG']['tl_calendar_events']['moveReasons'][0] = '-';
  */
 $GLOBALS['TL_CONFIG']['tl_calendar_events']['moveTimes'] = '10:00|22:00|30';
 
+$GLOBALS['TL_LANG']['DAYS']['sonday']    = 0;
+$GLOBALS['TL_LANG']['DAYS']['monday']    = 1;
+$GLOBALS['TL_LANG']['DAYS']['tuesday']   = 2;
+$GLOBALS['TL_LANG']['DAYS']['wednesday'] = 3;
+$GLOBALS['TL_LANG']['DAYS']['thirsday']  = 4;
+$GLOBALS['TL_LANG']['DAYS']['friday']    = 5;
+$GLOBALS['TL_LANG']['DAYS']['saturday']  = 6;
+
 /**
  * BACK END MODULES
  *
@@ -70,11 +78,12 @@ array_insert($GLOBALS['FE_MOD'], 99, array
 (
     'events' => array
     (
-        'calendarExt'	=> 'ModuleCalendarExt',
-        'eventlistExt'	=> 'ModuleEventListExt',
-        'eventmenuExt'	=> 'ModuleEventMenuExt',
-        'timetableExt'	=> 'ModuleTimeTableExt',
-        'yearviewExt'	=> 'ModuleYearViewExt'
+        'calendarExt'	 => 'ModuleCalendarExt',
+        'eventlistExt'	 => 'ModuleEventListExt',
+        'eventmenuExt'	 => 'ModuleEventMenuExt',
+        'timetableExt'	 => 'ModuleTimeTableExt',
+        'yearviewExt'	 => 'ModuleYearViewExt',
+        'eventreaderExt' => 'ModuleEventReaderExt'
     )
 ));
 
@@ -145,8 +154,7 @@ array_insert($GLOBALS['FE_MOD'], 99, array
 
 array_insert($GLOBALS['BE_FFL'], 99, array
 (
-    'timePeriodExt'     => 'TimePeriodExt',
-    'multiSelectExt'     => 'MultiSelectExt'
+    'timePeriodExt'     => 'TimePeriodExt'
 ));
 
 

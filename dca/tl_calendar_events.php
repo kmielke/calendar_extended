@@ -176,13 +176,8 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatExceptions'] = array
 (
     'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions'],
     'exclude'			=> true,
-    'inputType'			=> 'multiSelectExt',
-    'eval'				=> array
-    (
-        'doNotSaveEmpty'	=> 'true',
-        'tl_class'          => 'long',
-        'columnsCallback'	=> array('tl_calendar_events_ext', 'listExceptions')
-    ),
+    'inputType'         => 'multiColumnWizard',
+    'eval'				=> array('columnsCallback' => array('tl_calendar_events_ext', 'listMultiExceptions')),
     'sql'               => "text NULL"
 );
 
@@ -427,6 +422,23 @@ class tl_calendar_events_ext extends \Backend
         }
         $arrSet['repeatDates'] = $arrDates;
 
+        # the last repeatEnd Date
+        $currentEndDate = $arrSet['repeatEnd'];
+        $rows = deserialize($dc->activeRecord->repeatExceptions);
+        # set repeatEnd
+        # my be we have an exception move that is later then the repeatEnd
+        foreach ($rows as $row)
+        {
+            if ($row['action'] == 'move')
+            {
+                $newDate = strtotime($row['new_exception'], $row['exception']);
+                if ($newDate > $currentEndDate)
+                {
+                    $arrSet['repeatEnd'] = $newDate;
+                }
+            }
+        };
+
         $this->Database->prepare("UPDATE tl_calendar_events %s WHERE id=?")->set($arrSet)->executeUncached($dc->id);
     }
 
@@ -437,7 +449,7 @@ class tl_calendar_events_ext extends \Backend
      * Read the list of exception dates from the db
      * to fill the select list
      */
-    public function listExceptions()
+    public function listExceptions($value)
     {
         $columnsData = null;
 
@@ -548,5 +560,130 @@ class tl_calendar_events_ext extends \Backend
         );
 
         return $columnsData;
+    }
+
+    /**
+     * listExceptions()
+     *
+     * Read the list of exception dates from the db
+     * to fill the select list
+     */
+    public function listMultiExceptions($var1)
+    {
+        $columnFields = null;
+
+        // arrays for the select fields
+        $arrSource1 = array();
+        $arrSource2 = array();
+        $arrSource3 = array();
+        $arrSource4 = array();
+
+        // first option is empty
+        //$arrSource1[''] = '-';
+        //$arrSource2[''] = '-';
+        //$arrSource3[''] = '-';
+        //$arrSource4[''] = '-';
+
+        if ($this->Input->get('id'))
+        {
+            $objDates = $this->Database->prepare("SELECT repeatDates FROM tl_calendar_events WHERE id=?")
+                ->limit(1)
+                ->executeUncached($this->Input->get('id'));
+
+            if ($objDates->numRows)
+            {
+                $arrDates = deserialize($objDates->repeatDates);
+                if (is_array($arrDates))
+                {
+                    // fill array for option date
+                    foreach ($arrDates as $arrDate)
+                    {
+                        $date = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $arrDate);
+                        $arrSource1[$arrDate] = $date;
+                    }
+
+                    // fill array for option action
+                    $arrSource2['move'] = $GLOBALS['TL_LANG']['tl_calendar_events']['move'];
+                    $arrSource2['hide'] = $GLOBALS['TL_LANG']['tl_calendar_events']['hide'];
+                    $arrSource2['mark'] = $GLOBALS['TL_LANG']['tl_calendar_events']['mark'];
+                }
+            }
+
+            // fill array for option new date
+            //$GLOBALS['TL_CONFIG']['tl_calendar_events']['moveRange'] = 14
+            $moveDays = ((int)$GLOBALS['TL_CONFIG']['tl_calendar_events']['moveDays']) ? (int)$GLOBALS['TL_CONFIG']['tl_calendar_events']['moveDays'] : 7;
+            $start = $moveDays * -1;
+            $end = $moveDays * 2;
+
+            for ($i = 0; $i <= $end; $i++)
+            {
+                $arrSource3[$start. ' days'] = $start . ' ' . $GLOBALS['TL_LANG']['tl_calendar_events']['days'];
+                $start++;
+            }
+
+            list($start, $end, $interval) = explode("|", $GLOBALS['TL_CONFIG']['tl_calendar_events']['moveTimes']);
+            // fill array for option new time
+            $start = strtotime($start);
+            $end = strtotime($end);
+            while ($start <= $end)
+            {
+                $newTime = $this->parseDate($GLOBALS['TL_CONFIG']['timeFormat'], $start);
+                $arrSource4[$newTime] = $newTime;
+                $start = strtotime('+ ' . $interval . ' minutes', $start);
+            }
+        }
+
+        $columnFields = array
+        (
+            'exception' => array
+            (
+                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['exception'],
+                'exclude'   => true,
+                'inputType' => 'select',
+                'options'   => $arrSource1,
+                'eval'      => array('style'=>'width:95px', 'includeBlankOption'=>true, 'chosen'=>true)
+            ),
+            'action' => array
+            (
+                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['action'],
+                'exclude'   => true,
+                'inputType' => 'select',
+                'options'   => $arrSource2,
+                'eval'      => array('style'=>'width:110px', 'includeBlankOption'=>true)
+            ),
+            'new_exception' => array
+            (
+                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_exception'],
+                'exclude'   => true,
+                'inputType' => 'select',
+                'options'   => $arrSource3,
+                'eval'      => array('style'=>'width:85px', 'includeBlankOption'=>true)
+            ),
+            'new_start' => array
+            (
+                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_start'],
+                'exclude'   => true,
+                'inputType' => 'select',
+                'options'   => $arrSource4,
+                'eval'      => array('style'=>'width:65px', 'includeBlankOption'=>true)
+            ),
+            'new_end' => array
+            (
+                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_end'],
+                'exclude'   => true,
+                'inputType' => 'select',
+                'options'   => $arrSource4,
+                'eval'      => array('style'=>'width:65px', 'includeBlankOption'=>true)
+            ),
+            'reason' => array
+            (
+                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['reason'],
+                'exclude'   => true,
+                'inputType' => 'text',
+                'eval'      => array('style'=>'width:130px')
+            )
+        );
+
+        return $columnFields;
     }
 }

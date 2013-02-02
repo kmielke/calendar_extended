@@ -71,7 +71,7 @@ class EventsExt extends \Events
             }
 
             // Get the events of the current period
-            $objEvents = \CalendarEventsModel::findCurrentByPid($id, $intStart, $intEnd);
+            $objEvents = \CalendarEventsModelExt::findCurrentByPid($id, $intStart, $intEnd);
 
             if ($objEvents === null)
             {
@@ -80,6 +80,22 @@ class EventsExt extends \Events
 
             while ($objEvents->next())
             {
+                $eventNumber = 1;
+                $eventRecurrences = (int)$objEvents->recurrences+1;
+
+                if ($objEvents->recurring || $objEvents->recurringExt)
+                {
+                    $objEvents->pos_idx = (int)$eventNumber;
+                    if ($objEvents->recurrences == 0)
+                    {
+                        $objEvents->pos_cnt = 0;
+                    }
+                    else
+                    {
+                        $objEvents->pos_cnt = (int)$eventRecurrences;
+                    }
+                }
+
                 // Check if we have to store the event if it's on weekend
                 $weekday = date('N', $objEvents->startTime);
                 $store = true;
@@ -92,13 +108,15 @@ class EventsExt extends \Events
                 }
                 if ($store === true)
                 {
-                    $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
+                    $eventUrl = $strUrl."?day=".Date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
+                    $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
+                    #$this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
                 }
 
                 /*
                  * Recurring events and Ext. Recurring events
                  *
-                 * Here we manage the recurrences. We take the repeat option and set the new velues
+                 * Here we manage the recurrences. We take the repeat option and set the new values
                  */
                 if (($objEvents->recurring && $objEvents->repeatEach) || ($objEvents->recurringExt && $objEvents->repeatEachExt))
                 {
@@ -128,6 +146,17 @@ class EventsExt extends \Events
                     $nextTime = $objEvents->endTime;
                     while ($nextTime < $intEnd)
                     {
+                        $eventNumber++;
+                        $objEvents->pos_idx = (int)$eventNumber;
+                        if ($objEvents->recurrences == 0)
+                        {
+                            $objEvents->pos_cnt = 0;
+                        }
+                        else
+                        {
+                            $objEvents->pos_cnt = (int)$eventRecurrences;
+                        }
+
                         if ($objEvents->recurrences > 0 && $count++ >= $objEvents->recurrences)
                         {
                             break;
@@ -160,20 +189,24 @@ class EventsExt extends \Events
                         $nextTime = $objEvents->endTime;
 
                         //check if there is any exception
-                        if (is_array($skipInfos))
+                        if (is_array($skipInfos) && $skipInfos[0]['exception'] > 0)
                         {
                             $skipDates = array();
 
+                            // date to search for
+                            $searchDate = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->startTime);
+
+                            // TODO: skipinfo kram neu machen. geht so nicht...
                             foreach ($skipInfos as $i => $skipInfo)
                             {
+                                // we need this to be compatible with the older version even for the modules...
+                                // so there is no need to modify the templates...
+                                $skipInfo['values'] = $skipInfo;
                                 foreach ($skipInfo['values'] as $k => $v)
                                 {
                                     $skipDates[$k][$i] = $v;
                                 }
                             }
-
-                            // date to search for
-                            $searchDate = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->startTime);
 
                             // if date is found continue...
                             $exception = array();
@@ -186,7 +219,7 @@ class EventsExt extends \Events
 
                             if (array_search($searchDate, $exception, true) !== false)
                             {
-                                $r = array_search($searchDate, $exception, true);
+                                $r = array_search($searchDate, $skipDates, true);
                                 $action = $skipDates['action'][$r];
                                 if ($action == "hide")
                                 {
@@ -269,7 +302,8 @@ class EventsExt extends \Events
                         }
                         if ($store === true)
                         {
-                            $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
+                            $eventUrl = $strUrl."?day=".Date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
+                            $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
                         }
 
                         $objEvents->moveReason = NULL;

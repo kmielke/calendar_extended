@@ -34,7 +34,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['showOnFreeDay']		= array('Show Event 
 $GLOBALS['TL_LANG']['tl_calendar_events']['hideOnWeekend']		= array('Not on weekends', 'Event will not be displayed on weekends.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['recurringExt']		= array('Repeat event (extended)', 'Create a recurring event.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEachExt']		= array('Extended Interval', 'Here you can set the recurrence interval.');
-$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions']	= array('Define exceptions', 'Please add the events that to not take place. Please adjust the count of the recurrences if neede.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions']	= array('Define exceptions', 'Please add changing events here. Adjust the count of the recurrences if needed.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEnd']  		= array('End of the recurrences', 'Date of the last recurrence.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['weekday']			= array('Weekday', 'Day of week');
 
