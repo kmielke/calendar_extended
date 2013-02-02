@@ -196,13 +196,11 @@ class EventsExt extends \Events
                             // date to search for
                             $searchDate = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->startTime);
 
-                            // TODO: skipinfo kram neu machen. geht so nicht...
                             foreach ($skipInfos as $i => $skipInfo)
                             {
                                 // we need this to be compatible with the older version even for the modules...
                                 // so there is no need to modify the templates...
-                                $skipInfo['values'] = $skipInfo;
-                                foreach ($skipInfo['values'] as $k => $v)
+                                foreach ($skipInfo as $k => $v)
                                 {
                                     $skipDates[$k][$i] = $v;
                                 }
@@ -219,7 +217,7 @@ class EventsExt extends \Events
 
                             if (array_search($searchDate, $exception, true) !== false)
                             {
-                                $r = array_search($searchDate, $skipDates, true);
+                                $r = array_search($searchDate, $exception, true);
                                 $action = $skipDates['action'][$r];
                                 if ($action == "hide")
                                 {
@@ -306,10 +304,12 @@ class EventsExt extends \Events
                             $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
                         }
 
+                        // reset this values...
                         $objEvents->moveReason = NULL;
                         $objEvents->oldDate = NULL;
                         $objEvents->oldStartTime = NULL;
                         $objEvents->oldEndTime = NULL;
+
                         // in case of a move we have to reset the original date
                         if ($oldDate)
                         {
