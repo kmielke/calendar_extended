@@ -371,6 +371,9 @@ class ModuleTimeTableExt extends \EventsExt
             }
 
             $arrDays[$intCurrentDay]['label'] = $GLOBALS['TL_LANG']['DAYS'][$intCurrentDay];
+            $arrDays[$intCurrentDay]['label_day'] = $GLOBALS['TL_LANG']['DAYS'][$intCurrentDay];
+            $arrDays[$intCurrentDay]['label_date'] = $currDay;
+
             if ($this->showDate)
             {
                 $arrDays[$intCurrentDay]['label'] .= '<br/>'.$currDay;

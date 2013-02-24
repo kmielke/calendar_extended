@@ -390,6 +390,7 @@ class tl_calendar_events_ext extends \Backend
             else
             {
                 $end = 2145913200; //2038.01.01
+                $arrSet['repeatEnd'] = $next;
 
                 while ($next < $end)
                 {
@@ -410,7 +411,6 @@ class tl_calendar_events_ext extends \Backend
                         break;
                     }
                     $arrDates[] = $next;
-                    $arrSet['repeatEnd'] = $next;
 
                     //check if have the configured max value
                     if (count($arrDates) == $maxCount)
