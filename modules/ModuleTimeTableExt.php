@@ -150,8 +150,14 @@ class ModuleTimeTableExt extends \EventsExt
      */
     protected function compile()
     {
+        // Respond to month
+        if (\Input::get('month'))
+        {
+            $this->Date = new \Date(\Input::get('month').'01', 'Ymd');
+        }
+
         // Respond to week
-        if (\Input::get('week'))
+        elseif (\Input::get('week'))
         {
             $selYear = (int)substr(\Input::get('week'), 0, 4);
             $selWeek = (int)substr(\Input::get('week'), -2);
@@ -212,6 +218,8 @@ class ModuleTimeTableExt extends \EventsExt
 
         $objTemplate->intYear = $intYear;
         $objTemplate->intWeek = $intWeek;
+        $objTemplate->weekBegin = $this->weekBegin;
+        $objTemplate->weekEnd = $this->weekEnd;
 
         $objTemplate->cal_times = $this->cal_times;
         $objTemplate->use_navigation = $this->use_navigation;
