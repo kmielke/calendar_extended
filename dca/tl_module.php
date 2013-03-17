@@ -30,9 +30,20 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['cal_calendar_ext'] = array
 	'label'                 => &$GLOBALS['TL_LANG']['tl_module']['cal_calendar_ext'],
 	'exclude'               => true,
 	'inputType'             => 'checkbox',
-	'options_callback'      => array('calender_Ext', 'getCalendars'),
+	'options_callback'      => array('calendar_Ext', 'getCalendars'),
 	'eval'                  => array('mandatory'=>true, 'multiple'=>true),
     'sql'                   => "text NULL"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['cal_readerModule'] = array
+(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['cal_readerModule'],
+    'exclude'                 => true,
+    'inputType'               => 'select',
+    'options_callback'        => array('calendar_Ext', 'getReaderModules'),
+    'reference'               => &$GLOBALS['TL_LANG']['tl_module'],
+    'eval'                    => array('includeBlankOption'=>true, 'tl_class'=>'w50'),
+    'sql'                     => "int(10) unsigned NOT NULL default '0'"
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['cal_holiday'] = array
@@ -40,7 +51,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['cal_holiday'] = array
 	'label'                 => &$GLOBALS['TL_LANG']['tl_module']['cal_holiday'],
 	'exclude'               => true,
 	'inputType'             => 'checkbox',
-	'options_callback'      => array('calender_Ext', 'getHolidays'),
+	'options_callback'      => array('calendar_Ext', 'getHolidays'),
 	'eval'                  => array('mandatory'=>false, 'multiple'=>true),
     'sql'                   => "text NULL"
 );
@@ -129,7 +140,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['calext_ctemplate'] = array
 	'default'               => 'calext_default',
 	'exclude'               => true,
 	'inputType'             => 'select',
-	'options_callback'      => array('calender_Ext', 'getCalendarTemplates'),
+	'options_callback'      => array('calendar_Ext', 'getCalendarTemplates'),
     'sql'                   => "varchar(32) NOT NULL default ''"
 );
 
@@ -196,7 +207,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['cal_showQuantity'] = array
  */
 if (in_array('comments', Config::getInstance()->getActiveModules()))
 {
-	$GLOBALS['TL_DCA']['tl_module']['palettes']['eventreader'] = str_replace('{protected_legend:hide}', '{comment_legend:hide},com_template;{protected_legend:hide}', $GLOBALS['TL_DCA']['tl_module']['palettes']['eventreader']);
+	$GLOBALS['TL_DCA']['tl_module']['palettes']['eventreaderExt'] = str_replace('{protected_legend:hide}', '{comment_legend:hide},com_template;{protected_legend:hide}', $GLOBALS['TL_DCA']['tl_module']['palettes']['eventreaderExt']);
 }
 
 
@@ -208,7 +219,7 @@ if (in_array('comments', Config::getInstance()->getActiveModules()))
  * @author     Kester Mielke
  * @package    Controller
  */
-class calender_Ext extends Backend
+class calendar_Ext extends Backend
 {
 
 	/**
@@ -273,7 +284,25 @@ class calender_Ext extends Backend
 	}
 
 
-	/**
+    /**
+     * Get all event reader modules and return them as array
+     * @return array
+     */
+    public function getReaderModules()
+    {
+        $arrModules = array();
+        $objModules = $this->Database->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type in('eventreader','eventreaderExt') ORDER BY t.name, m.name");
+
+        while ($objModules->next())
+        {
+            $arrModules[$objModules->theme][$objModules->id] = $objModules->name . ' (ID ' . $objModules->id . ')';
+        }
+
+        return $arrModules;
+    }
+
+
+    /**
 	 * Return all calendar templates as array
 	 * @param object
 	 * @return array
