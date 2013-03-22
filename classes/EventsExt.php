@@ -215,6 +215,7 @@ class EventsExt extends \Events
 
                             $oldDate = array();
 
+                            $objEvents->cssClass = str_replace("exception", "", $objEvents->cssClass);
                             if (array_search($searchDate, $exception, true) !== false)
                             {
                                 $r = array_search($searchDate, $exception, true);
