@@ -14,11 +14,14 @@
 
 //$this->loadLanguageFile('default');
 
-$GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'] = array
-(
-    array('tl_calendar_events_ext', 'adjustTime'),
-    array('tl_calendar_events', 'scheduleUpdate')
-);
+//$GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'] = array
+//(
+//	array('tl_calendar_events_ext', 'adjustTime'),
+//	array('tl_calendar_events', 'scheduleUpdate')
+//);
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = array('tl_calendar_events_ext', 'adjustTime');
+$GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = array('tl_calendar_events_ext', 'scheduleUpdate');
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
 (
@@ -141,7 +144,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['location_mail'] = array
     'exclude'           => true,
     'search'            => true,
     'inputType'         => 'text',
-    'eval'              => array('rgxp'=>'email', 'maxlength'=>255, 'unique'=>true, 'decodeEntities'=>true, 'tl_class'=>'w50'),
+    'eval'              => array('rgxp'=>'email', 'maxlength'=>255, 'decodeEntities'=>true, 'tl_class'=>'w50'),
     'sql'               => "varchar(255) NOT NULL default ''"
 );
 
@@ -424,20 +427,24 @@ class tl_calendar_events_ext extends \Backend
 
         # the last repeatEnd Date
         $currentEndDate = $arrSet['repeatEnd'];
-        $rows = deserialize($dc->activeRecord->repeatExceptions);
-        # set repeatEnd
-        # my be we have an exception move that is later then the repeatEnd
-        foreach ($rows as $row)
+
+        if ($dc->activeRecord->repeatExceptions)
         {
-            if ($row['action'] == 'move')
+            $rows = deserialize($dc->activeRecord->repeatExceptions);
+            # set repeatEnd
+            # my be we have an exception move that is later then the repeatEnd
+            foreach ($rows as $row)
             {
-                $newDate = strtotime($row['new_exception'], $row['exception']);
-                if ($newDate > $currentEndDate)
+                if ($row['action'] == 'move')
                 {
-                    $arrSet['repeatEnd'] = $newDate;
+                    $newDate = strtotime($row['new_exception'], $row['exception']);
+                    if ($newDate > $currentEndDate)
+                    {
+                        $arrSet['repeatEnd'] = $newDate;
+                    }
                 }
-            }
-        };
+            };
+        }
 
         $this->Database->prepare("UPDATE tl_calendar_events %s WHERE id=?")->set($arrSet)->executeUncached($dc->id);
     }
