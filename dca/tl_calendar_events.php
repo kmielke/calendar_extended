@@ -21,7 +21,7 @@
 //);
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = array('tl_calendar_events_ext', 'adjustTime');
-$GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = array('tl_calendar_events_ext', 'scheduleUpdate');
+$GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = array('tl_calendar_events', 'scheduleUpdate');
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
 (
@@ -423,16 +423,15 @@ class tl_calendar_events_ext extends \Backend
                 }
             }
         }
-        $arrSet['repeatDates'] = $arrDates;
 
-        # the last repeatEnd Date
+        // the last repeatEnd Date
         $currentEndDate = $arrSet['repeatEnd'];
 
         if ($dc->activeRecord->repeatExceptions)
         {
             $rows = deserialize($dc->activeRecord->repeatExceptions);
-            # set repeatEnd
-            # my be we have an exception move that is later then the repeatEnd
+            // set repeatEnd
+            // my be we have an exception move that is later then the repeatEnd
             foreach ($rows as $row)
             {
                 if ($row['action'] == 'move')
@@ -442,10 +441,21 @@ class tl_calendar_events_ext extends \Backend
                     {
                         $arrSet['repeatEnd'] = $newDate;
                     }
+
+                    // Find the date and replace it
+                    $pos = array_search($row['values']['exception'], $arrDates);
+                    if ($pos)
+                    {
+                        $arrDates[$pos] = $newDate;
+                    }
                 }
             };
         }
 
+        // Set the array of dates
+        $arrSet['repeatDates'] = $arrDates;
+
+        // Execute the update sql
         $this->Database->prepare("UPDATE tl_calendar_events %s WHERE id=?")->set($arrSet)->executeUncached($dc->id);
     }
 
@@ -569,8 +579,9 @@ class tl_calendar_events_ext extends \Backend
         return $columnsData;
     }
 
+
     /**
-     * listExceptions()
+     * listMultiExceptions()
      *
      * Read the list of exception dates from the db
      * to fill the select list
@@ -584,12 +595,6 @@ class tl_calendar_events_ext extends \Backend
         $arrSource2 = array();
         $arrSource3 = array();
         $arrSource4 = array();
-
-        // first option is empty
-        //$arrSource1[''] = '-';
-        //$arrSource2[''] = '-';
-        //$arrSource3[''] = '-';
-        //$arrSource4[''] = '-';
 
         if ($this->Input->get('id'))
         {
@@ -617,7 +622,6 @@ class tl_calendar_events_ext extends \Backend
             }
 
             // fill array for option new date
-            //$GLOBALS['TL_CONFIG']['tl_calendar_events']['moveRange'] = 14
             $moveDays = ((int)$GLOBALS['TL_CONFIG']['tl_calendar_events']['moveDays']) ? (int)$GLOBALS['TL_CONFIG']['tl_calendar_events']['moveDays'] : 7;
             $start = $moveDays * -1;
             $end = $moveDays * 2;
@@ -629,6 +633,7 @@ class tl_calendar_events_ext extends \Backend
             }
 
             list($start, $end, $interval) = explode("|", $GLOBALS['TL_CONFIG']['tl_calendar_events']['moveTimes']);
+
             // fill array for option new time
             $start = strtotime($start);
             $end = strtotime($end);
