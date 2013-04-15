@@ -310,8 +310,13 @@ class tl_calendar_events_ext extends \Backend
             $next = $dc->activeRecord->startDate;
             $count = $dc->activeRecord->recurrences;
 
+            if ($count == 0)
+            {
+                $arrSet['repeatEnd'] = 2145913200;
+            }
+
             // last date of the recurrences
-            $end = ($count > 0) ? $arrSet['repeatEnd'] : 2145913200;
+            $end = $arrSet['repeatEnd'];
 
             while ($next < $end)
             {
@@ -336,7 +341,7 @@ class tl_calendar_events_ext extends \Backend
                 }
                 if ($store === true)
                 {
-                    $arrDates[] = $next;
+                    $arrDates[$next] = $next;
                 }
 
                 //check if have the configured max value
@@ -386,13 +391,15 @@ class tl_calendar_events_ext extends \Backend
                     $timetoadd = $arg . ' ' . $unit . ' of ' . $arrMonth[$month] . ' ' . $year;
                     $strtotime = strtotime($timetoadd, $next);
                     $next = $strtotime;
-                    $arrDates[] = $next;
+                    $arrDates[$next] = $next;
                 }
                 $arrSet['repeatEnd'] = $next;
             }
             else
             {
-                $end = 2145913200; //2038.01.01
+                // 2038.01.01
+                $arrSet['repeatEnd'] = 2145913200;
+                $end = $arrSet['repeatEnd'];
 
                 while ($next < $end)
                 {
@@ -412,8 +419,7 @@ class tl_calendar_events_ext extends \Backend
                     {
                         break;
                     }
-                    $arrDates[] = $next;
-                    $arrSet['repeatEnd'] = $next;
+                    $arrDates[$next] = $next;
 
                     //check if have the configured max value
                     if (count($arrDates) == $maxCount)
@@ -494,10 +500,10 @@ class tl_calendar_events_ext extends \Backend
                 if (is_array($arrDates))
                 {
                     // fill array for option date
-                    foreach ($arrDates as $arrDate)
+                    foreach ($arrDates as $k => $arrDate)
                     {
-                        $date = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $arrDate);
-                        $arrSource1[$arrDate] = $date;
+                        $date = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $k);
+                        $arrSource1[$k] = $date;
                     }
 
                     // fill array for option action
@@ -508,7 +514,6 @@ class tl_calendar_events_ext extends \Backend
             }
 
             // fill array for option new date
-            //$GLOBALS['TL_CONFIG']['tl_calendar_events']['moveRange'] = 14
             $moveDays = ((int)$GLOBALS['TL_CONFIG']['tl_calendar_events']['moveDays']) ? (int)$GLOBALS['TL_CONFIG']['tl_calendar_events']['moveDays'] : 7;
             $start = $moveDays * -1;
             $end = $moveDays * 2;
@@ -608,10 +613,10 @@ class tl_calendar_events_ext extends \Backend
                 if (is_array($arrDates))
                 {
                     // fill array for option date
-                    foreach ($arrDates as $arrDate)
+                    foreach ($arrDates as $k => $arrDate)
                     {
-                        $date = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $arrDate);
-                        $arrSource1[$arrDate] = $date;
+                        $date = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $k);
+                        $arrSource1[$k] = $date;
                     }
 
                     // fill array for option action

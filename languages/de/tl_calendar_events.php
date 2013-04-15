@@ -35,7 +35,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['hideOnWeekend']		= array('Nur an Werk
 $GLOBALS['TL_LANG']['tl_calendar_events']['recurringExt']		= array('Event wiederholen (erweitert)', 'Ein wiederkehrendes Event erstellen.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEachExt']		= array('Erweiteter Intervall', 'Hier können Sie das Wiederholungsintervall festlegen.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions']	= array('Ausnahmen definieren', 'Bitte geben Sie die Termine an, die sich ändern. Die Anzahl der Wiederholungen muß eventuell angepasst werden.');
-$GLOBALS['TL_LANG']['tl_calendar_events']['repeatEnd']			= array('Ende der Wiederholungen', 'Datum der letzten Wiederholung dieses Events.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatEnd']			= array('Ende der Wiederholungen', 'Datum der letzten Wiederholung dieses Events. (automatisch berechnet)');
 $GLOBALS['TL_LANG']['tl_calendar_events']['weekday']			= array('Wochentag', 'Wochentag, an dem das Event stattfindet');
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_legend']    = 'Veranstaltungsort und Kontakt';
