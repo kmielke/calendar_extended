@@ -142,7 +142,10 @@ class EventsExt extends \Events
 
                     // now we have to take care about the exceptions dates to skip
                     //$skipInfos = deserialize($objEvents->repeatExceptions);
-                    $skipInfos = deserialize($objEvents->exceptionList);
+                    if ($objEvents->useExceptions)
+                    {
+                        $skipInfos = deserialize($objEvents->exceptionList);
+                    }
 
                     // time of the next event
                     $nextTime = $objEvents->endTime;
