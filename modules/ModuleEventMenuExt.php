@@ -83,7 +83,7 @@ class ModuleEventMenuExt extends \ModuleCalendarExt
         $arrData = array();
 
         $this->Template = new \FrontendTemplate('mod_eventmenu_year');
-        $arrAllEvents = $this->getAllEvents($this->cal_holiday, $this->cal_calendar, 0, 2145913200);
+        $arrAllEvents = $this->getAllEventsExt($this->cal_holiday, $this->cal_calendar, 0, 2145913200);
 
         foreach ($arrAllEvents as $intDay=>$arrDay)
         {

@@ -11,18 +11,13 @@
  * @copyright Kester Mielke 2010-2013 
  */
 
-$GLOBALS['TL_CONFIG']['tl_calendar_events']['maxRepeatExecptions'] = 365;
+$GLOBALS['TL_CONFIG']['tl_calendar_events']['maxRepeatExceptions'] = 365;
 
 /**
  * the range of days for the move date option
  * 14 means from -14 days to 14 days
  */
 $GLOBALS['TL_CONFIG']['tl_calendar_events']['moveDays'] = 7;
-
-/**
- * array of reasons for the exceptions
- */
-$GLOBALS['TL_CONFIG']['tl_calendar_events']['moveReasons'][0] = '-';
 
 /**
  * the start, end and interval of times for the move time option
@@ -36,13 +31,21 @@ $GLOBALS['TL_CONFIG']['tl_calendar_events']['moveReasons'][0] = '-';
  */
 $GLOBALS['TL_CONFIG']['tl_calendar_events']['moveTimes'] = '10:00|22:00|30';
 
-$GLOBALS['TL_LANG']['DAYS']['sonday']    = 0;
+$GLOBALS['TL_LANG']['DAYS']['sunday']    = 0;
 $GLOBALS['TL_LANG']['DAYS']['monday']    = 1;
 $GLOBALS['TL_LANG']['DAYS']['tuesday']   = 2;
 $GLOBALS['TL_LANG']['DAYS']['wednesday'] = 3;
-$GLOBALS['TL_LANG']['DAYS']['thirsday']  = 4;
+$GLOBALS['TL_LANG']['DAYS']['thursday']  = 4;
 $GLOBALS['TL_LANG']['DAYS']['friday']    = 5;
 $GLOBALS['TL_LANG']['DAYS']['saturday']  = 6;
+
+$GLOBALS['TL_CONFIG']['tl_calendar_events']['weekdays'][0] = 'sunday';
+$GLOBALS['TL_CONFIG']['tl_calendar_events']['weekdays'][1] = 'monday';
+$GLOBALS['TL_CONFIG']['tl_calendar_events']['weekdays'][2] = 'tuesday';
+$GLOBALS['TL_CONFIG']['tl_calendar_events']['weekdays'][3] = 'wednesday';
+$GLOBALS['TL_CONFIG']['tl_calendar_events']['weekdays'][4] = 'thursday';
+$GLOBALS['TL_CONFIG']['tl_calendar_events']['weekdays'][5] = 'friday';
+$GLOBALS['TL_CONFIG']['tl_calendar_events']['weekdays'][6] = 'saturday';
 
 /**
  * BACK END MODULES

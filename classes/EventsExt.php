@@ -50,7 +50,7 @@ class EventsExt extends \Events
      * @param integer
      * @return array
      */
-    protected function getAllEventsExt($arrHolidays, $arrCalendars, $intStart, $intEnd)
+    protected function getAllEventsExt($arrHolidays, $arrCalendars, $intStart, $intEnd, $showRecurrences=true)
     {
         if (!is_array($arrCalendars))
         {
@@ -110,17 +110,18 @@ class EventsExt extends \Events
                 {
                     $eventUrl = $strUrl."?day=".Date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
                     $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
-                    #$this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
+                    // $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
                 }
 
                 /*
                  * Recurring events and Ext. Recurring events
                  *
                  * Here we manage the recurrences. We take the repeat option and set the new values
+                 * if showRecurrences is false we do not need to go thru all recurring events...
                  */
-                if (($objEvents->recurring && $objEvents->repeatEach) || ($objEvents->recurringExt && $objEvents->repeatEachExt))
+                if ((($objEvents->recurring && $objEvents->repeatEach) || ($objEvents->recurringExt && $objEvents->repeatEachExt)) && $showRecurrences)
                 {
-                    //list of months we need
+                    // list of months we need
                     $arrMonth = array(1=>'january', 2=>'february', 3=>'march', 4=>'april', 5=>'may', 6=>'jun',
                         7=>'july', 8=>'august', 9=>'september', 10=>'october', 11=>'november', 12=>'december',
                     );
@@ -135,14 +136,15 @@ class EventsExt extends \Events
                         $arrRepeat = deserialize($objEvents->repeatEachExt);
                     }
 
-                    //start and end time of the event
+                    // start and end time of the event
                     $eventStartTime = $this->parseDate($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->startTime);
                     $eventEndTime = $this->parseDate($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->endTime);
 
                     // now we have to take care about the exceptions dates to skip
-                    $skipInfos = deserialize($objEvents->repeatExceptions);
+                    //$skipInfos = deserialize($objEvents->repeatExceptions);
+                    $skipInfos = deserialize($objEvents->exceptionList);
 
-                    //time of the next event
+                    // time of the next event
                     $nextTime = $objEvents->endTime;
                     while ($nextTime < $intEnd)
                     {
@@ -167,14 +169,14 @@ class EventsExt extends \Events
 
                         if ($objEvents->recurring)
                         {
-                            //this is the contao default
+                            // this is the contao default
                             $strtotime = '+ ' . $arg . ' ' . $unit;
                             $objEvents->startTime = strtotime($strtotime, $objEvents->startTime);
                             $objEvents->endTime = strtotime($strtotime, $objEvents->endTime);
                         }
                         else
                         {
-                            //extended version.
+                            // extended version.
                             $intyear	= date('Y', $objEvents->startTime);
                             $intmonth	= date('n', $objEvents->startTime) + 1;
 
@@ -188,7 +190,7 @@ class EventsExt extends \Events
 
                         $nextTime = $objEvents->endTime;
 
-                        //check if there is any exception
+                        // check if there is any exception
                         if (is_array($skipInfos) && $skipInfos[0]['exception'] > 0)
                         {
                             $skipDates = array();
@@ -323,7 +325,6 @@ class EventsExt extends \Events
         }
 
         // run thru all holiday calendars
-        $arrFreeday = array();
         foreach ($arrHolidays as $id)
         {
             $strUrl = $this->strUrl;

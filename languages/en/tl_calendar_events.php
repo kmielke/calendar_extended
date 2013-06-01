@@ -34,7 +34,10 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['showOnFreeDay']		= array('Show Event 
 $GLOBALS['TL_LANG']['tl_calendar_events']['hideOnWeekend']		= array('Not on weekends', 'Event will not be displayed on weekends.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['recurringExt']		= array('Repeat event (extended)', 'Create a recurring event.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEachExt']		= array('Extended Interval', 'Here you can set the recurrence interval.');
-$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions']	= array('Define exceptions', 'Please add changing events here. Adjust the count of the recurrences if needed.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions']	= array('Exceptions by date', 'Please add changing events here. Adjust the count of the recurrences if needed.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsInt']= array('Exceptions by interval', 'Please set an interval here. E.g. "every first" will take every first weekday of the month.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsPer']= array('Exceptions by period', 'Please add an time period. Recurrences in this period are effected.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['useExceptions']	    = array('Use exceptions', 'Do you like to define exceptions?');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEnd']  		= array('End of the recurrences', 'Date of the last recurrence. (calc. automatically)');
 $GLOBALS['TL_LANG']['tl_calendar_events']['weekday']			= array('Weekday', 'Day of week');
 
@@ -44,11 +47,14 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['location_link']      = array('Link to
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_contact']   = array('Contact', 'Name of a contact.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_mail']      = array('E-Mail', 'E-Mail Address of the contact.');
 
-$GLOBALS['TL_LANG']['tl_calendar_events']['first']		= 'Every first';
-$GLOBALS['TL_LANG']['tl_calendar_events']['second']		= 'Every second';
-$GLOBALS['TL_LANG']['tl_calendar_events']['third']		= 'Every third';
-$GLOBALS['TL_LANG']['tl_calendar_events']['fourth']		= 'Every fourth';
-$GLOBALS['TL_LANG']['tl_calendar_events']['last']		= 'Every last';
+$GLOBALS['TL_LANG']['tl_calendar_events']['first']		= 'every first';
+$GLOBALS['TL_LANG']['tl_calendar_events']['second']		= 'every second';
+$GLOBALS['TL_LANG']['tl_calendar_events']['third']		= 'every third';
+$GLOBALS['TL_LANG']['tl_calendar_events']['fourth']		= 'every fourth';
+$GLOBALS['TL_LANG']['tl_calendar_events']['fifth']		= 'every fifth';
+$GLOBALS['TL_LANG']['tl_calendar_events']['sixth']		= 'every sixth';
+$GLOBALS['TL_LANG']['tl_calendar_events']['seventh']	= 'every seventh';
+$GLOBALS['TL_LANG']['tl_calendar_events']['last']		= 'every last';
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['sunday']		= 'sunday of a month';
 $GLOBALS['TL_LANG']['tl_calendar_events']['monday']		= 'monday of a month';
@@ -61,10 +67,15 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['saturday']	= 'saturday of a month';
 $GLOBALS['TL_LANG']['tl_calendar_events']['recurring_legend_ext'] = 'Recurrence settings (extended)';
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions_legend']	= 'Define exceptions for the recurrences';
 
-$GLOBALS['TL_LANG']['tl_calendar_events']['checkRerurring'] = "Only one option can be active for recurrences.";
+$GLOBALS['TL_LANG']['tl_calendar_events']['checkRecurring'] = "Only one option can be active for recurrences.";
+$GLOBALS['TL_LANG']['tl_calendar_events']['checkExceptions'] = "No option for recurrences is active.";
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['new_exception'] = "move by";
 $GLOBALS['TL_LANG']['tl_calendar_events']['exception']	= 'Date';
+$GLOBALS['TL_LANG']['tl_calendar_events']['exceptionInt']	= 'Every X ';
+$GLOBALS['TL_LANG']['tl_calendar_events']['exceptionFr']	= 'From';
+$GLOBALS['TL_LANG']['tl_calendar_events']['exceptionTo']	= 'To';
+$GLOBALS['TL_LANG']['tl_calendar_events']['exceptionPer']	= 'Period';
 $GLOBALS['TL_LANG']['tl_calendar_events']['action']		= 'Action';
 $GLOBALS['TL_LANG']['tl_calendar_events']['move']		= 'move';
 $GLOBALS['TL_LANG']['tl_calendar_events']['hide']		= 'don\'t show';

@@ -114,7 +114,7 @@ class TimePeriodExt extends \Widget
         $arrValues = array();
         $arrUnits = array();
 
-        $arrValues[] = '<option>-</option>';
+        $arrValues[] = '<option value="">-</option>';
         foreach ($this->arrValues as $arrValue)
         {
             $arrValues[] = sprintf('<option value="%s"%s>%s</option>',
@@ -123,7 +123,7 @@ class TimePeriodExt extends \Widget
                 $arrValue['label']);
         }
 
-        $arrUnits[] = '<option>-</option>';
+//        $arrUnits[] = '<option value="">-</option>';
         foreach ($this->arrUnits as $arrUnit)
         {
             $arrUnits[] = sprintf('<option value="%s"%s>%s</option>',

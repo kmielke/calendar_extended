@@ -196,8 +196,11 @@ class ModuleEventListExt extends \EventsExt
 
         list($strBegin, $strEnd, $strEmpty) = $this->getDatesFromFormat($this->Date, $this->cal_format);
 
+        // we have to check if we have to show recurrences and pass it to the getAllEventsExt function...
+        $showRecurrences = ($this->showRecurrences) ? false : true;
+
         // Get all events
-        $arrAllEvents = $this->getAllEventsExt($this->cal_holiday, $this->cal_calendar, $strBegin, $strEnd);
+        $arrAllEvents = $this->getAllEventsExt($this->cal_holiday, $this->cal_calendar, $strBegin, $strEnd, $showRecurrences);
         $sort = ($this->cal_order == 'descending') ? 'krsort' : 'ksort';
 
         // Sort the days
@@ -245,7 +248,7 @@ class ModuleEventListExt extends \EventsExt
             }
         }
 
-        unset($arrAllEvents);
+        unset($arrAllEvents, $days);
         $total = count($arrEvents);
         $limit = $total;
         $offset = 0;
@@ -356,17 +359,29 @@ class ModuleEventListExt extends \EventsExt
 
             $objTemplate->addImage = false;
 
-            // Add image
-            if ($event['addImage'] && is_file(TL_ROOT . '/' . $event['singleSRC']))
+			// Add an image
+			if ($event['addImage'] && $event['singleSRC'] != '')
             {
-                if ($imgSize)
-                {
-                    $event['size'] = $imgSize;
-                }
+				if (!is_numeric($event['singleSRC']))
+				{
+					$objTemplate->text = '<p class="error">'.$GLOBALS['TL_LANG']['ERR']['version2format'].'</p>';
+				}
+				else
+				{
+					$objModel = \FilesModel::findByPk($event['singleSRC']);
 
-                $this->addImageToTemplate($objTemplate, $event);
-                $objTemplate->href = $event['href']; // Reset the href (see #3370)
-            }
+					if ($objModel !== null && is_file(TL_ROOT . '/' . $objModel->path))
+					{
+                        if ($imgSize)
+                        {
+                            $event['size'] = $imgSize;
+                        }
+
+                        $event['singleSRC'] = $objModel->path;
+                        $this->addImageToTemplate($objTemplate, $event);
+                    }
+    			}
+			}
 
             $objTemplate->enclosure = array();
 
@@ -376,19 +391,7 @@ class ModuleEventListExt extends \EventsExt
                 $this->addEnclosuresToTemplate($objTemplate, $event);
             }
 
-            if ($this->showRecurrences)
-            {
-                if (!$event['isRecurrence'])
-                {
-                    $strEvents .= $objTemplate->parse();
-                }
-            }
-            else
-            {
-                $strEvents .= $objTemplate->parse();
-            }
-
-//            $strEvents .= $objTemplate->parse();
+            $strEvents .= $objTemplate->parse();
 
             ++$eventCount;
             ++$headerCount;

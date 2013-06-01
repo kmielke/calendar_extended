@@ -34,7 +34,10 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['showOnFreeDay']		= array('Event immer
 $GLOBALS['TL_LANG']['tl_calendar_events']['hideOnWeekend']		= array('Nur an Werktagen', 'Event wird an Wochenenden nicht angezeigt.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['recurringExt']		= array('Event wiederholen (erweitert)', 'Ein wiederkehrendes Event erstellen.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEachExt']		= array('Erweiteter Intervall', 'Hier können Sie das Wiederholungsintervall festlegen.');
-$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions']	= array('Ausnahmen definieren', 'Bitte geben Sie die Termine an, die sich ändern. Die Anzahl der Wiederholungen muß eventuell angepasst werden.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions']	= array('Ausnahmen nach Datum', 'Bitte geben Sie die Termine an, die sich ändern. Die Anzahl der Wiederholungen muß eventuell angepasst werden.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsInt']= array('Ausnahmen nach Interval', 'Bitte geben Sie einen Interval an. Beispiel: "jeden ersten", berücksichtigt jeden ersten gewählten Wochentag im Monat.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsPer']= array('Ausnahmen nach Zeitraum', 'Bitte geben Sie einen Zeitraum an, in dem sich die Termine ändern.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['useExceptions']      = array('Ausnahmen definieren', 'Möchten sie Ausnahmen für Wiederholungen angeben?.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEnd']			= array('Ende der Wiederholungen', 'Datum der letzten Wiederholung dieses Events. (automatisch berechnet)');
 $GLOBALS['TL_LANG']['tl_calendar_events']['weekday']			= array('Wochentag', 'Wochentag, an dem das Event stattfindet');
 
@@ -44,11 +47,14 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['location_link']      = array('Link au
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_contact']   = array('Kontaktperson', 'Name einer Kontaktperson.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_mail']      = array('E-Mail', 'E-Mail Adresse der Kontaktperson.');
 
-$GLOBALS['TL_LANG']['tl_calendar_events']['first']		= 'Jeden ersten';
-$GLOBALS['TL_LANG']['tl_calendar_events']['second']		= 'Jeden zweiten';
-$GLOBALS['TL_LANG']['tl_calendar_events']['third']		= 'Jeden dritten';
-$GLOBALS['TL_LANG']['tl_calendar_events']['fourth']		= 'Jeden vierten';
-$GLOBALS['TL_LANG']['tl_calendar_events']['last']		= 'Jeden letzten';
+$GLOBALS['TL_LANG']['tl_calendar_events']['first']		= 'jeden ersten';
+$GLOBALS['TL_LANG']['tl_calendar_events']['second']		= 'jeden zweiten';
+$GLOBALS['TL_LANG']['tl_calendar_events']['third']		= 'jeden dritten';
+$GLOBALS['TL_LANG']['tl_calendar_events']['fourth']		= 'jeden vierten';
+$GLOBALS['TL_LANG']['tl_calendar_events']['fifth']		= 'jeden fünften';
+$GLOBALS['TL_LANG']['tl_calendar_events']['sixth']		= 'jeden sechsten';
+$GLOBALS['TL_LANG']['tl_calendar_events']['seventh']	= 'jeden siebten';
+$GLOBALS['TL_LANG']['tl_calendar_events']['last']		= 'jeden letzten';
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['sunday']		= 'Sonntag im Monat';
 $GLOBALS['TL_LANG']['tl_calendar_events']['monday']		= 'Montag im Monat';
@@ -59,11 +65,17 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['friday']		= 'Freitag im Monat';
 $GLOBALS['TL_LANG']['tl_calendar_events']['saturday']	= 'Samstag im Monat';
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['recurring_legend_ext']	    = 'Wiederholungen (erweitert)';
-$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions_legend']	= 'Ausnahmen für Wiederholungen definieren';
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions_legend']	= 'Ausnahmen für Wiederholungen';
+$GLOBALS['TL_LANG']['tl_calendar_events']['exception_legend']	= 'Ausnahmen für Wiederholungen';
 
-$GLOBALS['TL_LANG']['tl_calendar_events']['checkRerurring'] = "Es kann nur eine der Optionen für die Wiederholungen aktiv sein.";
+$GLOBALS['TL_LANG']['tl_calendar_events']['checkRecurring'] = "Es kann nur eine der Optionen für die Wiederholungen aktiv sein.";
+$GLOBALS['TL_LANG']['tl_calendar_events']['checkExceptions'] = "Keine Option für Wiederholungen aktiv.";
 $GLOBALS['TL_LANG']['tl_calendar_events']['new_exception'] = "verschieben um";
 $GLOBALS['TL_LANG']['tl_calendar_events']['exception']	= 'Datum';
+$GLOBALS['TL_LANG']['tl_calendar_events']['exceptionFr']	= 'Von';
+$GLOBALS['TL_LANG']['tl_calendar_events']['exceptionTo']	= 'Bis';
+$GLOBALS['TL_LANG']['tl_calendar_events']['exceptionInt']	= 'Jeden X ';
+$GLOBALS['TL_LANG']['tl_calendar_events']['exceptionPer']	= 'Zeitraum';
 $GLOBALS['TL_LANG']['tl_calendar_events']['action']		= 'Aktion';
 $GLOBALS['TL_LANG']['tl_calendar_events']['move']		= 'verschieben';
 $GLOBALS['TL_LANG']['tl_calendar_events']['hide']		= 'nicht anzeigen';
