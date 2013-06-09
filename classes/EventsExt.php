@@ -97,7 +97,7 @@ class EventsExt extends \Events
                 }
 
                 // Check if we have to store the event if it's on weekend
-                $weekday = date('N', $objEvents->startTime);
+                $weekday = (int)date('N', $objEvents->startTime);
                 $store = true;
                 if ($objEvents->hideOnWeekend)
                 {
@@ -140,8 +140,7 @@ class EventsExt extends \Events
                     $eventStartTime = $this->parseDate($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->startTime);
                     $eventEndTime = $this->parseDate($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->endTime);
 
-                    // now we have to take care about the exceptions dates to skip
-                    //$skipInfos = deserialize($objEvents->repeatExceptions);
+                    // now we have to take care about the exception dates to skip
                     if ($objEvents->useExceptions)
                     {
                         $skipInfos = deserialize($objEvents->exceptionList);
@@ -190,41 +189,25 @@ class EventsExt extends \Events
                             $objEvents->startTime = strtotime($strtotime . ' ' . $eventStartTime, $objEvents->startTime);
                             $objEvents->endTime = strtotime($strtotime . ' ' . $eventEndTime, $objEvents->endTime);
                         }
-
                         $nextTime = $objEvents->endTime;
 
                         // check if there is any exception
-                        if (is_array($skipInfos) && $skipInfos[0]['exception'] > 0)
+                        if (is_array($skipInfos)) // && $skipInfos[0]['exception'] > 0)
                         {
-                            $skipDates = array();
+                            // reset cssClass
+                            $objEvents->cssClass = str_replace("exception", "", $objEvents->cssClass);
 
                             // date to search for
-                            $searchDate = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->startTime);
+                            $searchDate = mktime(0, 0, 0, date('m', $objEvents->startTime), date("d", $objEvents->startTime), date("Y", $objEvents->startTime));
 
-                            foreach ($skipInfos as $i => $skipInfo)
-                            {
-                                // we need this to be compatible with the older version even for the modules...
-                                // so there is no need to modify the templates...
-                                foreach ($skipInfo as $k => $v)
-                                {
-                                    $skipDates[$k][$i] = $v;
-                                }
-                            }
-
-                            // if date is found continue...
-                            $exception = array();
-                            foreach ($skipDates['exception'] as $ex)
-                            {
-                                $exception[] = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $ex);
-                            }
-
+                            // store old date values for later reset
                             $oldDate = array();
 
-                            $objEvents->cssClass = str_replace("exception", "", $objEvents->cssClass);
-                            if (array_search($searchDate, $exception, true) !== false)
+                            if (is_array($skipInfos[$searchDate]))
                             {
-                                $r = array_search($searchDate, $exception, true);
-                                $action = $skipDates['action'][$r];
+                                // $r = array_search($searchDate, $exception, true);
+                                $r = $searchDate;
+                                $action = $skipInfos[$r]['action'];
                                 if ($action == "hide")
                                 {
                                     //continue the while since we don't want to show the event
@@ -248,25 +231,22 @@ class EventsExt extends \Events
                                     $objEvents->oldDate = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->startTime);
 
                                     // value to add to the old date
-                                    $newDate = $skipDates['new_exception'][$r];
+                                    $newDate = $skipInfos[$r]['new_exception'];
 
                                     // store the reason for the move
-                                    if ((int)$skipDates['reason'][$r] > 0)
-                                    {
-                                        $objEvents->moveReason = $GLOBALS['TL_CONFIG']['tl_calendar_events']['moveReasons'][$skipDates['reason'][$r]];
-                                    }
+                                    $objEvents->moveReason = $skipInfos[$r]['reason'];
 
                                     // check if we have to change the time of the event
-                                    if ($skipDates['new_start'][$r])
+                                    if ($skipInfos[$r]['new_start'])
                                     {
                                         $objEvents->oldStartTime = $this->parseDate($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->startTime);
                                         $objEvents->oldEndTime = $this->parseDate($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->endTime);
 
                                         // get the date of the event and add the new time to the new date
                                         $newStart = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->startTime)
-                                            . ' ' . $skipDates['new_start'][$r];
+                                            . ' ' . $skipInfos[$r]['new_start'];
                                         $newEnd = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->endTime)
-                                            . ' ' . $skipDates['new_end'][$r];
+                                            . ' ' . $skipInfos[$r]['new_end'];
 
                                         //set the new values
                                         $objEvents->startTime = strtotime($newDate, strtotime($newStart));

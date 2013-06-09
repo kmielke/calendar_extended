@@ -34,9 +34,9 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['showOnFreeDay']		= array('Show Event 
 $GLOBALS['TL_LANG']['tl_calendar_events']['hideOnWeekend']		= array('Not on weekends', 'Event will not be displayed on weekends.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['recurringExt']		= array('Repeat event (extended)', 'Create a recurring event.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEachExt']		= array('Extended Interval', 'Here you can set the recurrence interval.');
-$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions']	= array('Exceptions by date', 'Please add changing events here. Adjust the count of the recurrences if needed.');
-$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsInt']= array('Exceptions by interval', 'Please set an interval here. E.g. "every first" will take every first weekday of the month.');
-$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsPer']= array('Exceptions by period', 'Please add an time period. Recurrences in this period are effected.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions']	= array('Exception by date', 'Please add changing events here. Adjust the count of the recurrences if needed.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsInt']= array('Exception by interval', 'Please set an interval here. E.g. "every first" will take every first weekday of the month.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsPer']= array('Exception by period', 'Please add an time period. Recurrences in this period are effected.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['useExceptions']	    = array('Use exceptions', 'Do you like to define exceptions?');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEnd']  		= array('End of the recurrences', 'Date of the last recurrence. (calc. automatically)');
 $GLOBALS['TL_LANG']['tl_calendar_events']['weekday']			= array('Weekday', 'Day of week');
@@ -66,6 +66,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['saturday']	= 'saturday of a month';
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['recurring_legend_ext'] = 'Recurrence settings (extended)';
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions_legend']	= 'Define exceptions for the recurrences';
+$GLOBALS['TL_LANG']['tl_calendar_events']['exception_legend']	= 'Exception settings (extended)';
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['checkRecurring'] = "Only one option can be active for recurrences.";
 $GLOBALS['TL_LANG']['tl_calendar_events']['checkExceptions'] = "No option for recurrences is active.";

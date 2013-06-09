@@ -101,7 +101,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['hideOnWeekend'] = array
 
 // change the default palettes
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['recurringExt'] = 'repeatEachExt,recurrences,repeatEnd';
-$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['useExceptions'] = 'repeatExceptions,repeatExceptionsInt,repeatExceptionsPer';
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['useExceptions'] = 'repeatExceptionsInt,repeatExceptionsPer,repeatExceptions';
 //$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['recurringExt'] = 'repeatEachExt,recurrences,repeatEnd,repeatExceptions';
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['recurringExt'] = array
@@ -502,12 +502,16 @@ class tl_calendar_events_ext extends \Backend
             // this will be he list of the exception
             $exceptionRows = array();
 
-            // first we check the exceptions by date...
-            if ($dc->activeRecord->repeatExceptions)
+            // ... and last but not least by range
+            if ($dc->activeRecord->repeatExceptionsPer)
             {
-                $rows = deserialize($dc->activeRecord->repeatExceptions);
-                // set repeatEnd
-                // my be we have an exception move that is later then the repeatEnd
+                // exception rules
+                $rows = deserialize($dc->activeRecord->repeatExceptionsPer);
+
+                // all recurrences...
+                $repeatDates = deserialize($dc->activeRecord->repeatDates);
+
+                // run thru all dates
                 foreach ($rows as $row)
                 {
                     if (!$row['exception'])
@@ -515,22 +519,21 @@ class tl_calendar_events_ext extends \Backend
                         continue;
                     }
 
-                    if ($row['action'] == 'move')
-                    {
-                        $newDate = strtotime($row['new_exception'], $row['exception']);
-                        if ($newDate > $currentEndDate)
-                        {
-                            $arrSet['repeatEnd'] = $newDate;
-                        }
+//                    $currDay = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], strtotime(date("Y-m-d", $this->weekBegin) . " +$i day"));
 
-                        // Find the date and replace it
-                        $pos = array_search($row['values']['exception'], $arrDates);
-                        if ($pos)
+                    // now we have to find all dates matching the exception rules...
+                    $dateFrom = strtotime($row['exception']);
+                    $dateTo = strtotime($row['exceptionTo']);
+                    unset($row['exceptionTo']);
+
+                    foreach ($repeatDates as $k => $repeatDate)
+                    {
+                        if ($k >= $dateFrom && $k <= $dateTo)
                         {
-                            $arrDates[$pos] = $newDate;
+                            $row['exception'] = $k;
+                            $exceptionRows[$k] = $row;
                         }
                     }
-                    $exceptionRows[] = $row;
                 }
             }
 
@@ -566,22 +569,18 @@ class tl_calendar_events_ext extends \Backend
                         if ($k == strtotime($dateToFind))
                         {
                             $row['exception'] = $k;
-                            $exceptionRows[] = $row;
+                            $exceptionRows[$k] = $row;
                         }
                     }
                 }
             }
 
-            // ... and last but not least by range
-            if ($dc->activeRecord->repeatExceptionsPer)
+            // first we check the exceptions by date...
+            if ($dc->activeRecord->repeatExceptions)
             {
-                // exception rules
-                $rows = deserialize($dc->activeRecord->repeatExceptionsPer);
-
-                // all recurrences...
-                $repeatDates = deserialize($dc->activeRecord->repeatDates);
-
-                // run thru all dates
+                $rows = deserialize($dc->activeRecord->repeatExceptions);
+                // set repeatEnd
+                // my be we have an exception move that is later then the repeatEnd
                 foreach ($rows as $row)
                 {
                     if (!$row['exception'])
@@ -589,26 +588,27 @@ class tl_calendar_events_ext extends \Backend
                         continue;
                     }
 
-                    // now we have to find all dates matching the exception rules...
-                    $dateFrom = strtotime($row['exception']);
-                    $dateTo = strtotime($row['exceptionTo']);
-                    unset($row['exceptionTo']);
-
-                    foreach ($repeatDates as $k => $repeatDate)
+                    $k = $row['exception'];
+                    if ($row['action'] == 'move')
                     {
-                        if ($k >= $dateFrom && $k <= $dateTo)
+                        $newDate = strtotime($row['new_exception'], $row['exception']);
+                        if ($newDate > $currentEndDate)
                         {
-                            $row['exception'] = $k;
-                            $exceptionRows[] = $row;
+                            $arrSet['repeatEnd'] = $newDate;
+                        }
+
+                        // Find the date and replace it
+                        $pos = array_search($row['values']['exception'], $arrDates);
+                        if ($pos)
+                        {
+                            $arrDates[$pos] = $newDate;
                         }
                     }
+                    $exceptionRows[$k] = $row;
                 }
             }
 
-            if (count($exceptionRows) > 0)
-            {
-                $arrSet['exceptionList'] = serialize($exceptionRows);
-            }
+            $arrSet['exceptionList'] = (count($exceptionRows) > 0) ? serialize($exceptionRows) : NULL;
         }
 
         // Set the array of dates
