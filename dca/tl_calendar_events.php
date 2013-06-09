@@ -722,7 +722,7 @@ class tl_calendar_events_ext extends \Backend
                 'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['reason'],
                 'exclude'   => true,
                 'inputType' => 'text',
-                'eval'      => array('style'=>'width:130px')
+                'eval'      => array('style'=>'width:100px')
             )
         );
 
@@ -758,13 +758,13 @@ class tl_calendar_events_ext extends \Backend
                 'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['exceptionFr'],
                 'exclude'   => true,
                 'inputType' => 'text',
-                'eval'      => array('style'=>'width:50px', 'datepicker'=>true, 'rgxp'=>'date')
+                'eval'      => array('style'=>'width:60px', 'datepicker'=>true, 'rgxp'=>'date')
             );
             $secondField = array(
                 'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['exceptionTo'],
                 'exclude'   => true,
                 'inputType' => 'text',
-                'eval'      => array('style'=>'width:50px', 'datepicker'=>true, 'rgxp'=>'date')
+                'eval'      => array('style'=>'width:60px', 'datepicker'=>true, 'rgxp'=>'date')
             );
 
             // add the field to the columnFields array
