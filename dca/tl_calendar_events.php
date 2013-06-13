@@ -384,6 +384,13 @@ class tl_calendar_events_ext extends \Backend
             while ($next < $end)
             {
                 $timetoadd = '+ ' . $arrRange['value'] . ' ' . $unit;
+
+                // Check if we are at the end
+                if (!strtotime($timetoadd, $next))
+                {
+                    break;
+                }
+
                 $strtotime = strtotime($timetoadd, $next);
                 $next = $strtotime;
                 $weekday = date('w', $next);
@@ -439,23 +446,29 @@ class tl_calendar_events_ext extends \Backend
 
             //array of the exception dates
             $arrDates = array();
-            $arrDates[$next] = (int)$next;
+            // $arrDates[$next] = (int)$next;
 
             if ($count > 0)
             {
                 for ($i = 0; $i < $count; $i++)
                 {
+                    $timetoadd = $arg . ' ' . $unit . ' of ' . $arrMonth[$month] . ' ' . $year;
+
+                    if (!strtotime($timetoadd, $next))
+                    {
+                        break;
+                    }
+
+                    $strtotime = strtotime($timetoadd, $next);
+                    $next = $strtotime;
+                    $arrDates[$next] = $next;
+
                     $month++;
                     if (($month % 13) == 0)
                     {
                         $month = 1;
                         $year += 1;
                     }
-
-                    $timetoadd = $arg . ' ' . $unit . ' of ' . $arrMonth[$month] . ' ' . $year;
-                    $strtotime = strtotime($timetoadd, $next);
-                    $next = $strtotime;
-                    $arrDates[$next] = $next;
                 }
                 $arrSet['repeatEnd'] = $next;
             }
@@ -465,25 +478,26 @@ class tl_calendar_events_ext extends \Backend
                 $arrSet['repeatEnd'] = 2145913200;
                 $end = $arrSet['repeatEnd'];
 
-                while ($next < $end)
+                while ($next <= $end)
                 {
+                    $timetoadd = $arg . ' ' . $unit . ' of ' . $arrMonth[$month] . ' ' . $year;
+
+                    if (!strtotime($timetoadd, $next))
+                    {
+                        break;
+                    }
+
+                    $strtotime = strtotime($timetoadd, $next);
+                    $next = $strtotime;
+
+                    $arrDates[$next] = $next;
+
                     $month++;
                     if (($month % 13) == 0)
                     {
                         $month = 1;
                         $year += 1;
                     }
-
-                    $timetoadd = $arg . ' ' . $unit . ' of ' . $arrMonth[$month] . ' ' . $year;
-                    $strtotime = strtotime($timetoadd, $next);
-                    $next = $strtotime;
-
-                    //check if we are at the end
-                    if ($next >= $end)
-                    {
-                        break;
-                    }
-                    $arrDates[$next] = $next;
 
 //                    //check if have the configured max value
 //                    if (count($arrDates) == $maxCount)
