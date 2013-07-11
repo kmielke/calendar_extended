@@ -270,6 +270,11 @@ class EventsExt extends \Events
                                 $objEvents->startTime = $oldDate['startTime'];
                                 $objEvents->endTime = $oldDate['endTime'];
                             }
+                            // reset this values...
+                            $objEvents->moveReason = NULL;
+                            $objEvents->oldDate = NULL;
+                            $objEvents->oldStartTime = NULL;
+                            $objEvents->oldEndTime = NULL;
                             continue;
                         }
 
