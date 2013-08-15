@@ -81,12 +81,8 @@ array_insert($GLOBALS['FE_MOD'], 99, array
 (
     'events' => array
     (
-        'calendarExt'	 => 'ModuleCalendarExt',
-        'eventlistExt'	 => 'ModuleEventListExt',
-        'eventmenuExt'	 => 'ModuleEventMenuExt',
-        'timetableExt'	 => 'ModuleTimeTableExt',
-        'yearviewExt'	 => 'ModuleYearViewExt',
-        'eventreaderExt' => 'ModuleEventReaderExt'
+        'timetable'	    => 'ModuleTimeTable',
+        'yearview'	    => 'ModuleYearView'
     )
 ));
 

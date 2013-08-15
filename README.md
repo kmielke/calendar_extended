@@ -23,4 +23,3 @@ Dokumentation und Support
 
 Doku gibt es hier: http://de.contaowiki.org/Calendar_extended
 Support über GitHup oder https://community.contao.org/de/showthread.php?19576-Erweiterung-calendar_extended
-

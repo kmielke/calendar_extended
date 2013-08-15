@@ -38,4 +38,5 @@ $GLOBALS['TL_LANG']['tl_calendar']['allowEvents']	= array('Show Events', 'Define
 /**
  * Legends
  */
-$GLOBALS['TL_LANG']['tl_calendar']['extended_legend'] = 'Colors and Calendar Type';
+$GLOBALS['TL_LANG']['tl_calendar']['extended_legend'] = 'Color and opacity for the events of this calendar';
+$GLOBALS['TL_LANG']['tl_calendar']['extended_type_legend'] = 'Calendar Type';

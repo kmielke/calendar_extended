@@ -71,8 +71,8 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['exception_legend']	= 'Exception setti
 $GLOBALS['TL_LANG']['tl_calendar_events']['checkRecurring'] = "Only one option can be active for recurrences.";
 $GLOBALS['TL_LANG']['tl_calendar_events']['checkExceptions'] = "No option for recurrences is active.";
 
-$GLOBALS['TL_LANG']['tl_calendar_events']['new_exception'] = "move by";
-$GLOBALS['TL_LANG']['tl_calendar_events']['exception']	= 'Date';
+$GLOBALS['TL_LANG']['tl_calendar_events']['new_exception']  = "move by";
+$GLOBALS['TL_LANG']['tl_calendar_events']['exception']	    = 'Date';
 $GLOBALS['TL_LANG']['tl_calendar_events']['exceptionInt']	= 'Every X ';
 $GLOBALS['TL_LANG']['tl_calendar_events']['exceptionFr']	= 'From';
 $GLOBALS['TL_LANG']['tl_calendar_events']['exceptionTo']	= 'To';

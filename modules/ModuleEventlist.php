@@ -25,7 +25,7 @@ namespace Contao;
  * @author     Kester Mielke 
  * @package    Devtools
  */
-class ModuleEventListExt extends \EventsExt
+class ModuleEventlist extends \EventsExt
 {
 
     /**
@@ -52,7 +52,7 @@ class ModuleEventListExt extends \EventsExt
         {
             $objTemplate = new \BackendTemplate('be_wildcard');
 
-            $objTemplate->wildcard = '### EVENT LIST ###';
+			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['eventlist'][0]) . ' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;
@@ -61,7 +61,7 @@ class ModuleEventListExt extends \EventsExt
             return $objTemplate->parse();
         }
 
-        $this->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar_ext, true));
+        $this->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar, true));
         $this->cal_holiday = $this->sortOutProtected(deserialize($this->cal_holiday, true));
 
         // Return if there are no calendars
@@ -179,14 +179,14 @@ class ModuleEventListExt extends \EventsExt
         {
             $this->Date = new \Date(\Input::get('month'), 'Ym');
             $this->cal_format = 'cal_month';
-            $this->headline .= ' ' . $this->parseDate('F Y', $this->Date->tstamp);
+			$this->headline .= ' ' . \Date::parse('F Y', $this->Date->tstamp);
         }
         // Display day
         elseif ($blnDynamicFormat && \Input::get('day'))
         {
             $this->Date = new \Date(\Input::get('day'), 'Ymd');
             $this->cal_format = 'cal_day';
-            $this->headline .= ' ' . $this->parseDate($objPage->dateFormat, $this->Date->tstamp);
+			$this->headline .= ' ' . \Date::parse($objPage->dateFormat, $this->Date->tstamp);
         }
         // Display all events or upcoming/past events
         else
@@ -200,7 +200,7 @@ class ModuleEventListExt extends \EventsExt
         $showRecurrences = ($this->showRecurrences) ? false : true;
 
         // Get all events
-        $arrAllEvents = $this->getAllEventsExt($this->cal_holiday, $this->cal_calendar, $strBegin, $strEnd, $showRecurrences);
+        $arrAllEvents = $this->getAllEventsExt($this->cal_calendar, $strBegin, $strEnd, array($this->cal_holiday, $showRecurrences));
         $sort = ($this->cal_order == 'descending') ? 'krsort' : 'ksort';
 
         // Sort the days
@@ -229,7 +229,7 @@ class ModuleEventListExt extends \EventsExt
                 foreach ($events as $event)
                 {
                     $event['firstDay'] = $GLOBALS['TL_LANG']['DAYS'][date('w', $day)];
-                    $event['firstDate'] = $this->parseDate($objPage->dateFormat, $day);
+					$event['firstDate'] = \Date::parse($objPage->dateFormat, $day);
                     $event['datetime'] = date('Y-m-d', $day);
 
                     $event['pname'] = $this->calConf[$event['pid']]['calendar'];
@@ -281,7 +281,7 @@ class ModuleEventListExt extends \EventsExt
             $offset = ($page - 1) * $this->perPage;
             $limit = min($this->perPage + $offset, $total);
 
-            $objPagination = new \Pagination($total, $this->perPage, 7, $id);
+			$objPagination = new \Pagination($total, $this->perPage, $GLOBALS['TL_CONFIG']['maxPaginationLinks'], $id);
             $this->Template->pagination = $objPagination->generate("\n  ");
         }
 

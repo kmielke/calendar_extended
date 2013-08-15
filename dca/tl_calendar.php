@@ -18,7 +18,7 @@
 $GLOBALS['TL_DCA']['tl_calendar']['palettes']['default'] = str_replace
 (
     '{title_legend},title,jumpTo;',
-    '{title_legend},title,jumpTo;{extended_legend},bg_color,fg_color,isHolidayCal;',
+    '{title_legend},title,jumpTo;{extended_type_legend},isHolidayCal;{extended_legend},bg_color,fg_color;',
     $GLOBALS['TL_DCA']['tl_calendar']['palettes']['default']
 );
 

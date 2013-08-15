@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  * 
- * Copyright (C) 2005-2013 Leo Feyer
+ * Copyright (c) 2005-2013 Leo Feyer
  * 
  * @package Calendar
  * @link    https://contao.org
@@ -24,7 +24,7 @@ namespace Contao;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2013
  */
-class CalendarEventsModelExt extends \Model
+class CalendarEventsModel extends \Model
 {
 
 	/**

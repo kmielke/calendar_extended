@@ -37,7 +37,6 @@ $GLOBALS['TL_LANG']['tl_module']['showDate']		= array('Display date', 'Date of w
 $GLOBALS['TL_LANG']['tl_module']['showRecurrences']	= array('Hide recurrences', 'Recurrences are not displayed if checked');
 $GLOBALS['TL_LANG']['tl_module']['linkCurrent']		= array('Display link "current date"', 'Link to jump to current date will be displayed if checked');
 $GLOBALS['TL_LANG']['tl_module']['hideEmptyDays']	= array('Hide empty days', 'Weekdays without events will not be displayed if checked');
-$GLOBALS['TL_LANG']['tl_module']['calext_ctemplate']= array('Calendar template', 'Here you can select the calendar template.');
 $GLOBALS['TL_LANG']['tl_module']['cal_holiday']     = array('Holiday calendars', 'Please select one or more calendars for holidays.');
 $GLOBALS['TL_LANG']['tl_module']['cal_calendar_ext']= array('Calendars', 'Please select one or more calendars.');
 $GLOBALS['TL_LANG']['tl_module']['cal_times']		= array('Display times', 'Times will be displayed and the events with the same time will be displayed on same level.');

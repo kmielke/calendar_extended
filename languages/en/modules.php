@@ -21,9 +21,5 @@ $GLOBALS['TL_LANG']['MOD'][''] = array('', '');
 /**
  * Front end modules
  */
-$GLOBALS['TL_LANG']['FMD']['calendarExt']	 = array('KM Calendar', 'Adds a calendar to the page.');
-$GLOBALS['TL_LANG']['FMD']['eventlistExt']	 = array('KM Event list', 'Adds a list of events to the page.');
-$GLOBALS['TL_LANG']['FMD']['timetableExt']	 = array('KM Timetable', 'Adds a timetable to the page.');
-$GLOBALS['TL_LANG']['FMD']['yearviewExt']	 = array('KM Year View', 'Adds a calendar yearview to the page.');
-$GLOBALS['TL_LANG']['FMD']['eventmenuExt']	 = array('KM Event list menu', 'Generates a navigation menu to browse the event list.');
-$GLOBALS['TL_LANG']['FMD']['eventreaderExt'] = array('KM Event reader', 'Shows the details of an event');
+$GLOBALS['TL_LANG']['FMD']['timetable']	 = array('Timetable', 'Adds a timetable to the page.');
+$GLOBALS['TL_LANG']['FMD']['yearview']	 = array('Yearview', 'Adds a calendar yearview to the page.');

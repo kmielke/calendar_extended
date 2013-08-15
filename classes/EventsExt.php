@@ -50,14 +50,44 @@ class EventsExt extends \Events
      * @param integer
      * @return array
      */
-    protected function getAllEventsExt($arrHolidays, $arrCalendars, $intStart, $intEnd, $showRecurrences=true)
+    protected function getAllEvents($arrCalendars, $intStart, $intEnd)
     {
+        return $this->getAllEventsExt($arrCalendars, $intStart, $intEnd, array(null, true));
+    }
+
+
+    /**
+     * Get all events of a certain period
+     * @param array
+     * @param integer
+     * @param integer
+     * @return array
+     */
+    protected function getAllEventsExt($arrCalendars, $intStart, $intEnd, $arrParam=null)
+    {
+        # set default values...
+        $arrHolidays=null;
+        $showRecurrences=true;
+
         if (!is_array($arrCalendars))
         {
             return array();
         }
 
         $this->arrEvents = array();
+
+        if ($arrParam !== null)
+        {
+            if (count($arrParam) > 1)
+            {
+                $arrHolidays = $arrParam[0];
+                $showRecurrences = $arrParam[1];
+            }
+            else
+            {
+                $arrHolidays = $arrParam[0];
+            }
+        }
 
         foreach ($arrCalendars as $id)
         {
@@ -71,7 +101,7 @@ class EventsExt extends \Events
             }
 
             // Get the events of the current period
-            $objEvents = \CalendarEventsModelExt::findCurrentByPid($id, $intStart, $intEnd);
+            $objEvents = \CalendarEventsModel::findCurrentByPid($id, $intStart, $intEnd);
 
             if ($objEvents === null)
             {
@@ -110,7 +140,6 @@ class EventsExt extends \Events
                 {
                     $eventUrl = $strUrl."?day=".Date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
                     $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
-                    // $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
                 }
 
                 /*
@@ -192,10 +221,11 @@ class EventsExt extends \Events
                         $nextTime = $objEvents->endTime;
 
                         // check if there is any exception
-                        if (is_array($skipInfos)) // && $skipInfos[0]['exception'] > 0)
+                        if (is_array($skipInfos))
                         {
                             // reset cssClass
                             $objEvents->cssClass = str_replace("exception", "", $objEvents->cssClass);
+                            unset($objEvents->moveReason);
 
                             // date to search for
                             $searchDate = mktime(0, 0, 0, date('m', $objEvents->startTime), date("d", $objEvents->startTime), date("Y", $objEvents->startTime));
@@ -205,7 +235,6 @@ class EventsExt extends \Events
 
                             if (is_array($skipInfos[$searchDate]))
                             {
-                                // $r = array_search($searchDate, $exception, true);
                                 $r = $searchDate;
                                 $action = $skipInfos[$r]['action'];
                                 if ($action == "hide")
@@ -312,79 +341,47 @@ class EventsExt extends \Events
             }
         }
 
-        // run thru all holiday calendars
-        foreach ($arrHolidays as $id)
+        if ($arrHolidays != null)
         {
-            $strUrl = $this->strUrl;
-
-            $objAE = $this->Database->prepare("SELECT allowEvents FROM tl_calendar WHERE id = ?")
-                ->limit(1)->execute($id);
-            $allowEvents = ($objAE->allowEvents == 1) ? true : false;
-
-            $strUrl = $this->strUrl;
-            $objCalendar = \CalendarModel::findByPk($id);
-
-            // Get the current "jumpTo" page
-            if ($objCalendar !== null && $objCalendar->jumpTo && ($objTarget = $objCalendar->getRelated('jumpTo')) !== null)
+            // run thru all holiday calendars
+            foreach ($arrHolidays as $id)
             {
-                $strUrl = $this->generateFrontendUrl($objTarget->row(), ($GLOBALS['TL_CONFIG']['useAutoItem'] ?  '/%s' : '/events/%s'));
-            }
+                $strUrl = $this->strUrl;
 
-            // Get the events of the current period
-            $objEvents = \CalendarEventsModel::findCurrentByPid($id, $intStart, $intEnd);
+                $objAE = $this->Database->prepare("SELECT allowEvents FROM tl_calendar WHERE id = ?")
+                    ->limit(1)->execute($id);
+                $allowEvents = ($objAE->allowEvents == 1) ? true : false;
 
-            if ($objEvents === null)
-            {
-                continue;
-            }
+                $strUrl = $this->strUrl;
+                $objCalendar = \CalendarModel::findByPk($id);
 
-            while ($objEvents->next())
-            {
-                // at last we add the free multi-day / holiday or what ever kind of event
-                $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
-
-                /**
-                 * Multi-day event
-                 * first we have to find all free days
-                 */
-                $span = Calendar::calculateSpan($objEvents->startTime, $objEvents->endTime);
-
-                // unset the first day of the multi-day event
-                $intDate = $objEvents->startTime;
-                $key = date('Ymd', $intDate);
-                // check all events if the calendar allows events on free days
-                if ($this->arrEvents[$key])
+                // Get the current "jumpTo" page
+                if ($objCalendar !== null && $objCalendar->jumpTo && ($objTarget = $objCalendar->getRelated('jumpTo')) !== null)
                 {
-                    foreach ($this->arrEvents[$key] as $k1 => $events)
-                    {
-                        foreach ($events as $k2 => $event)
-                        {
-                            // do not remove events from any holiday calendar
-                            $isHolidayEvent = array_search($event['pid'], $arrHolidays);
-
-                            // unset the event if showOnFreeDay is not set
-                            if ($allowEvents === false)
-                            {
-                                if ($isHolidayEvent === false)
-                                {
-                                    unset($this->arrEvents[$key][$k1][$k2]);
-                                }
-                            }
-                            else
-                            {
-                                if ($isHolidayEvent === false && !$event['showOnFreeDay'] == 1)
-                                {
-                                    unset($this->arrEvents[$key][$k1][$k2]);
-                                }
-                            }
-                        }
-                    }
+                    $strUrl = $this->generateFrontendUrl($objTarget->row(), ($GLOBALS['TL_CONFIG']['useAutoItem'] ?  '/%s' : '/events/%s'));
                 }
 
-                // unset all the other days of the multi-day event
-                for ($i=1; $i<=$span && $intDate<=$intEnd; $i++)
+                // Get the events of the current period
+                $objEvents = \CalendarEventsModel::findCurrentByPid($id, $intStart, $intEnd);
+
+                if ($objEvents === null)
                 {
-                    $intDate = strtotime('+ 1 day', $intDate);
+                    continue;
+                }
+
+                while ($objEvents->next())
+                {
+                    // at last we add the free multi-day / holiday or what ever kind of event
+                    $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
+
+                    /**
+                     * Multi-day event
+                     * first we have to find all free days
+                     */
+                    $span = Calendar::calculateSpan($objEvents->startTime, $objEvents->endTime);
+
+                    // unset the first day of the multi-day event
+                    $intDate = $objEvents->startTime;
                     $key = date('Ymd', $intDate);
                     // check all events if the calendar allows events on free days
                     if ($this->arrEvents[$key])
@@ -409,6 +406,41 @@ class EventsExt extends \Events
                                     if ($isHolidayEvent === false && !$event['showOnFreeDay'] == 1)
                                     {
                                         unset($this->arrEvents[$key][$k1][$k2]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // unset all the other days of the multi-day event
+                    for ($i=1; $i<=$span && $intDate<=$intEnd; $i++)
+                    {
+                        $intDate = strtotime('+ 1 day', $intDate);
+                        $key = date('Ymd', $intDate);
+                        // check all events if the calendar allows events on free days
+                        if ($this->arrEvents[$key])
+                        {
+                            foreach ($this->arrEvents[$key] as $k1 => $events)
+                            {
+                                foreach ($events as $k2 => $event)
+                                {
+                                    // do not remove events from any holiday calendar
+                                    $isHolidayEvent = array_search($event['pid'], $arrHolidays);
+
+                                    // unset the event if showOnFreeDay is not set
+                                    if ($allowEvents === false)
+                                    {
+                                        if ($isHolidayEvent === false)
+                                        {
+                                            unset($this->arrEvents[$key][$k1][$k2]);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if ($isHolidayEvent === false && !$event['showOnFreeDay'] == 1)
+                                        {
+                                            unset($this->arrEvents[$key][$k1][$k2]);
+                                        }
                                     }
                                 }
                             }

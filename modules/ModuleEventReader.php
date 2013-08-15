@@ -25,7 +25,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Calendar
  */
-class ModuleEventReaderExt extends \EventsExt
+class ModuleEventReader extends \EventsExt
 {
 
 	/**
@@ -45,17 +45,17 @@ class ModuleEventReaderExt extends \EventsExt
 		{
 			$objTemplate = new \BackendTemplate('be_wildcard');
 
-			$objTemplate->wildcard = '### EVENT READER ###';
+			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['eventreader'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
 			$objTemplate->id = $this->id;
 			$objTemplate->link = $this->name;
-			$objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
+			$objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
 
 			return $objTemplate->parse();
 		}
 
 		// Set the item from the auto_item parameter
-		if ($GLOBALS['TL_CONFIG']['useAutoItem'] && isset($_GET['auto_item']))
+		if (!isset($_GET['events']) && $GLOBALS['TL_CONFIG']['useAutoItem'] && isset($_GET['auto_item']))
 		{
 			\Input::setGet('events', \Input::get('auto_item'));
 		}
@@ -146,15 +146,15 @@ class ModuleEventReaderExt extends \EventsExt
         // Get date
 		if ($span > 0)
 		{
-			$date = $strTimeStart . $this->parseDate(($objEvent->addTime ? $objPage->datimFormat : $objPage->dateFormat), $objEvent->startTime) . $strTimeClose . ' - ' . $strTimeEnd . $this->parseDate(($objEvent->addTime ? $objPage->datimFormat : $objPage->dateFormat), $objEvent->endTime) . $strTimeClose;
+			$date = $strTimeStart . \Date::parse(($objEvent->addTime ? $objPage->datimFormat : $objPage->dateFormat), $objEvent->startTime) . $strTimeClose . ' - ' . $strTimeEnd . \Date::parse(($objEvent->addTime ? $objPage->datimFormat : $objPage->dateFormat), $objEvent->endTime) . $strTimeClose;
 		}
 		elseif ($objEvent->startTime == $objEvent->endTime)
 		{
-			$date = $strTimeStart . $this->parseDate($objPage->dateFormat, $objEvent->startTime) . ($objEvent->addTime ? ' (' . $this->parseDate($objPage->timeFormat, $objEvent->startTime) . ')' : '') . $strTimeClose;
+			$date = $strTimeStart . \Date::parse($objPage->dateFormat, $objEvent->startTime) . ($objEvent->addTime ? ' (' . \Date::parse($objPage->timeFormat, $objEvent->startTime) . ')' : '') . $strTimeClose;
 		}
 		else
 		{
-			$date = $strTimeStart . $this->parseDate($objPage->dateFormat, $objEvent->startTime) . ($objEvent->addTime ? ' (' . $this->parseDate($objPage->timeFormat, $objEvent->startTime) . $strTimeClose . ' - ' . $strTimeEnd . $this->parseDate($objPage->timeFormat, $objEvent->endTime) . ')' : '') . $strTimeClose;
+			$date = $strTimeStart . \Date::parse($objPage->dateFormat, $objEvent->startTime) . ($objEvent->addTime ? ' (' . \Date::parse($objPage->timeFormat, $objEvent->startTime) . $strTimeClose . ' - ' . $strTimeEnd . \Date::parse($objPage->timeFormat, $objEvent->endTime) . ')' : '') . $strTimeClose;
 		}
 
 		$until = '';
@@ -169,7 +169,7 @@ class ModuleEventReaderExt extends \EventsExt
 
 			if ($objEvent->recurrences > 0)
 			{
-				$until = sprintf($GLOBALS['TL_LANG']['MSC']['cal_until'], $this->parseDate($objPage->dateFormat, $objEvent->repeatEnd));
+				$until = sprintf($GLOBALS['TL_LANG']['MSC']['cal_until'], \Date::parse($objPage->dateFormat, $objEvent->repeatEnd));
 			}
 		}
 
@@ -182,7 +182,7 @@ class ModuleEventReaderExt extends \EventsExt
 
             if ($objEvent->recurrences > 0)
             {
-                $until = sprintf($GLOBALS['TL_LANG']['MSC']['cal_until'], $this->parseDate($objPage->dateFormat, $objEvent->repeatEnd));
+                $until = sprintf($GLOBALS['TL_LANG']['MSC']['cal_until'], \Date::parse($objPage->dateFormat, $objEvent->repeatEnd));
             }
         }
 
@@ -206,6 +206,7 @@ class ModuleEventReaderExt extends \EventsExt
 		$objTemplate->class = ($objEvent->cssClass != '') ? ' ' . $objEvent->cssClass : '';
 		$objTemplate->recurring = $recurring;
 		$objTemplate->until = $until;
+		$objTemplate->locationLabel = $GLOBALS['TL_LANG']['MSC']['location'];
 
 		$objTemplate->details = '';
 		$objElement = \ContentModel::findPublishedByPidAndTable($objEvent->id, 'tl_calendar_events');

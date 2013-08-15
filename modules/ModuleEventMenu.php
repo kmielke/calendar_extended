@@ -25,7 +25,7 @@ namespace Contao;
  * @author     Kester Mielke 
  * @package    Devtools
  */
-class ModuleEventMenuExt extends \ModuleCalendarExt
+class ModuleEventMenu extends \ModuleCalendar
 {
 
     /**
@@ -38,7 +38,7 @@ class ModuleEventMenuExt extends \ModuleCalendarExt
         {
             $objTemplate = new \BackendTemplate('be_wildcard');
 
-            $objTemplate->wildcard = '### EVENT MENU ###';
+			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['eventmenu'][0]) . ' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;
@@ -83,7 +83,7 @@ class ModuleEventMenuExt extends \ModuleCalendarExt
         $arrData = array();
 
         $this->Template = new \FrontendTemplate('mod_eventmenu_year');
-        $arrAllEvents = $this->getAllEventsExt($this->cal_holiday, $this->cal_calendar, 0, 2145913200);
+        $arrAllEvents = $this->getAllEventsExt($this->cal_calendar, 0, 2145913200, array($this->cal_holiday));
 
         foreach ($arrAllEvents as $intDay=>$arrDay)
         {
@@ -135,7 +135,7 @@ class ModuleEventMenuExt extends \ModuleCalendarExt
         $arrData = array();
 
         $this->Template = new \FrontendTemplate('mod_eventmenu');
-        $arrAllEvents = $this->getAllEventsExt($this->cal_holiday, $this->cal_calendar, 0, 2145913200);
+        $arrAllEvents = $this->getAllEventsExt($this->cal_calendar, 0, 2145913200, array($this->cal_holiday));
 
         foreach ($arrAllEvents as $intDay=>$arrDay)
         {
@@ -159,7 +159,7 @@ class ModuleEventMenuExt extends \ModuleCalendarExt
         // Get the current "jumpTo" page
         if ($this->jumpTo && ($objTarget = $this->objModel->getRelated('jumpTo')) !== null)
         {
-            $strUrl = $this->generateFrontendUrl($objTarget->row(), '/month/%s');
+			$strUrl = $this->generateFrontendUrl($objTarget->row());
         }
 
         // Prepare the navigation
@@ -177,7 +177,7 @@ class ModuleEventMenuExt extends \ModuleCalendarExt
 
                 $arrItems[$intYear][$intMonth]['date'] = $intDate;
                 $arrItems[$intYear][$intMonth]['link'] = $GLOBALS['TL_LANG']['MONTHS'][$intMonth] . ' ' . $intYear;
-                $arrItems[$intYear][$intMonth]['href'] = sprintf($strUrl, $intDate);
+				$arrItems[$intYear][$intMonth]['href'] = $strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '&amp;' : '?') . 'month=' . $intDate;
                 $arrItems[$intYear][$intMonth]['title'] = specialchars($GLOBALS['TL_LANG']['MONTHS'][$intMonth].' '.$intYear . ' (' . $quantity . ')');
                 $arrItems[$intYear][$intMonth]['class'] = trim(((++$count == 1) ? 'first ' : '') . (($count == $limit) ? 'last' : ''));
                 $arrItems[$intYear][$intMonth]['isActive'] = (\Input::get('month') == $intDate);
@@ -187,5 +187,7 @@ class ModuleEventMenuExt extends \ModuleCalendarExt
 
         $this->Template->items = $arrItems;
         $this->Template->showQuantity = ($this->cal_showQuantity != '') ? true : false;
+		$this->Template->url = $strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '&amp;' : '?');
+		$this->Template->activeYear = \Input::get('year');
     }
 }

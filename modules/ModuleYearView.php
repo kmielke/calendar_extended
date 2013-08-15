@@ -25,7 +25,7 @@ namespace Contao;
  * @author     Kester Mielke 
  * @package    Devtools
  */
-class ModuleYearViewExt extends \EventsExt
+class ModuleYearView extends \EventsExt
 {
 
     /**
@@ -47,7 +47,7 @@ class ModuleYearViewExt extends \EventsExt
      * Template
      * @var string
      */
-    protected $strTemplate = 'mod_yearview';
+	protected $strTemplate = 'mod_calendar';
 
 
     /**
@@ -58,9 +58,9 @@ class ModuleYearViewExt extends \EventsExt
     {
         if (TL_MODE == 'BE')
         {
-            $objTemplate = new BackendTemplate('be_wildcard');
+			$objTemplate = new \BackendTemplate('be_wildcard');
 
-            $objTemplate->wildcard = '### YEARVIEW ###';
+			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['calendar'][0]) . ' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;
@@ -69,11 +69,11 @@ class ModuleYearViewExt extends \EventsExt
             return $objTemplate->parse();
         }
 
-        $this->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar_ext, true));
+        $this->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar, true));
         $this->cal_holiday = $this->sortOutProtected(deserialize($this->cal_holiday, true));
 
         // Return if there are no calendars
-        if (!is_array($this->cal_calendar) || count($this->cal_calendar) < 1)
+		if (!is_array($this->cal_calendar) || empty($this->cal_calendar))
         {
             return '';
         }
@@ -177,7 +177,7 @@ class ModuleYearViewExt extends \EventsExt
         $intLeftBoundary = date('Y', $objMinMax->dateFrom);
         $intRightBoundary = date('Y', max($objMinMax->dateTo, $objMinMax->repeatUntil));
 
-        $objTemplate = new \FrontendTemplate(($this->calext_ctemplate ? $this->calext_ctemplate : 'calext_yearview'));
+        $objTemplate = new \FrontendTemplate(($this->cal_ctemplate ? $this->cal_ctemplate : 'cal_yearview'));
 
         $objTemplate->intYear = $intYear;
         $objTemplate->use_navigation = $this->use_navigation;
@@ -192,7 +192,7 @@ class ModuleYearViewExt extends \EventsExt
                 $currYear = date('Y', time());
                 $lblCurrent = $GLOBALS['TL_LANG']['MSC']['curr_year'];
 
-                $objTemplate->currHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . $this->Input->get('id') . '&amp;' : '?') . 'year=' . $currYear;
+                $objTemplate->currHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'year=' . $currYear;
                 $objTemplate->currTitle = $currYear;
                 $objTemplate->currLink = $lblCurrent;
                 $objTemplate->currLabel = $GLOBALS['TL_LANG']['MSC']['cal_previous'];
@@ -204,7 +204,7 @@ class ModuleYearViewExt extends \EventsExt
             // Only generate a link if there are events (see #4160)
             if ($prevYear >= $intLeftBoundary)
             {
-                $objTemplate->prevHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . $this->Input->get('id') . '&amp;' : '?') . 'year=' . $prevYear;
+                $objTemplate->prevHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'year=' . $prevYear;
                 $objTemplate->prevTitle = $prevYear;
                 $objTemplate->prevLink = $GLOBALS['TL_LANG']['MSC']['cal_previous'] . ' ' . $lblPrevious;
                 $objTemplate->prevLabel = $GLOBALS['TL_LANG']['MSC']['cal_previous'];
@@ -219,7 +219,7 @@ class ModuleYearViewExt extends \EventsExt
             // Only generate a link if there are events (see #4160)
             if ($nextYear <= $intRightBoundary)
             {
-                $objTemplate->nextHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . $this->Input->get('id') . '&amp;' : '?') . 'year=' . $nextYear;
+                $objTemplate->nextHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'year=' . $nextYear;
                 $objTemplate->nextTitle = $nextYear;
                 $objTemplate->nextLink = $lblNext . ' ' . $GLOBALS['TL_LANG']['MSC']['cal_next'];
                 $objTemplate->nextLabel = $GLOBALS['TL_LANG']['MSC']['cal_next'];
@@ -265,7 +265,7 @@ class ModuleYearViewExt extends \EventsExt
         $arrDays = array();
 
         //Get all events
-        $arrAllEvents = $this->getAllEventsExt($this->cal_holiday, $this->cal_calendar, $this->yearBegin, $this->yearEnd);
+        $arrAllEvents = $this->getAllEventsExt($this->cal_calendar, $this->yearBegin, $this->yearEnd, array($this->cal_holiday));
 
         for ($m=1; $m<=12; $m++)
         {
@@ -279,13 +279,13 @@ class ModuleYearViewExt extends \EventsExt
                     $intCurrentWeek = (int)date('W', $day);
 
                     $intKey = date("Ymd", strtotime(date("Y-m-d", $day)));
-                    $currDay = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], strtotime(date("Y-m-d", $day)));
+                    $currDay = \Date::parse($GLOBALS['TL_CONFIG']['dateFormat'], strtotime(date("Y-m-d", $day)));
 
                     $class = ($intCurrentDay == 0 || $intCurrentDay == 6 || $intCurrentDay == 7) ? 'weekend' : 'weekday';
                     $class .= (($d % 2) == 0) ? ' even' : ' odd';
                     $class .= ' ' . strtolower($GLOBALS['TL_LANG']['DAYS'][$intCurrentDay]);
 
-                    if ($currDay == $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], strtotime(date("Y-m-d"))) )
+                    if ($currDay == \Date::parse($GLOBALS['TL_CONFIG']['dateFormat'], strtotime(date("Y-m-d"))) )
                     {
                         $class .= ' today';
                     }
@@ -334,5 +334,4 @@ class ModuleYearViewExt extends \EventsExt
 
         return $arrDays;
     }
-
 }

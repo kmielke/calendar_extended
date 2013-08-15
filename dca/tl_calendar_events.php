@@ -38,7 +38,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['recurring'] = str_repla
 (
     'repeatEach,recurrences',
     'hideOnWeekend,repeatEach,recurrences,repeatEnd',
-//    'hideOnWeekend,repeatEach,recurrences,repeatEnd,repeatExceptions',
     $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['recurring']
 );
 
@@ -102,7 +101,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['hideOnWeekend'] = array
 // change the default palettes
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['recurringExt'] = 'repeatEachExt,recurrences,repeatEnd';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['useExceptions'] = 'repeatExceptionsInt,repeatExceptionsPer,repeatExceptions';
-//$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['recurringExt'] = 'repeatEachExt,recurrences,repeatEnd,repeatExceptions';
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['recurringExt'] = array
 (
@@ -446,7 +444,7 @@ class tl_calendar_events_ext extends \Backend
 
             //array of the exception dates
             $arrDates = array();
-            // $arrDates[$next] = (int)$next;
+            $arrDates[$next] = (int)$next;
 
             if ($count > 0)
             {
@@ -498,12 +496,6 @@ class tl_calendar_events_ext extends \Backend
                         $month = 1;
                         $year += 1;
                     }
-
-//                    //check if have the configured max value
-//                    if (count($arrDates) == $maxCount)
-//                    {
-//                        break;
-//                    }
                 }
             }
         }
@@ -532,8 +524,6 @@ class tl_calendar_events_ext extends \Backend
                     {
                         continue;
                     }
-
-//                    $currDay = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], strtotime(date("Y-m-d", $this->weekBegin) . " +$i day"));
 
                     // now we have to find all dates matching the exception rules...
                     $dateFrom = strtotime($row['exception']);

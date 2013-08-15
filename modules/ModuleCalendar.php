@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  * 
- * Copyright (C) 2005-2013 Leo Feyer
+ * Copyright (c) 2005-2013 Leo Feyer
  * 
  * @package Calendar
  * @link    https://contao.org
@@ -18,14 +18,14 @@ namespace Contao;
 
 
 /**
- * Class ModuleCalendarExt
+ * Class ModuleCalendar
  *
  * Front end module "calendar".
- * @copyright  Kester Mielke 2010-2013
- * @author     Kester Mielke
- * @package    Devtools
+ * @copyright  Leo Feyer 2005-2013
+ * @author     Leo Feyer <https://contao.org>
+ * @package    Calendar
  */
-class ModuleCalendarExt extends \EventsExt
+class ModuleCalendar extends \EventsExt
 {
 
 	/**
@@ -58,7 +58,7 @@ class ModuleCalendarExt extends \EventsExt
 		{
 			$objTemplate = new \BackendTemplate('be_wildcard');
 
-			$objTemplate->wildcard = '### CALENDAR ###';
+			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['calendar'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
 			$objTemplate->id = $this->id;
 			$objTemplate->link = $this->name;
@@ -67,7 +67,7 @@ class ModuleCalendarExt extends \EventsExt
 			return $objTemplate->parse();
 		}
 
-        $this->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar_ext, true));
+        $this->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar, true));
         $this->cal_holiday = $this->sortOutProtected(deserialize($this->cal_holiday, true));
 
 		// Return if there are no calendars
@@ -169,7 +169,7 @@ class ModuleCalendarExt extends \EventsExt
 		$objMinMax = \CalendarEventsModel::findBoundaries($this->cal_calendar);
 
 		// Instantiate the template
-        $objTemplate = new \FrontendTemplate(($this->calext_ctemplate ? $this->calext_ctemplate : 'calext_default'));
+		$objTemplate = new \FrontendTemplate(($this->cal_ctemplate ? $this->cal_ctemplate : 'cal_default'));
 
 		// Store year and month
 		$intYear = date('Y', $this->Date->tstamp);
@@ -278,7 +278,7 @@ class ModuleCalendarExt extends \EventsExt
 
 		$intColumnCount = -1;
 		$intNumberOfRows = ceil(($intDaysInMonth + $intFirstDayOffset) / 7);
-        $arrAllEvents = $this->getAllEventsExt($this->cal_holiday, $this->cal_calendar, $this->Date->monthBegin, $this->Date->monthEnd);
+        $arrAllEvents = $this->getAllEventsExt($this->cal_calendar, $this->Date->monthBegin, $this->Date->monthEnd, array($this->cal_holiday));
 		$arrDays = array();
 
 		// Compile days
