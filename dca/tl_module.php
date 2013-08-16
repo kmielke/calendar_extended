@@ -16,8 +16,7 @@
  * Add palettes to tl_module
  */
 
-#$GLOBALS['TL_DCA']['tl_module']['palettes']['calendar']    = '{title_legend},name,headline,type;{config_legend},cal_calendar,cal_noSpan,cal_startDay;{redirect_legend},jumpTo;{template_legend:hide},cal_ctemplate;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-#$GLOBALS['TL_DCA']['tl_module']['palettes']['calendar']    = '{title_legend},name,headline,type;{config_legend},cal_calendar_ext,cal_holiday,cal_noSpan,cal_startDay;{redirect_legend},jumpTo;{template_legend:hide},calext_ctemplate;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+// Palette for calendar
 $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'] = str_replace
 (
     '{config_legend},cal_calendar,',
@@ -25,8 +24,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'] = str_replace
     $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar']
 );
 
-#$GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist']   = '{title_legend},name,headline,type;{config_legend},cal_calendar,cal_noSpan,cal_format,cal_ignoreDynamic,cal_order,cal_readerModule,cal_limit,perPage;{template_legend:hide},cal_template,imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-#$GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist']   = '{title_legend},name,headline,type;{config_legend},cal_calendar_ext,cal_holiday,cal_noSpan,showRecurrences,cal_format,cal_ignoreDynamic,cal_order,cal_readerModule,cal_limit,perPage;{template_legend:hide},cal_template,imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+// Palette for eventlist
 $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist'] = str_replace
 (
     '{config_legend},cal_calendar,cal_noSpan,',
@@ -34,17 +32,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist'] = str_replace
     $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist']
 );
 
-#$GLOBALS['TL_DCA']['tl_module']['palettes']['eventreader'] = '{title_legend},name,headline,type;{config_legend},cal_calendar;{template_legend:hide},cal_template,imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-
-#$GLOBALS['TL_DCA']['tl_module']['palettes']['eventmenu']   = '{title_legend},name,headline,type;{config_legend},cal_calendar,cal_noSpan,cal_showQuantity,cal_format,cal_startDay,cal_order;{redirect_legend},jumpTo;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-#$GLOBALS['TL_DCA']['tl_module']['palettes']['eventmenu']   = '{title_legend},name,headline,type;{config_legend},cal_calendar_ext,cal_holiday,cal_noSpan,cal_showQuantity,cal_format,cal_startDay,cal_order;{redirect_legend},jumpTo;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-//$GLOBALS['TL_DCA']['tl_module']['palettes']['eventmenu'] = str_replace
-//(
-//    '{config_legend},cal_calendar,',
-//    '{config_legend},cal_calendar_ext,cal_holiday,',
-//    $GLOBALS['TL_DCA']['tl_module']['palettes']['eventmenu']
-//);
-
+// Palette for timetable
 $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable'] = $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'];
 $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable'] = str_replace
 (
@@ -53,9 +41,14 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable'] = str_replace
     $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable']
 );
 
-#$GLOBALS['TL_DCA']['tl_module']['palettes']['timetableExt']   = '{title_legend},name,headline,type;{config_legend},cal_calendar_ext,cal_holiday,cal_noSpan,cal_startDay;{redirect_legend},jumpTo;{template_legend:hide},cal_ctemplate,showDate,hideEmptyDays,use_navigation,linkCurrent,cal_times;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-
-#$GLOBALS['TL_DCA']['tl_module']['palettes']['yearview']     = '{title_legend},name,headline,type;{config_legend},cal_calendar_ext,cal_holiday,cal_noSpan;{redirect_legend},jumpTo;{template_legend:hide},calext_ctemplate,use_navigation,linkCurrent;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+// Palette for yearview
+$GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] = $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'];
+$GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] = str_replace
+(
+    ',cal_ctemplate;{protected_legend:hide}',
+    ',cal_ctemplate,use_navigation,linkCurrent;{protected_legend:hide}',
+    $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview']
+);
 
 /**
  * Add fields to tl_module

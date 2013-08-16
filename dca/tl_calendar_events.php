@@ -369,7 +369,7 @@ class tl_calendar_events_ext extends \Backend
 
             //array of the exception dates
             $arrDates = array();
-            $arrDates[$next] = (int)$next;
+            //$arrDates[$next] = (int)$next;
 
             if ($count == 0)
             {
@@ -444,7 +444,7 @@ class tl_calendar_events_ext extends \Backend
 
             //array of the exception dates
             $arrDates = array();
-            $arrDates[$next] = (int)$next;
+            //$arrDates[$next] = (int)$next;
 
             if ($count > 0)
             {
