@@ -20,7 +20,7 @@
 $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'] = str_replace
 (
     '{config_legend},cal_calendar,',
-    '{config_legend},cal_calendar_ext,cal_holiday,',
+    '{config_legend},cal_calendar,cal_holiday,',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar']
 );
 
@@ -28,7 +28,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'] = str_replace
 $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist'] = str_replace
 (
     '{config_legend},cal_calendar,cal_noSpan,',
-    '{config_legend},cal_calendar_ext,cal_holiday,cal_noSpan,showRecurrences,',
+    '{config_legend},cal_calendar,cal_holiday,cal_noSpan,showRecurrences,',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist']
 );
 
@@ -53,9 +53,9 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] = str_replace
 /**
  * Add fields to tl_module
  */
-$GLOBALS['TL_DCA']['tl_module']['fields']['cal_calendar_ext'] = array
+$GLOBALS['TL_DCA']['tl_module']['fields']['cal_calendar'] = array
 (
-	'label'                 => &$GLOBALS['TL_LANG']['tl_module']['cal_calendar_ext'],
+	'label'                 => &$GLOBALS['TL_LANG']['tl_module']['cal_calendar'],
 	'exclude'               => true,
 	'inputType'             => 'checkbox',
 	'options_callback'      => array('calendar_Ext', 'getCalendars'),
@@ -81,17 +81,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['showRecurrences'] = array
     'inputType'             => 'checkbox',
     'eval'                  => array('tl_class'=>'w50'),
     'sql'                   => "char(1) NOT NULL default ''"
-);
-
-$GLOBALS['TL_DCA']['tl_module']['fields']['cal_ctemplate'] = array
-(
-    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['cal_ctemplate'],
-    'default'                 => 'cal_default',
-    'exclude'                 => true,
-    'inputType'               => 'select',
-    'options_callback'        => array('tl_module_calendar', 'getCalendarTemplates'),
-#    'eval'                    => array('tl_class'=>'w50'),
-    'sql'                     => "varchar(32) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['use_navigation'] = array
