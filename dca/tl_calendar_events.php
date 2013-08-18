@@ -738,7 +738,7 @@ class tl_calendar_events_ext extends \Backend
                 'exclude'   => true,
                 'inputType' => 'select',
                 'options'   => $arrSource1,
-                'eval'      => array('style'=>'width:130px', 'includeBlankOption'=>true, 'chosen'=>true)
+                'eval'      => array('style'=>'width:130px', 'includeBlankOption'=>true)
             );
         }
 
@@ -751,7 +751,7 @@ class tl_calendar_events_ext extends \Backend
                 'inputType' => 'select',
                 'options'   => array('first', 'second', 'third', 'fourth', 'last'),
                 'reference' => &$GLOBALS['TL_LANG']['tl_calendar_events'],
-                'eval'      => array('style'=>'width:130px', 'includeBlankOption'=>true, 'chosen'=>true)
+                'eval'      => array('style'=>'width:130px', 'includeBlankOption'=>true)
             );
         }
 
