@@ -320,7 +320,7 @@ class tl_calendar_events_ext extends \Backend
 
         $arrSet['startTime'] = $dc->activeRecord->startDate;
         $arrSet['endTime'] = $dc->activeRecord->startDate;
-        $arrSet['weekday'] = date("w", $dc->activeRecord->startDate);
+        $arrSet['weekday'] = (int)date("w", $dc->activeRecord->startDate);
 
         // Set end date
         if (strlen($dc->activeRecord->endDate))
@@ -402,7 +402,7 @@ class tl_calendar_events_ext extends \Backend
                 $store = true;
                 if ($dc->activeRecord->hideOnWeekend)
                 {
-                    if ($weekday == 0 || $weekday == 6 || $weekday == 7)
+                    if ($weekday == 0 || $weekday == 6)
                     {
                         $store = false;
                     }
