@@ -383,6 +383,7 @@ class ModuleEventlist extends \EventsExt
     			}
 			}
 
+            $objTemplate->showRecurrences = $showRecurrences;
             $objTemplate->enclosure = array();
 
             // Add enclosure
