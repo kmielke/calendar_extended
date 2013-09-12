@@ -136,6 +136,22 @@ class EventsExt extends \Events
                         $store = false;
                     }
                 }
+
+                // check the repeat values
+                if ($objEvents->recurring)
+                {
+                    $arrRepeat = deserialize($objEvents->repeatEach)?deserialize($objEvents->repeatEach):null;
+                }
+                else
+                {
+                    $arrRepeat = deserialize($objEvents->repeatEachExt)?deserialize($objEvents->repeatEachExt):null;
+                }
+                if (is_null($arrRepeat))
+                {
+                    continue;
+                }
+
+                // store the entry if everything is fine...
                 if ($store === true)
                 {
                     $eventUrl = $strUrl."?day=".Date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
@@ -156,14 +172,6 @@ class EventsExt extends \Events
                     );
 
                     $count = 0;
-                    if ($objEvents->recurring)
-                    {
-                        $arrRepeat = deserialize($objEvents->repeatEach);
-                    }
-                    else
-                    {
-                        $arrRepeat = deserialize($objEvents->repeatEachExt);
-                    }
 
                     // start and end time of the event
                     $eventStartTime = $this->parseDate($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->startTime);
