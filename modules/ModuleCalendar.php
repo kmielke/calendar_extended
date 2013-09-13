@@ -66,6 +66,7 @@ class ModuleCalendar extends \EventsExt
 
 			return $objTemplate->parse();
 		}
+		}
 
         $this->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar, true));
         $this->cal_holiday = $this->sortOutProtected(deserialize($this->cal_holiday, true));
@@ -332,7 +333,7 @@ class ModuleCalendar extends \EventsExt
 			{
 				foreach ($v as $vv)
 				{
-                    $vv['pname'] = $this->calConf[$vv['pid']]['calendar'];
+                    $vv['calendar_title'] = $this->calConf[$vv['pid']]['calendar'];
 
                     if ($this->calConf[$vv['pid']]['background'])
                     {

@@ -80,7 +80,7 @@ class ModuleTimeTable extends \EventsExt
         //Get the bg color of the calendar
         foreach ($this->cal_calendar as $cal)
         {
-            $objBG = $this->Database->prepare("select bg_color, fg_color from tl_calendar where id = ?")
+            $objBG = $this->Database->prepare("select title, bg_color, fg_color from tl_calendar where id = ?")
                 ->limit(1)->executeUncached($cal);
 
             $this->calConf[$cal]['calendar'] = $objBG->title;
@@ -108,7 +108,7 @@ class ModuleTimeTable extends \EventsExt
         //Get the bg color of the holiday calendar
         foreach ($this->cal_holiday as $cal)
         {
-            $objBG = $this->Database->prepare("select bg_color, fg_color from tl_calendar where id = ?")
+            $objBG = $this->Database->prepare("select title, bg_color, fg_color from tl_calendar where id = ?")
                 ->limit(1)->executeUncached($cal);
 
             $this->calConf[$cal]['calendar'] = $objBG->title;
@@ -403,7 +403,7 @@ class ModuleTimeTable extends \EventsExt
                         }
 
                         // set color from calendar
-                        $vv['pname'] = $this->calConf[$vv['pid']]['calendar'];
+                        $vv['calendar_title'] = $this->calConf[$vv['pid']]['calendar'];
 
                         if ($this->calConf[$vv['pid']]['background'])
                         {

@@ -131,7 +131,7 @@ class EventsExt extends \Events
                 $store = true;
                 if ($objEvents->hideOnWeekend)
                 {
-                    if ($weekday == 0 || $weekday == 6 || $weekday == 7)
+                    if ($weekday == 0 || $weekday == 6)
                     {
                         $store = false;
                     }

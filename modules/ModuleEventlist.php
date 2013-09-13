@@ -73,7 +73,7 @@ class ModuleEventlist extends \EventsExt
         //Get the bg color of the calendar
         foreach ($this->cal_calendar as $cal)
         {
-            $objBG = $this->Database->prepare("select bg_color, fg_color from tl_calendar where id = ?")
+            $objBG = $this->Database->prepare("select title, bg_color, fg_color from tl_calendar where id = ?")
                 ->limit(1)->executeUncached($cal);
 
             $this->calConf[$cal]['calendar'] = $objBG->title;
@@ -101,7 +101,7 @@ class ModuleEventlist extends \EventsExt
         //Get the bg color of the holiday calendar
         foreach ($this->cal_holiday as $cal)
         {
-            $objBG = $this->Database->prepare("select bg_color, fg_color from tl_calendar where id = ?")
+            $objBG = $this->Database->prepare("select title, bg_color, fg_color from tl_calendar where id = ?")
                 ->limit(1)->executeUncached($cal);
 
             $this->calConf[$cal]['calendar'] = $objBG->title;
@@ -232,7 +232,7 @@ class ModuleEventlist extends \EventsExt
 					$event['firstDate'] = \Date::parse($objPage->dateFormat, $day);
                     $event['datetime'] = date('Y-m-d', $day);
 
-                    $event['pname'] = $this->calConf[$event['pid']]['calendar'];
+                    $event['calendar_title'] = $this->calConf[$event['pid']]['calendar'];
 
                     if ($this->calConf[$event['pid']]['background'])
                     {
