@@ -159,6 +159,58 @@ class EventsExt extends \Events
                 }
 
                 /*
+                 * next we handle the irregular recurrences
+                 *
+                 * this is a complete diff. case
+                 */
+                $arrayFixedDates = deserialize($objEvents->repeatFixedDates)?deserialize($objEvents->repeatFixedDates):null;
+
+                // keep the original values
+                $orgStartTime = $objEvents->startTime;
+                $orgEndTime = $objEvents->endTime;
+
+                if (!is_null($arrayFixedDates))
+                {
+                    foreach ($arrayFixedDates as $fixedDate)
+                    {
+                        if ($fixedDate['new_repeat'])
+                        {
+                            // new date
+                            $new_year = (int)substr($fixedDate['new_repeat'], 6);
+                            $new_month = (int)substr($fixedDate['new_repeat'], 3, 2);
+                            $new_day = (int)substr($fixedDate['new_repeat'], 0, 2);
+
+                            // new start time
+                            $new_hour = (int)$this->parseDate("H", $orgStartTime);
+                            $new_min = (int)$this->parseDate("i", $orgStartTime);
+                            if ($fixedDate['new_start'])
+                            {
+                                $new_hour = (int)substr($fixedDate['new_start'], 0, 2);
+                                $new_min = (int)substr($fixedDate['new_start'], 3, 2);
+                            }
+                            $objEvents->startTime = mktime($new_hour, $new_min, 0, $new_month, $new_day, $new_year);
+
+                            // new end time
+                            $new_hour = (int)$this->parseDate("H", $orgEndTime);
+                            $new_min = (int)$this->parseDate("i", $orgEndTime);
+                            if ($fixedDate['new_end'])
+                            {
+                                $new_hour = (int)substr($fixedDate['new_end'], 0, 2);
+                                $new_min = (int)substr($fixedDate['new_end'], 3, 2);
+                            }
+                            $objEvents->endTime = mktime($new_hour, $new_min, 0, $new_month, $new_day, $new_year);
+
+                            // set a reason if given...
+                            $objEvents->moveReason = $fixedDate['reason'] ? $fixedDate['reason'] : null;
+
+                            // add the irregular event to the array
+                            $eventUrl = $strUrl."?day=".Date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
+                            $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
+                        }
+                    }
+                }
+
+                /*
                  * Recurring events and Ext. Recurring events
                  *
                  * Here we manage the recurrences. We take the repeat option and set the new values

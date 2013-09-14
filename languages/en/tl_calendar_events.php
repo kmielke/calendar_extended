@@ -40,7 +40,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsPer']= array('Excepti
 $GLOBALS['TL_LANG']['tl_calendar_events']['useExceptions']	    = array('Use exceptions', 'Do you like to define exceptions?');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEnd']  		= array('End of the recurrences', 'Date of the last recurrence. (calc. automatically)');
 $GLOBALS['TL_LANG']['tl_calendar_events']['weekday']			= array('Weekday', 'Day of week');
-
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatFixedDates']   = array('Repeat event (irregular)', 'Create a irregular recurring event.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_legend']    = 'Location and Contact';
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_name']      = array('Location', 'Name or short description of the location.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_link']      = array('Link to location', 'e.g. a link to a webpage of the location. (http://www.link.de)');
@@ -65,6 +65,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['friday']		= 'friday of a month';
 $GLOBALS['TL_LANG']['tl_calendar_events']['saturday']	= 'saturday of a month';
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['recurring_legend_ext'] = 'Recurrence settings (extended)';
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatFixedDates_legend']	= 'Recurrence settings (irregular)';
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions_legend']	= 'Define exceptions for the recurrences';
 $GLOBALS['TL_LANG']['tl_calendar_events']['exception_legend']	= 'Exception settings (extended)';
 

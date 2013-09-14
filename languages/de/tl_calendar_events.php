@@ -40,7 +40,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsPer']= array('Ausnahm
 $GLOBALS['TL_LANG']['tl_calendar_events']['useExceptions']      = array('Ausnahmen definieren', 'Möchten sie Ausnahmen für Wiederholungen angeben?.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEnd']			= array('Ende der Wiederholungen', 'Datum der letzten Wiederholung dieses Events. (automatisch berechnet)');
 $GLOBALS['TL_LANG']['tl_calendar_events']['weekday']			= array('Wochentag', 'Wochentag, an dem das Event stattfindet');
-
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatFixedDates']   = array('Unregelmäßige Wiederholungen', 'Datum und Zeit für unregelmäßige Wiederholungen.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_legend']    = 'Veranstaltungsort und Kontakt';
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_name']      = array('Veranstaltungsort', 'Name, oder kurze Beschreibung des Veranstaltungsorts.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_link']      = array('Link auf Veranstaltungsort', 'z.B. ein Link auf eine Webseite des Veranstaltungsorts (http://www.link.de)');
@@ -65,7 +65,8 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['friday']		= 'Freitag im Monat';
 $GLOBALS['TL_LANG']['tl_calendar_events']['saturday']	= 'Samstag im Monat';
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['recurring_legend_ext']	    = 'Wiederholungen (erweitert)';
-$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions_legend']	= 'Ausnahmen für Wiederholungen';
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatFixedDates_legend']	= 'Wiederholungen (unregelmäßig)';
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions_legend']    = 'Ausnahmen für Wiederholungen';
 $GLOBALS['TL_LANG']['tl_calendar_events']['exception_legend']	= 'Ausnahmen für Wiederholungen';
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['checkRecurring'] = "Es kann nur eine der Optionen für die Wiederholungen aktiv sein.";

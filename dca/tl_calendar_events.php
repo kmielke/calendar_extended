@@ -22,10 +22,19 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
     $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default']
 );
 
+//'{title_legend},title,alias,author;{date_legend},addTime,startDate,endDate;{details_legend},location,teaser;{image_legend},addImage;{recurring_legend},recurring;{enclosure_legend:hide},addEnclosure;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments;{publish_legend},published,start,stop'
+
+//$GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
+//(
+//    ',endDate;',
+//    ',endDate;;',
+//    $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default']
+//);
+
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
 (
     '{recurring_legend},recurring;',
-    '{location_legend},location_name,location_link,location_contact,location_mail;{recurring_legend},recurring;{recurring_legend_ext},recurringExt;{exception_legend},useExceptions;',
+    '{location_legend},location_name,location_link,location_contact,location_mail;{recurring_legend},recurring;{recurring_legend_ext},recurringExt;{repeatFixedDates_legend},repeatFixedDates;{exception_legend},useExceptions;',
     $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default']
 );
 
@@ -39,6 +48,19 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['recurring'] = str_repla
     'repeatEach,recurrences',
     'hideOnWeekend,repeatEach,recurrences,repeatEnd',
     $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['recurring']
+);
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatFixedDates'] = array
+(
+    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatFixedDates'],
+    'exclude'			=> true,
+    'inputType'         => 'multiColumnWizard',
+    'eval'				=> array
+    (
+        'columnsCallback'   => array('tl_calendar_events_ext', 'listFixedDates'),
+        'buttons'           => array('up' => false, 'down' => false)
+    ),
+    'sql'               => "blob NULL"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['useExceptions'] = array
@@ -352,7 +374,31 @@ class tl_calendar_events_ext extends \Backend
 
         $arrSet['repeatEnd'] = 0;
 
-        //changed default recurring
+        // set the repeatEnd date
+        $arrayFixedDates = deserialize($dc->activeRecord->repeatFixedDates) ? deserialize($dc->activeRecord->repeatFixedDates) : null;
+        if (!is_null($arrayFixedDates))
+        {
+            $maxIrrDate = [];
+            foreach ($arrayFixedDates as $fixedDate)
+            {
+                if ($fixedDate['new_repeat'])
+                {
+                    // new date
+                    $new_year = (int)substr($fixedDate['new_repeat'], 6);
+                    $new_month = (int)substr($fixedDate['new_repeat'], 3, 2);
+                    $new_day = (int)substr($fixedDate['new_repeat'], 0, 2);
+
+                    $maxIrrDate[] = mktime(0, 0, 0, $new_month, $new_day, $new_year);
+                }
+            }
+            $arrSet['repeatEnd'] = max($maxIrrDate);
+        }
+        else
+        {
+            $arrSet['repeatFixedDates'] = null;
+        }
+
+        // changed default recurring
         if ($dc->activeRecord->recurring)
         {
             $arrRange = deserialize($dc->activeRecord->repeatEach);
@@ -689,22 +735,6 @@ class tl_calendar_events_ext extends \Backend
 
         $columnFields = array
         (
-            'action' => array
-            (
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['action'],
-                'exclude'   => true,
-                'inputType' => 'select',
-                'options'   => $arrSource2,
-                'eval'      => array('style'=>'width:110px', 'includeBlankOption'=>true)
-            ),
-            'new_exception' => array
-            (
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_exception'],
-                'exclude'   => true,
-                'inputType' => 'select',
-                'options'   => $arrSource3,
-                'eval'      => array('style'=>'width:85px', 'includeBlankOption'=>true)
-            ),
             'new_start' => array
             (
                 'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_start'],
@@ -720,6 +750,22 @@ class tl_calendar_events_ext extends \Backend
                 'inputType' => 'select',
                 'options'   => $arrSource4,
                 'eval'      => array('style'=>'width:65px', 'includeBlankOption'=>true)
+            ),
+            'action' => array
+            (
+                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['action'],
+                'exclude'   => true,
+                'inputType' => 'select',
+                'options'   => $arrSource2,
+                'eval'      => array('style'=>'width:110px', 'includeBlankOption'=>true)
+            ),
+            'new_exception' => array
+            (
+                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_exception'],
+                'exclude'   => true,
+                'inputType' => 'select',
+                'options'   => $arrSource3,
+                'eval'      => array('style'=>'width:85px', 'includeBlankOption'=>true)
             ),
             'reason' => array
             (
@@ -762,13 +808,13 @@ class tl_calendar_events_ext extends \Backend
                 'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['exceptionFr'],
                 'exclude'   => true,
                 'inputType' => 'text',
-                'eval'      => array('style'=>'width:60px', 'datepicker'=>true, 'rgxp'=>'date')
+                'eval'      => array('rgxp'=>'date', 'doNotCopy'=>true, 'style'=>'width:60px', 'datepicker'=>true, 'tl_class'=>'wizard')
             );
             $secondField = array(
                 'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['exceptionTo'],
                 'exclude'   => true,
                 'inputType' => 'text',
-                'eval'      => array('style'=>'width:60px', 'datepicker'=>true, 'rgxp'=>'date')
+                'eval'      => array('rgxp'=>'date', 'doNotCopy'=>true, 'style'=>'width:60px', 'datepicker'=>true, 'tl_class'=>'wizard')
             );
 
             // add the field to the columnFields array
@@ -777,6 +823,46 @@ class tl_calendar_events_ext extends \Backend
 
         // add the field to the columnFields array
         array_insert($columnFields, 0, array("exception"=> $firstField));
+
+        return $columnFields;
+    }
+
+    /**
+     * listFixedDates()
+     */
+    public function listFixedDates($var1)
+    {
+        $columnFields = null;
+
+        $columnFields = array
+        (
+            'new_repeat' => array(
+                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['exception'],
+                'exclude'   => true,
+                'inputType' => 'text',
+                'eval'      => array('rgxp'=>'date', 'doNotCopy'=>true, 'style'=>'width:120px', 'datepicker'=>true, 'tl_class'=>'wizard')
+            ),
+            'new_start' => array
+            (
+                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_start'],
+                'exclude'   => true,
+                'inputType' => 'text',
+                'eval'      => array('doNotCopy'=>true, 'style'=>'width:60px')
+            ),
+            'new_end' => array
+            (
+                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_end'],
+                'exclude'   => true,
+                'inputType' => 'text',
+                'eval'      => array('doNotCopy'=>true, 'style'=>'width:60px')
+            ),
+            'reason' => array
+            (
+                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['reason'],
+                'exclude'   => true,
+                'inputType' => 'text'
+            )
+        );
 
         return $columnFields;
     }
