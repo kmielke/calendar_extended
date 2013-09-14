@@ -202,13 +202,13 @@ class ModuleYearView extends \EventsExt
             $prevYear = $intYear - 1;
             $lblPrevious = $GLOBALS['TL_LANG']['MSC']['calendar_year'] . ' ' . $prevYear;
             // Only generate a link if there are events (see #4160)
-            if ($prevYear >= $intLeftBoundary)
-            {
-                $objTemplate->prevHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'year=' . $prevYear;
-                $objTemplate->prevTitle = $prevYear;
-                $objTemplate->prevLink = $GLOBALS['TL_LANG']['MSC']['cal_previous'] . ' ' . $lblPrevious;
-                $objTemplate->prevLabel = $GLOBALS['TL_LANG']['MSC']['cal_previous'];
-            }
+//            if ($prevYear >= $intLeftBoundary)
+//            {
+            $objTemplate->prevHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'year=' . $prevYear;
+            $objTemplate->prevTitle = $prevYear;
+            $objTemplate->prevLink = $GLOBALS['TL_LANG']['MSC']['cal_previous'] . ' ' . $lblPrevious;
+            $objTemplate->prevLabel = $GLOBALS['TL_LANG']['MSC']['cal_previous'];
+//            }
             // Current week
             $objTemplate->current = $GLOBALS['TL_LANG']['MSC']['calendar_year'] . ' ' . $intYear;
 
@@ -217,13 +217,13 @@ class ModuleYearView extends \EventsExt
             $lblNext = $GLOBALS['TL_LANG']['MSC']['calendar_year'] . ' ' . $nextYear;
 
             // Only generate a link if there are events (see #4160)
-            if ($nextYear <= $intRightBoundary)
-            {
-                $objTemplate->nextHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'year=' . $nextYear;
-                $objTemplate->nextTitle = $nextYear;
-                $objTemplate->nextLink = $lblNext . ' ' . $GLOBALS['TL_LANG']['MSC']['cal_next'];
-                $objTemplate->nextLabel = $GLOBALS['TL_LANG']['MSC']['cal_next'];
-            }
+//            if ($nextYear <= $intRightBoundary)
+//            {
+            $objTemplate->nextHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'year=' . $nextYear;
+            $objTemplate->nextTitle = $nextYear;
+            $objTemplate->nextLink = $lblNext . ' ' . $GLOBALS['TL_LANG']['MSC']['cal_next'];
+            $objTemplate->nextLabel = $GLOBALS['TL_LANG']['MSC']['cal_next'];
+//            }
         }
 
         // Set week start day

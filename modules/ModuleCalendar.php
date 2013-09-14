@@ -184,13 +184,13 @@ class ModuleCalendar extends \EventsExt
 		$intPrevYm = intval($prevYear . str_pad($prevMonth, 2, 0, STR_PAD_LEFT));
 
 		// Only generate a link if there are events (see #4160)
-		if ($objMinMax->dateFrom !== null && $intPrevYm >= date('Ym', $objMinMax->dateFrom))
-		{
-			$objTemplate->prevHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'month=' . $intPrevYm;
-			$objTemplate->prevTitle = specialchars($lblPrevious);
-			$objTemplate->prevLink = $GLOBALS['TL_LANG']['MSC']['cal_previous'] . ' ' . $lblPrevious;
-			$objTemplate->prevLabel = $GLOBALS['TL_LANG']['MSC']['cal_previous'];
-		}
+//		if ($objMinMax->dateFrom !== null && $intPrevYm >= date('Ym', $objMinMax->dateFrom))
+//		{
+        $objTemplate->prevHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'month=' . $intPrevYm;
+        $objTemplate->prevTitle = specialchars($lblPrevious);
+        $objTemplate->prevLink = $GLOBALS['TL_LANG']['MSC']['cal_previous'] . ' ' . $lblPrevious;
+        $objTemplate->prevLabel = $GLOBALS['TL_LANG']['MSC']['cal_previous'];
+//		}
 
 		// Current month
 		$objTemplate->current = $GLOBALS['TL_LANG']['MONTHS'][(date('m', $this->Date->tstamp) - 1)] .  ' ' . date('Y', $this->Date->tstamp);
@@ -202,13 +202,13 @@ class ModuleCalendar extends \EventsExt
 		$intNextYm = $nextYear . str_pad($nextMonth, 2, 0, STR_PAD_LEFT);
 
 		// Only generate a link if there are events (see #4160)
-		if ($objMinMax->dateTo !== null && $intNextYm <= date('Ym', max($objMinMax->dateTo, $objMinMax->repeatUntil)))
-		{
-			$objTemplate->nextHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'month=' . $intNextYm;
-			$objTemplate->nextTitle = specialchars($lblNext);
-			$objTemplate->nextLink = $lblNext . ' ' . $GLOBALS['TL_LANG']['MSC']['cal_next'];
-			$objTemplate->nextLabel = $GLOBALS['TL_LANG']['MSC']['cal_next'];
-		}
+//		if ($objMinMax->dateTo !== null && $intNextYm <= date('Ym', max($objMinMax->dateTo, $objMinMax->repeatUntil)))
+//		{
+        $objTemplate->nextHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'month=' . $intNextYm;
+        $objTemplate->nextTitle = specialchars($lblNext);
+        $objTemplate->nextLink = $lblNext . ' ' . $GLOBALS['TL_LANG']['MSC']['cal_next'];
+        $objTemplate->nextLabel = $GLOBALS['TL_LANG']['MSC']['cal_next'];
+//		}
 
 		// Set the week start day
 		if (!$this->cal_startDay)
