@@ -378,7 +378,7 @@ class tl_calendar_events_ext extends \Backend
         $arrayFixedDates = deserialize($dc->activeRecord->repeatFixedDates) ? deserialize($dc->activeRecord->repeatFixedDates) : null;
         if (!is_null($arrayFixedDates))
         {
-            $maxIrrDate = [];
+            $maxIrrDate = array();
             foreach ($arrayFixedDates as $fixedDate)
             {
                 if ($fixedDate['new_repeat'])
