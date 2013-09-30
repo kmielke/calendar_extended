@@ -374,7 +374,7 @@ class tl_calendar_events_ext extends \Backend
 
         $arrSet['repeatEnd'] = 0;
 
-        // set the repeatEnd date
+        // Set the repeatEnd date
         $arrayFixedDates = deserialize($dc->activeRecord->repeatFixedDates) ? deserialize($dc->activeRecord->repeatFixedDates) : null;
         if (!is_null($arrayFixedDates))
         {
@@ -383,7 +383,7 @@ class tl_calendar_events_ext extends \Backend
             {
                 if ($fixedDate['new_repeat'])
                 {
-                    // new date
+                    // New date
                     $new_year = (int)substr($fixedDate['new_repeat'], 6);
                     $new_month = (int)substr($fixedDate['new_repeat'], 3, 2);
                     $new_day = (int)substr($fixedDate['new_repeat'], 0, 2);
@@ -391,7 +391,17 @@ class tl_calendar_events_ext extends \Backend
                     $maxIrrDate[] = mktime(0, 0, 0, $new_month, $new_day, $new_year);
                 }
             }
-            $arrSet['repeatEnd'] = max($maxIrrDate);
+
+            // Let's check if we have some data...
+            if (count($maxIrrDate) > 0)
+            {
+                // In case we only have one value just add a zero...
+                if (count($maxIrrDate) == 1)
+                {
+                    $maxIrrDate[] = 0;
+                }
+                $arrSet['repeatEnd'] = max($maxIrrDate);
+            }
         }
         else
         {
