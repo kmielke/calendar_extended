@@ -110,12 +110,13 @@ class EventsExt extends \Events
 
             while ($objEvents->next())
             {
-                $eventNumber = 1;
                 $eventRecurrences = (int)$objEvents->recurrences+1;
+
+                $objEvents->pos_idx = 1;
+                $objEvents->pos_cnt = 1;
 
                 if ($objEvents->recurring || $objEvents->recurringExt)
                 {
-                    $objEvents->pos_idx = (int)$eventNumber;
                     if ($objEvents->recurrences == 0)
                     {
                         $objEvents->pos_cnt = 0;
@@ -123,6 +124,19 @@ class EventsExt extends \Events
                     else
                     {
                         $objEvents->pos_cnt = (int)$eventRecurrences;
+                    }
+                }
+
+                // Count irregular recurrences
+                $arrayFixedDates = deserialize($objEvents->repeatFixedDates) ? deserialize($objEvents->repeatFixedDates) : null;
+                if (!is_null($arrayFixedDates))
+                {
+                    foreach ($arrayFixedDates as $fixedDate)
+                    {
+                        if ($fixedDate['new_repeat'])
+                        {
+                            $objEvents->pos_cnt++;
+                        }
                     }
                 }
 
@@ -142,39 +156,51 @@ class EventsExt extends \Events
                 {
                     $arrRepeat = deserialize($objEvents->repeatEach)?deserialize($objEvents->repeatEach):null;
                 }
-                else
+                if ($objEvents->recurringExt)
                 {
                     $arrRepeat = deserialize($objEvents->repeatEachExt)?deserialize($objEvents->repeatEachExt):null;
                 }
-                if (is_null($arrRepeat))
-                {
-                    continue;
-                }
+
+                // we need a counter for the recurrences if noSpan is set
+                $cntRecurrences = 0;
+                $dateBegin = date('Ymd', $intStart);
+                $dateEnd = date('Ymd', $intEnd);
+                $dateNextStart = date('Ymd', $objEvents->startTime);
 
                 // store the entry if everything is fine...
                 if ($store === true)
                 {
                     $eventUrl = $strUrl."?day=".Date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
                     $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
-                }
 
-                /*
-                 * next we handle the irregular recurrences
-                 *
-                 * this is a complete diff. case
-                 */
-                $arrayFixedDates = deserialize($objEvents->repeatFixedDates)?deserialize($objEvents->repeatFixedDates):null;
+                    // increase $cntRecurrences if event is in scope
+                    if ($dateNextStart >= $dateBegin && $dateNextEnd <= $dateEnd)
+                    {
+                        $cntRecurrences++;
+                    }
+                }
 
                 // keep the original values
                 $orgStartTime = $objEvents->startTime;
                 $orgEndTime = $objEvents->endTime;
 
+                /*
+                 * next we handle the irregular recurrences
+                 *
+                 * this is a complete different case
+                 */
                 if (!is_null($arrayFixedDates))
                 {
                     foreach ($arrayFixedDates as $fixedDate)
                     {
                         if ($fixedDate['new_repeat'])
                         {
+                            // check if we have to stop because of cal_noSpan
+                            if ($this->cal_noSpan && $cntRecurrences > 0)
+                            {
+                                break;
+                            }
+
                             // new date
                             $new_year = (int)substr($fixedDate['new_repeat'], 6);
                             $new_month = (int)substr($fixedDate['new_repeat'], 3, 2);
@@ -189,6 +215,7 @@ class EventsExt extends \Events
                                 $new_min = (int)substr($fixedDate['new_start'], 3, 2);
                             }
                             $objEvents->startTime = mktime($new_hour, $new_min, 0, $new_month, $new_day, $new_year);
+                            $dateNextStart = date('Ymd', $objEvents->startTime);
 
                             // new end time
                             $new_hour = (int)$this->parseDate("H", $orgEndTime);
@@ -199,13 +226,23 @@ class EventsExt extends \Events
                                 $new_min = (int)substr($fixedDate['new_end'], 3, 2);
                             }
                             $objEvents->endTime = mktime($new_hour, $new_min, 0, $new_month, $new_day, $new_year);
+                            $dateNextEnd = date('Ymd', $objEvents->endTime);
 
                             // set a reason if given...
                             $objEvents->moveReason = $fixedDate['reason'] ? $fixedDate['reason'] : null;
 
+                            // position of the event
+                            $objEvents->pos_idx++;
+
                             // add the irregular event to the array
                             $eventUrl = $strUrl."?day=".Date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
                             $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
+
+                            // increase $cntRecurrences if event is in scope
+                            if ($dateNextStart >= $dateBegin && $dateNextEnd <= $dateEnd)
+                            {
+                                $cntRecurrences++;
+                            }
                         }
                     }
                 }
@@ -218,6 +255,11 @@ class EventsExt extends \Events
                  */
                 if ((($objEvents->recurring && $objEvents->repeatEach) || ($objEvents->recurringExt && $objEvents->repeatEachExt)) && $showRecurrences)
                 {
+                    if (is_null($arrRepeat))
+                    {
+                        continue;
+                    }
+
                     // list of months we need
                     $arrMonth = array(1=>'january', 2=>'february', 3=>'march', 4=>'april', 5=>'may', 6=>'jun',
                         7=>'july', 8=>'august', 9=>'september', 10=>'october', 11=>'november', 12=>'december',
@@ -239,8 +281,7 @@ class EventsExt extends \Events
                     $nextTime = $objEvents->endTime;
                     while ($nextTime < $intEnd)
                     {
-                        $eventNumber++;
-                        $objEvents->pos_idx = (int)$eventNumber;
+                        $objEvents->pos_idx++;
                         if ($objEvents->recurrences == 0)
                         {
                             $objEvents->pos_cnt = 0;
@@ -367,13 +408,23 @@ class EventsExt extends \Events
                             continue;
                         }
 
+                        // used for cal_noSpan
+                        $dateNextStart = date('Ymd', $objEvents->startTime);
+                        $dateNextEnd = date('Ymd', $objEvents->endTime);
+
+                        // stop if we have on event and cal_noSpan is true
+                        if ($this->cal_noSpan && $cntRecurrences > 0)
+                        {
+                            break;
+                        }
+
                         $objEvents->isRecurrence = true;
 
                         $weekday = date('N', $objEvents->startTime);
                         $store = true;
                         if ($objEvents->hideOnWeekend)
                         {
-                            if ($weekday == 0 || $weekday == 6 || $weekday == 7)
+                            if ($weekday == 0 || $weekday == 6)
                             {
                                 $store = false;
                             }
@@ -396,8 +447,14 @@ class EventsExt extends \Events
                             $objEvents->startTime = $oldDate['startTime'];
                             $objEvents->endTime = $oldDate['endTime'];
                         }
+
+                        // increase $cntRecurrences if event is in scope
+                        if ($dateNextStart >= $dateBegin && $dateNextEnd <= $dateEnd)
+                        {
+                            $cntRecurrences++;
+                        }
                     }
-                }
+                } // end if recurring...
             }
         }
 
