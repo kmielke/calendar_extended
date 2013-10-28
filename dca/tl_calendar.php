@@ -30,6 +30,7 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['bg_color'] = array
 (
     'label'				=> &$GLOBALS['TL_LANG']['tl_calendar']['bg_color'],
     'inputType'			=> 'text',
+    'exclude'			=> true,
     'eval'              => array('maxlength'=>6, 'multiple'=>true, 'size'=>2, 'colorpicker'=>true, 'isHexColor'=>true, 'decodeEntities'=>true, 'tl_class'=>'w50 wizard'),
     'sql'               => "varchar(64) NOT NULL default ''"
 );
@@ -38,6 +39,7 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['fg_color'] = array
 (
     'label'				=> &$GLOBALS['TL_LANG']['tl_calendar']['fg_color'],
     'inputType'			=> 'text',
+    'exclude'			=> true,
     'eval'              => array('maxlength'=>6, 'multiple'=>true, 'size'=>2, 'colorpicker'=>true, 'isHexColor'=>true, 'decodeEntities'=>true, 'tl_class'=>'w50 wizard'),
     'sql'               => "varchar(64) NOT NULL default ''"
 );
