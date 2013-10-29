@@ -275,13 +275,13 @@ class ModuleYearView extends \EventsExt
                 {
                     $day = mktime(12, 00, 00, $m, $d, $currYear);
 
-                    $intCurrentDay = (int)date('N', $day);
+                    $intCurrentDay = (int)date('w', $day);
                     $intCurrentWeek = (int)date('W', $day);
 
                     $intKey = date("Ymd", strtotime(date("Y-m-d", $day)));
                     $currDay = \Date::parse($GLOBALS['TL_CONFIG']['dateFormat'], strtotime(date("Y-m-d", $day)));
 
-                    $class = ($intCurrentDay == 0 || $intCurrentDay == 6 || $intCurrentDay == 7) ? 'weekend' : 'weekday';
+                    $class = ($intCurrentDay == 0 || $intCurrentDay == 6) ? 'weekend' : 'weekday';
                     $class .= (($d % 2) == 0) ? ' even' : ' odd';
                     $class .= ' ' . strtolower($GLOBALS['TL_LANG']['DAYS'][$intCurrentDay]);
 

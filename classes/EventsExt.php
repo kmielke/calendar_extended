@@ -141,7 +141,7 @@ class EventsExt extends \Events
                 }
 
                 // Check if we have to store the event if it's on weekend
-                $weekday = (int)date('N', $objEvents->startTime);
+                $weekday = (int)date('w', $objEvents->startTime);
                 $store = true;
                 if ($objEvents->hideOnWeekend)
                 {
@@ -166,6 +166,7 @@ class EventsExt extends \Events
                 $dateBegin = date('Ymd', $intStart);
                 $dateEnd = date('Ymd', $intEnd);
                 $dateNextStart = date('Ymd', $objEvents->startTime);
+                $dateNextEnd = date('Ymd', $objEvents->endTime);
 
                 // store the entry if everything is fine...
                 if ($store === true)
@@ -268,8 +269,8 @@ class EventsExt extends \Events
                     $count = 0;
 
                     // start and end time of the event
-                    $eventStartTime = $this->parseDate($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->startTime);
-                    $eventEndTime = $this->parseDate($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->endTime);
+                    $eventStartTime = \Date::parse($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->startTime);
+                    $eventEndTime = \Date::parse($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->endTime);
 
                     // now we have to take care about the exception dates to skip
                     if ($objEvents->useExceptions)
@@ -420,7 +421,7 @@ class EventsExt extends \Events
 
                         $objEvents->isRecurrence = true;
 
-                        $weekday = date('N', $objEvents->startTime);
+                        $weekday = date('w', $objEvents->startTime);
                         $store = true;
                         if ($objEvents->hideOnWeekend)
                         {

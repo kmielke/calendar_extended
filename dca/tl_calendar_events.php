@@ -91,7 +91,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['weekday'] = array
     'exclude'			=> true,
     'filter'			=> true,
     'inputType'			=> 'select',
-    'options'			=> array(0, 1, 2, 3, 4, 5, 6, 7),
+    'options'			=> array(0, 1, 2, 3, 4, 5, 6),
     'reference'			=> &$GLOBALS['TL_LANG']['DAYS'],
     'sql'               => "char(1) NOT NULL default ''"
 );
