@@ -334,10 +334,11 @@ class ModuleTimeTable extends \EventsExt
             for ($i = $arrTimes['start']; $i <= $arrTimes['stop']; $i++)
             {
                 $top = 60 * $counter;
-                $arrListTimes[$i]['top'] = $top;
-                $arrListTimes[$i]['class'] = (($counter % 2) == 0) ? 'even' : 'odd';
-                $arrListTimes[$i]['label'] = "$i:00"; //top:".$top."px; position:relative;
-                $arrListTimes[$i]['style'] = "height:60px;top:".$top."px;";
+                $strHour = str_pad($i, 2, '0', STR_PAD_LEFT);
+                $arrListTimes[$strHour]['top'] = $top;
+                $arrListTimes[$strHour]['class'] = (($counter % 2) == 0) ? 'even' : 'odd';
+                $arrListTimes[$strHour]['label'] = "$i:00"; //top:".$top."px; position:relative;
+                $arrListTimes[$strHour]['style'] = "height:60px;top:".$top."px;";
                 $counter++;
             }
         }
