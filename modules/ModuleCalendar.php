@@ -2,9 +2,9 @@
 
 /**
  * Contao Open Source CMS
- * 
+ *
  * Copyright (c) 2005-2013 Leo Feyer
- * 
+ *
  * @package Calendar
  * @link    https://contao.org
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
@@ -76,61 +76,42 @@ class ModuleCalendar extends \EventsExt
 			return '';
 		}
 
-        //Get the bg color of the calendar
-        foreach ($this->cal_calendar as $cal)
-        {
-            $objBG = $this->Database->prepare("select title, bg_color, fg_color from tl_calendar where id = ?")
-                ->limit(1)->executeUncached($cal);
+		// Get the background and foreground colors of the calendars
+		foreach (array_merge($this->cal_calendar, $this->cal_holiday) as $cal)
+		{
+			$objBG = $this->Database->prepare("select title, bg_color, fg_color from tl_calendar where id = ?")
+				->limit(1)->executeUncached($cal);
 
-            $this->calConf[$cal]['calendar'] = $objBG->title;
-            if ($objBG->bg_color)
-            {
-                $cssBgValues = deserialize($objBG->bg_color);
-                $this->calConf[$cal]['background'] = 'background-color:#'.$cssBgValues[0].';';
-                if ($cssBgValues[1] > 0)
-                {
-                    $this->calConf[$cal]['background'] .= ' opacity:'.((int)$cssBgValues[1]/100).';';
-                }
-            }
+			$this->calConf[$cal]['calendar'] = $objBG->title;
 
-            if ($objBG->fg_color)
-            {
-                $cssFgValues = deserialize($objBG->fg_color);
-                $this->calConf[$cal]['foreground'] = 'color:#'.$cssFgValues[0].';';
-                if ($cssFgValues[1] > 0)
-                {
-                    $this->calConf[$cal]['foreground'] .= ' opacity:'.((int)$cssFgValues[1]/100).';';
-                }
-            }
-        }
+			if ($objBG->bg_color)
+			{
+				list($cssColor, $cssOpacity) = deserialize($objBG->bg_color);
 
-        //Get the bg color of the holiday calendar
-        foreach ($this->cal_holiday as $cal)
-        {
-            $objBG = $this->Database->prepare("select title, bg_color, fg_color from tl_calendar where id = ?")
-                ->limit(1)->executeUncached($cal);
+				if (!empty($cssColor))
+				{
+					$this->calConf[$cal]['background'] .= 'background-color:#'.$cssColor.';';
+				}
+				if (!empty($cssOpacity))
+				{
+					$this->calConf[$cal]['background'] .= 'opacity:'.($cssOpacity/100).';';
+				}
+			}
 
-            $this->calConf[$cal]['calendar'] = $objBG->title;
-            if ($objBG->bg_color)
-            {
-                $cssBgValues = deserialize($objBG->bg_color);
-                $this->calConf[$cal]['background'] = 'background-color:#'.$cssBgValues[0].';';
-                if ($cssBgValues[1] > 0)
-                {
-                    $this->calConf[$cal]['background'] .= ' opacity:'.((int)$cssBgValues[1]/100).';';
-                }
-            }
+			if ($objBG->fg_color)
+			{
+				list($cssColor, $cssOpacity) = deserialize($objBG->fg_color);
 
-            if ($objBG->fg_color)
-            {
-                $cssFgValues = deserialize($objBG->fg_color);
-                $this->calConf[$cal]['foreground'] = 'color:#'.$cssFgValues[0].';';
-                if ($cssFgValues[1] > 0)
-                {
-                    $this->calConf[$cal]['foreground'] .= ' opacity:'.((int)$cssFgValues[1]/100).';';
-                }
-            }
-        }
+				if (!empty($cssColor))
+				{
+					$this->calConf[$cal]['foreground'] .= 'background-color:#'.$cssColor.';';
+				}
+				if (!empty($cssOpacity))
+				{
+					$this->calConf[$cal]['foreground'] .= 'opacity:'.($cssOpacity/100).';';
+				}
+			}
+		}
 
 		$this->strUrl = preg_replace('/\?.*$/', '', \Environment::get('request'));
 		$this->strLink = $this->strUrl;
