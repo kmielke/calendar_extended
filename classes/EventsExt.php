@@ -203,28 +203,26 @@ class EventsExt extends \Events
                             }
 
                             // new date
-                            $new_year = (int)substr($fixedDate['new_repeat'], 6);
-                            $new_month = (int)substr($fixedDate['new_repeat'], 3, 2);
-                            $new_day = (int)substr($fixedDate['new_repeat'], 0, 2);
+                            $new_year = date('Y',strtotime($fixedDate['new_repeat']));
+                            $new_month = date('m',strtotime($fixedDate['new_repeat']));
+                            $new_day = date('d',strtotime($fixedDate['new_repeat']));
 
                             // new start time
-                            $new_hour = (int)$this->parseDate("H", $orgStartTime);
-                            $new_min = (int)$this->parseDate("i", $orgStartTime);
+                            $new_hour = \Date::parse("H", $orgStartTime);
+                            $new_min = \Date::parse("i", $orgStartTime);
                             if ($fixedDate['new_start'])
                             {
-                                $new_hour = (int)substr($fixedDate['new_start'], 0, 2);
-                                $new_min = (int)substr($fixedDate['new_start'], 3, 2);
+                                list($new_hour, $new_min) = explode(':', $fixedDate['new_start'], 1);
                             }
                             $objEvents->startTime = mktime($new_hour, $new_min, 0, $new_month, $new_day, $new_year);
                             $dateNextStart = date('Ymd', $objEvents->startTime);
 
                             // new end time
-                            $new_hour = (int)$this->parseDate("H", $orgEndTime);
-                            $new_min = (int)$this->parseDate("i", $orgEndTime);
+                            $new_hour = \Date::parse("H", $orgEndTime);
+                            $new_min = \Date::parse("i", $orgEndTime);
                             if ($fixedDate['new_end'])
                             {
-                                $new_hour = (int)substr($fixedDate['new_end'], 0, 2);
-                                $new_min = (int)substr($fixedDate['new_end'], 3, 2);
+                                list($new_hour, $new_min) = explode(':', $fixedDate['new_end'], 1);
                             }
                             $objEvents->endTime = mktime($new_hour, $new_min, 0, $new_month, $new_day, $new_year);
                             $dateNextEnd = date('Ymd', $objEvents->endTime);
@@ -359,7 +357,7 @@ class EventsExt extends \Events
                                     $oldDate['endTime'] = $objEvents->endTime;
 
                                     // also keep the old values in the row
-                                    $objEvents->oldDate = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->startTime);
+                                    $objEvents->oldDate = \Date::parse($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->startTime);
 
                                     // value to add to the old date
                                     $newDate = $skipInfos[$r]['new_exception'];
@@ -370,13 +368,13 @@ class EventsExt extends \Events
                                     // check if we have to change the time of the event
                                     if ($skipInfos[$r]['new_start'])
                                     {
-                                        $objEvents->oldStartTime = $this->parseDate($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->startTime);
-                                        $objEvents->oldEndTime = $this->parseDate($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->endTime);
+                                        $objEvents->oldStartTime = \Date::parse($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->startTime);
+                                        $objEvents->oldEndTime = \Date::parse($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->endTime);
 
                                         // get the date of the event and add the new time to the new date
-                                        $newStart = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->startTime)
+                                        $newStart = \Date::parse($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->startTime)
                                             . ' ' . $skipInfos[$r]['new_start'];
-                                        $newEnd = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->endTime)
+                                        $newEnd = \Date::parse($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->endTime)
                                             . ' ' . $skipInfos[$r]['new_end'];
 
                                         //set the new values

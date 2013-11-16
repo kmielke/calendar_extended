@@ -132,6 +132,14 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['cal_noSpan'] = array
     'sql'                   => "char(1) NOT NULL default ''"
 );
 
+$GLOBALS['TL_DCA']['tl_module']['fields']['cal_times'] = array
+(
+    'label'                 => &$GLOBALS['TL_LANG']['tl_module']['cal_times'],
+    'exclude'               => true,
+    'inputType'             => 'checkbox',
+    'eval'                  => array('tl_class'=>'w50'),
+    'sql'                   => "char(1) NOT NULL default ''"
+);
 
 /**
  * Class timetableExt

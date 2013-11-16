@@ -383,10 +383,10 @@ class tl_calendar_events_ext extends \Backend
             {
                 if ($fixedDate['new_repeat'])
                 {
-                    // New date
-                    $new_year = (int)substr($fixedDate['new_repeat'], 6);
-                    $new_month = (int)substr($fixedDate['new_repeat'], 3, 2);
-                    $new_day = (int)substr($fixedDate['new_repeat'], 0, 2);
+                    // new date
+                    $new_year = date('Y',strtotime($fixedDate['new_repeat']));
+                    $new_month = date('m',strtotime($fixedDate['new_repeat']));
+                    $new_day = date('d',strtotime($fixedDate['new_repeat']));
 
                     $maxIrrDate[] = mktime(0, 0, 0, $new_month, $new_day, $new_year);
                 }
@@ -707,7 +707,7 @@ class tl_calendar_events_ext extends \Backend
                         // fill array for option date
                         foreach ($arrDates as $k => $arrDate)
                         {
-                            $date = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $k);
+                            $date = \Date::parse($GLOBALS['TL_CONFIG']['dateFormat'], $k);
                             $arrSource1[$k] = $date;
                         }
                     }
@@ -737,7 +737,7 @@ class tl_calendar_events_ext extends \Backend
             $end = strtotime($end);
             while ($start <= $end)
             {
-                $newTime = $this->parseDate($GLOBALS['TL_CONFIG']['timeFormat'], $start);
+                $newTime = \Date::parse($GLOBALS['TL_CONFIG']['timeFormat'], $start);
                 $arrSource4[$newTime] = $newTime;
                 $start = strtotime('+ ' . $interval . ' minutes', $start);
             }
@@ -850,27 +850,28 @@ class tl_calendar_events_ext extends \Backend
                 'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['exception'],
                 'exclude'   => true,
                 'inputType' => 'text',
-                'eval'      => array('rgxp'=>'date', 'doNotCopy'=>true, 'style'=>'width:120px', 'datepicker'=>true, 'tl_class'=>'wizard')
+                'eval'      => array('rgxp'=>'date', 'datepicker'=>true, 'doNotCopy'=>true, 'style'=>'width:100px', 'tl_class'=>'wizard')
             ),
             'new_start' => array
             (
                 'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_start'],
                 'exclude'   => true,
                 'inputType' => 'text',
-                'eval'      => array('doNotCopy'=>true, 'style'=>'width:60px')
+                'eval'      => array('rgxp'=>'time', 'datepicker'=>true, 'doNotCopy'=>true, 'style'=>'width:40px')
             ),
             'new_end' => array
             (
                 'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_end'],
                 'exclude'   => true,
                 'inputType' => 'text',
-                'eval'      => array('doNotCopy'=>true, 'style'=>'width:60px')
+                'eval'      => array('rgxp'=>'time', 'datepicker'=>true, 'doNotCopy'=>true, 'style'=>'width:40px')
             ),
             'reason' => array
             (
                 'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['reason'],
                 'exclude'   => true,
-                'inputType' => 'text'
+                'inputType' => 'text',
+                'eval'      => array('doNotCopy'=>true, 'style'=>'width:350px')
             )
         );
 

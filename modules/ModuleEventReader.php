@@ -124,7 +124,13 @@ class ModuleEventReader extends \EventsExt
 
 		$span = \Calendar::calculateSpan($objEvent->startTime, $objEvent->endTime);
 
-		if ($objPage->outputFormat == 'xhtml')
+        // Replace the Date an Times with the correct ones from the recurring event
+        if ($this->Input->get('times'))
+        {
+            list($objEvent->startTime, $objEvent->endTime) = explode(",", $this->Input->get('times'));
+        }
+
+        if ($objPage->outputFormat == 'xhtml')
 		{
 			$strTimeStart = '';
 			$strTimeEnd = '';
@@ -136,12 +142,6 @@ class ModuleEventReader extends \EventsExt
 			$strTimeEnd = '<time datetime="' . date('Y-m-d\TH:i:sP', $objEvent->endTime) . '">';
 			$strTimeClose = '</time>';
 		}
-
-        // Replace the Date an Times with the correct ones from the recurring event
-        if ($this->Input->get('times'))
-        {
-            list($objEvent->startTime, $objEvent->endTime) = explode(",", $this->Input->get('times'));
-        }
 
         // Get date
 		if ($span > 0)
@@ -173,6 +173,7 @@ class ModuleEventReader extends \EventsExt
 			}
 		}
 
+        // Recurring eventExt
         if ($objEvent->recurringExt)
         {
             $arrRange = deserialize($objEvent->repeatEachExt);
@@ -183,6 +184,42 @@ class ModuleEventReader extends \EventsExt
             if ($objEvent->recurrences > 0)
             {
                 $until = sprintf($GLOBALS['TL_LANG']['MSC']['cal_until'], \Date::parse($objPage->dateFormat, $objEvent->repeatEnd));
+            }
+        }
+
+        // moveReason fix...
+        $moveReason = null;
+
+        // get moveReason from exceptions
+        if ($objEvent->useExceptions)
+        {
+            $exceptions = deserialize($objEvent->exceptionList);
+            foreach ($exceptions as $fixedDate)
+            {
+                // look for the reason only if we have a move action
+                if ($fixedDate['action'] === "move")
+                {
+                    // value to add to the old date
+                    $addToDate = $fixedDate['new_exception'];
+                    $newDate = strtotime($addToDate, $fixedDate['exception']);
+                    if (date("Ymd", $newDate) == date("Ymd", $objEvent->startTime))
+                    {
+                        $moveReason = ($fixedDate['reason']) ? $fixedDate['reason'] : null;
+                    }
+                }
+            }
+        }
+
+        // get moveReason from fixed dates if exists...
+        if (!is_null($objEvent->repeatFixedDates))
+        {
+            $arrFixedDates = deserialize($objEvent->repeatFixedDates);
+            foreach ($arrFixedDates as $fixedDate)
+            {
+                if (date("Ymd", strtotime($fixedDate['new_repeat'])) == date("Ymd", $objEvent->startTime))
+                {
+                    $moveReason = ($fixedDate['reason']) ? $fixedDate['reason'] : null;
+                }
             }
         }
 
@@ -207,6 +244,12 @@ class ModuleEventReader extends \EventsExt
 		$objTemplate->recurring = $recurring;
 		$objTemplate->until = $until;
 		$objTemplate->locationLabel = $GLOBALS['TL_LANG']['MSC']['location'];
+
+        // set moveReason if there is one...
+        if ($moveReason !== null)
+        {
+            $objTemplate->moveReason = $moveReason;
+        }
 
 		$objTemplate->details = '';
 		$objElement = \ContentModel::findPublishedByPidAndTable($objEvent->id, 'tl_calendar_events');
