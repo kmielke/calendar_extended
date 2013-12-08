@@ -89,6 +89,9 @@ class EventsExt extends \Events
             }
         }
 
+        // Used to collect exception list data for events
+        $arrEventSkipInfo = array();
+
         foreach ($arrCalendars as $id)
         {
             $strUrl = $this->strUrl;
@@ -182,8 +185,8 @@ class EventsExt extends \Events
                 }
 
                 // keep the original values
-                $orgStartTime = $objEvents->startTime;
-                $orgEndTime = $objEvents->endTime;
+                $orgDateStart = new \Date($objEvents->startTime);
+                $orgDateEnd = new \Date($objEvents->endTime);
 
                 /*
                  * next we handle the irregular recurrences
@@ -202,29 +205,19 @@ class EventsExt extends \Events
                                 break;
                             }
 
-                            // new date
-                            $new_year = date('Y',strtotime($fixedDate['new_repeat']));
-                            $new_month = date('m',strtotime($fixedDate['new_repeat']));
-                            $new_day = date('d',strtotime($fixedDate['new_repeat']));
-
                             // new start time
-                            $new_hour = \Date::parse("H", $orgStartTime);
-                            $new_min = \Date::parse("i", $orgStartTime);
-                            if ($fixedDate['new_start'])
-                            {
-                                list($new_hour, $new_min) = explode(':', $fixedDate['new_start'], 1);
-                            }
-                            $objEvents->startTime = mktime($new_hour, $new_min, 0, $new_month, $new_day, $new_year);
+                            $strNewDate = $fixedDate['new_repeat'];
+                            $strNewTime = (strlen($fixedDate['new_start']) ? $fixedDate['new_start'] : $orgDateStart->time);
+                            $newDateStart = new \Date(trim($strNewDate.' '.$strNewTime), \Date::getNumericDatimFormat());
+
+                            $objEvents->startTime = $newDateStart->timestamp;
                             $dateNextStart = date('Ymd', $objEvents->startTime);
 
                             // new end time
-                            $new_hour = \Date::parse("H", $orgEndTime);
-                            $new_min = \Date::parse("i", $orgEndTime);
-                            if ($fixedDate['new_end'])
-                            {
-                                list($new_hour, $new_min) = explode(':', $fixedDate['new_end'], 1);
-                            }
-                            $objEvents->endTime = mktime($new_hour, $new_min, 0, $new_month, $new_day, $new_year);
+                            $strNewTime = (strlen($fixedDate['new_end']) ? $fixedDate['new_end'] : $orgDateEnd->time);
+                            $newDateEnd = new \Date(trim($strNewDate.' '.$strNewTime), \Date::getNumericDatimFormat());
+
+                            $objEvents->endTime = $newDateEnd->timestamp;
                             $dateNextEnd = date('Ymd', $objEvents->endTime);
 
                             // set a reason if given...
@@ -234,8 +227,12 @@ class EventsExt extends \Events
                             $objEvents->pos_idx++;
 
                             // add the irregular event to the array
-                            $eventUrl = $strUrl."?day=".Date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
+                            $eventUrl = $strUrl."?day=".date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
                             $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
+
+                            // Restore the original values
+                            $objEvents->startTime = $orgDateStart->timestamp;
+                            $objEvents->endTime = $orgDateEnd->timestamp;
 
                             // increase $cntRecurrences if event is in scope
                             if ($dateNextStart >= $dateBegin && $dateNextEnd <= $dateEnd)
@@ -273,7 +270,7 @@ class EventsExt extends \Events
                     // now we have to take care about the exception dates to skip
                     if ($objEvents->useExceptions)
                     {
-                        $skipInfos = deserialize($objEvents->exceptionList);
+                        $arrEventSkipInfo[$objEvents->id] = deserialize($objEvents->exceptionList);
                     }
 
                     // time of the next event
@@ -321,7 +318,7 @@ class EventsExt extends \Events
                         $nextTime = $objEvents->endTime;
 
                         // check if there is any exception
-                        if (is_array($skipInfos))
+                        if (is_array($arrEventSkipInfo[$objEvents->id]))
                         {
                             // reset cssClass
                             $objEvents->cssClass = str_replace("exception", "", $objEvents->cssClass);
@@ -333,10 +330,10 @@ class EventsExt extends \Events
                             // store old date values for later reset
                             $oldDate = array();
 
-                            if (is_array($skipInfos[$searchDate]))
+                            if (is_array($arrEventSkipInfo[$objEvents->id][$searchDate]))
                             {
                                 $r = $searchDate;
-                                $action = $skipInfos[$r]['action'];
+                                $action = $arrEventSkipInfo[$objEvents->id][$r]['action'];
                                 if ($action == "hide")
                                 {
                                     //continue the while since we don't want to show the event
@@ -360,22 +357,22 @@ class EventsExt extends \Events
                                     $objEvents->oldDate = \Date::parse($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->startTime);
 
                                     // value to add to the old date
-                                    $newDate = $skipInfos[$r]['new_exception'];
+                                    $newDate = $arrEventSkipInfo[$objEvents->id][$r]['new_exception'];
 
                                     // store the reason for the move
-                                    $objEvents->moveReason = $skipInfos[$r]['reason'];
+                                    $objEvents->moveReason = $arrEventSkipInfo[$objEvents->id][$r]['reason'];
 
                                     // check if we have to change the time of the event
-                                    if ($skipInfos[$r]['new_start'])
+                                    if ($arrEventSkipInfo[$objEvents->id][$r]['new_start'])
                                     {
                                         $objEvents->oldStartTime = \Date::parse($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->startTime);
                                         $objEvents->oldEndTime = \Date::parse($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->endTime);
 
                                         // get the date of the event and add the new time to the new date
                                         $newStart = \Date::parse($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->startTime)
-                                            . ' ' . $skipInfos[$r]['new_start'];
+                                            . ' ' . $arrEventSkipInfo[$objEvents->id][$r]['new_start'];
                                         $newEnd = \Date::parse($GLOBALS['TL_CONFIG']['dateFormat'], $objEvents->endTime)
-                                            . ' ' . $skipInfos[$r]['new_end'];
+                                            . ' ' . $arrEventSkipInfo[$objEvents->id][$r]['new_end'];
 
                                         //set the new values
                                         $objEvents->startTime = strtotime($newDate, strtotime($newStart));

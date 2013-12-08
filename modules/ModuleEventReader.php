@@ -124,10 +124,22 @@ class ModuleEventReader extends \EventsExt
 
 		$span = \Calendar::calculateSpan($objEvent->startTime, $objEvent->endTime);
 
-        // Replace the Date an Times with the correct ones from the recurring event
-        if ($this->Input->get('times'))
+        // Do not show dates in the past if the event is recurring (see #923)
+        if ($objEvent->recurring)
         {
-            list($objEvent->startTime, $objEvent->endTime) = explode(",", $this->Input->get('times'));
+            $arrRange = deserialize($objEvent->repeatEach);
+
+            while ($objEvent->startTime < time() && $objEvent->endTime < $objEvent->repeatEnd)
+            {
+                $objEvent->startTime = strtotime('+' . $arrRange['value'] . ' ' . $arrRange['unit'], $objEvent->startTime);
+                $objEvent->endTime = strtotime('+' . $arrRange['value'] . ' ' . $arrRange['unit'], $objEvent->endTime);
+            }
+        }
+
+        // Replace the date an time with the correct ones from the recurring event
+        if (\Input::get('times'))
+        {
+            list($objEvent->startTime, $objEvent->endTime) = explode(",", \Input::get('times'));
         }
 
         if ($objPage->outputFormat == 'xhtml')
@@ -264,24 +276,27 @@ class ModuleEventReader extends \EventsExt
 
 		$objTemplate->addImage = false;
 
-		// Add an image
-		if ($objEvent->addImage && $objEvent->singleSRC != '')
-		{
-			if (!is_numeric($objEvent->singleSRC))
-			{
-				$objTemplate->text = '<p class="error">'.$GLOBALS['TL_LANG']['ERR']['version2format'].'</p>';
-			}
-			else
-			{
-				$objModel = \FilesModel::findByPk($objEvent->singleSRC);
+        // Add an image
+        if ($objEvent->addImage && $objEvent->singleSRC != '')
+        {
+            $objModel = \FilesModel::findByUuid($objEvent->singleSRC);
 
-				if ($objModel !== null && is_file(TL_ROOT . '/' . $objModel->path))
-				{
-					$objEvent->singleSRC = $objModel->path;
-					$this->addImageToTemplate($objTemplate, $objEvent->row());
-				}
-			}
-		}
+            if ($objModel === null)
+            {
+                if (!\Validator::isUuid($objEvent->singleSRC))
+                {
+                    $objTemplate->text = '<p class="error">'.$GLOBALS['TL_LANG']['ERR']['version2format'].'</p>';
+                }
+            }
+            elseif (is_file(TL_ROOT . '/' . $objModel->path))
+            {
+                // Do not override the field now that we have a model registry (see #6303)
+                $arrEvent = $objEvent->row();
+                $arrEvent['singleSRC'] = $objModel->path;
+
+                $this->addImageToTemplate($objTemplate, $arrEvent);
+            }
+        }
 
 		$objTemplate->enclosure = array();
 
@@ -294,7 +309,7 @@ class ModuleEventReader extends \EventsExt
 		$this->Template->event = $objTemplate->parse();
 
 		// HOOK: comments extension required
-		if ($objEvent->noComments || !in_array('comments', $this->Config->getActiveModules()))
+		if ($objEvent->noComments || !in_array('comments', \ModuleLoader::getActive()))
 		{
 			$this->Template->allowComments = false;
 			return;

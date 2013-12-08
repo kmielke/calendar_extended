@@ -98,7 +98,7 @@ class ModuleEventlist extends \EventsExt
 
 				if (!empty($cssColor))
 				{
-					$this->calConf[$cal]['foreground'] .= 'background-color:#'.$cssColor.';';
+					$this->calConf[$cal]['foreground'] .= 'color:#'.$cssColor.';';
 				}
 				if (!empty($cssOpacity))
 				{
