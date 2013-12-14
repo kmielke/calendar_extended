@@ -11,7 +11,6 @@
  * @copyright Kester Mielke 2010-2013 
  */
 
-
 $GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = array('tl_calendar_events_ext', 'adjustTime');
 $GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = array('tl_calendar_events', 'scheduleUpdate');
 
@@ -21,15 +20,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
     'showOnFreeDay,addTime,',
     $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default']
 );
-
-//'{title_legend},title,alias,author;{date_legend},addTime,startDate,endDate;{details_legend},location,teaser;{image_legend},addImage;{recurring_legend},recurring;{enclosure_legend:hide},addEnclosure;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments;{publish_legend},published,start,stop'
-
-//$GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
-//(
-//    ',endDate;',
-//    ',endDate;;',
-//    $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default']
-//);
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
 (
@@ -332,17 +322,17 @@ class tl_calendar_events_ext extends \Backend
      */
     public function adjustTime(DataContainer $dc)
     {
-        $maxCount = ($GLOBALS['TL_CONFIG']['tl_calendar_events']['maxRepeatExceptions']) ? $GLOBALS['TL_CONFIG']['tl_calendar_events']['maxRepeatExceptions'] : 365;
-
         // Return if there is no active record (override all)
         if (!$dc->activeRecord)
         {
             return;
         }
 
+        $maxCount = ($GLOBALS['TL_CONFIG']['tl_calendar_events']['maxRepeatExceptions']) ? $GLOBALS['TL_CONFIG']['tl_calendar_events']['maxRepeatExceptions'] : 365;
+
+        $arrSet['weekday'] = (int)date("w", $dc->activeRecord->startDate);
         $arrSet['startTime'] = $dc->activeRecord->startDate;
         $arrSet['endTime'] = $dc->activeRecord->startDate;
-        $arrSet['weekday'] = (int)date("w", $dc->activeRecord->startDate);
 
         // Set end date
         if (strlen($dc->activeRecord->endDate))
@@ -381,15 +371,17 @@ class tl_calendar_events_ext extends \Backend
             $maxIrrDate = array();
             foreach ($arrayFixedDates as $fixedDate)
             {
-                if ($fixedDate['new_repeat'])
+                $nextValueDate = (strlen($fixedDate['new_repeat'])) ? strtotime($fixedDate['new_repeat']) : $dc->activeRecord->startTime;
+                if (strlen($fixedDate['new_end']))
                 {
-                    // new date
-                    $new_year = date('Y',strtotime($fixedDate['new_repeat']));
-                    $new_month = date('m',strtotime($fixedDate['new_repeat']));
-                    $new_day = date('d',strtotime($fixedDate['new_repeat']));
-
-                    $maxIrrDate[] = mktime(0, 0, 0, $new_month, $new_day, $new_year);
+                    $nextEndTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", strtotime($fixedDate['new_end'])));
                 }
+                else
+                {
+                    $nextEndTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", $dc->activeRecord->endTime));
+                }
+
+                $maxIrrDate[] = $nextEndTime;
             }
 
             // Let's check if we have some data...
@@ -425,7 +417,6 @@ class tl_calendar_events_ext extends \Backend
 
             //array of the exception dates
             $arrDates = array();
-            //$arrDates[$next] = (int)$next;
 
             if ($count == 0)
             {
@@ -500,7 +491,6 @@ class tl_calendar_events_ext extends \Backend
 
             //array of the exception dates
             $arrDates = array();
-            //$arrDates[$next] = (int)$next;
 
             if ($count > 0)
             {
@@ -695,7 +685,7 @@ class tl_calendar_events_ext extends \Backend
         $arrSource3 = array();
         $arrSource4 = array();
 
-        if ($this->Input->get('id'))
+        if (\Input::get('id'))
         {
             if ($var1->activeRecord->repeatDates)
             {

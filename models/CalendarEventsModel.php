@@ -64,33 +64,6 @@ class CalendarEventsModel extends \Model
 
 
 	/**
-	 * Find the first and last event in one or more calendars
-	 * 
-	 * @param array $arrPids An array of calendar IDs
-	 * 
-	 * @return \Model The model
-	 */
-	public static function findBoundaries($arrPids)
-	{
-		if (!is_array($arrPids) || empty($arrPids))
-		{
-			return null;
-		}
-
-		$strQuery = "SELECT MIN(startTime) AS dateFrom, MAX(endTime) AS dateTo, MAX(repeatEnd) AS repeatUntil FROM tl_calendar_events WHERE pid IN(". implode(',', array_map('intval', $arrPids)) .")";
-
-		if (!BE_USER_LOGGED_IN)
-		{
-			$time = time();
-			$strQuery .= " AND (start='' OR start<$time) AND (stop='' OR stop>$time) AND published=1";
-		}
-
-		$objMinMax = \Database::getInstance()->query($strQuery);
-		return new static($objMinMax);
-	}
-
-
-	/**
 	 * Find events of the current period by their parent ID
 	 * 
 	 * @param integer $intPid     The calendar ID
@@ -108,7 +81,7 @@ class CalendarEventsModel extends \Model
 
 		$arrColumns = array("$t.pid=? AND (($t.startTime>=$intStart AND $t.startTime<=$intEnd) OR ($t.endTime>=$intStart AND $t.endTime<=$intEnd) OR ($t.startTime<=$intStart AND $t.endTime>=$intEnd) OR (($t.recurring=1 OR $t.recurringExt=1) AND ($t.recurrences=0 OR $t.repeatEnd>=$intStart) AND $t.startTime<=$intEnd) OR ($t.repeatFixedDates is not null AND $t.repeatEnd>=$intStart))");
 
-		if (!BE_USER_LOGGED_IN)
+        if (!BE_USER_LOGGED_IN)
 		{
 			$time = time();
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
