@@ -154,7 +154,7 @@ class ModuleYearView extends \EventsExt
         }
 
         // Find the boundaries
-        $objMinMax = \CalendarEventsModel::findBoundaries($this->cal_calendar);
+        $objMinMax = $this->Database->query("SELECT MIN(startTime) AS dateFrom, MAX(endTime) AS dateTo, MAX(repeatEnd) AS repeatUntil FROM tl_calendar_events WHERE pid IN(". implode(',', array_map('intval', $this->cal_calendar)) .")" . (!BE_USER_LOGGED_IN ? " AND (start='' OR start<$time) AND (stop='' OR stop>$time) AND published=1" : ""));
         $intLeftBoundary = date('Y', $objMinMax->dateFrom);
         $intRightBoundary = date('Y', max($objMinMax->dateTo, $objMinMax->repeatUntil));
 
