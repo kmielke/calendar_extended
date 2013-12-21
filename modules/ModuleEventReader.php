@@ -174,8 +174,12 @@ class ModuleEventReader extends \EventsExt
         {
             $arrFixedDates = deserialize($objEvent->repeatFixedDates);
 
-            $objEvent->nextStartTime = $objEvent->startTime;
-            $objEvent->nextEndTime = $objEvent->endTime;
+            // Check if there are valid data in the array...
+            if (strlen($arrFixedDates[0]['new_repeat']))
+            {
+                $objEvent->nextStartTime = $objEvent->startTime;
+                $objEvent->nextEndTime = $objEvent->endTime;
+            }
 
             foreach ($arrFixedDates as $fixedDate)
             {
