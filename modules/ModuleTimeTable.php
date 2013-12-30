@@ -59,7 +59,7 @@ class ModuleTimeTable extends \EventsExt
         {
             $objTemplate = new \BackendTemplate('be_wildcard');
 
-			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['calendar'][0]) . ' ###';
+			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['timetable'][0]) . ' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;
@@ -162,7 +162,7 @@ class ModuleTimeTable extends \EventsExt
         }
 
         // Get the Year and the week of the given date
-        $intYear = (int)date('Y', $this->Date->tstamp);
+        $intYear = (int)date('o', $this->Date->tstamp);
         $intWeek = (int)date('W', $this->Date->tstamp);
 
         $dt = new \DateTime();
@@ -214,7 +214,7 @@ class ModuleTimeTable extends \EventsExt
             // Get the current year and the week
             if ($this->linkCurrent)
             {
-                $currYear = date('Y');
+                $currYear = date('o');
                 $currWeek = (int)date('W');
                 $lblCurrent = $GLOBALS['TL_LANG']['MSC']['curr_week'];
                 $objTemplate->currHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'week=' . $currYear . str_pad($currWeek, 2, 0, STR_PAD_LEFT);
