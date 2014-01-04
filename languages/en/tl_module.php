@@ -32,6 +32,7 @@
 /**
  * Fields
  */
+$GLOBALS['TL_LANG']['tl_module']['use_horizontal']	= array('Display horizontal', 'Months will be displayed horizontal.');
 $GLOBALS['TL_LANG']['tl_module']['use_navigation']	= array('Display navigation', 'Week navigation will be displayed if checked');
 $GLOBALS['TL_LANG']['tl_module']['showDate']		= array('Display date', 'Date of weekday will be displayed if checked');
 $GLOBALS['TL_LANG']['tl_module']['showRecurrences']	= array('Hide recurrences', 'Recurrences are not displayed if checked');

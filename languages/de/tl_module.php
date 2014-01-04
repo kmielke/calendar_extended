@@ -32,6 +32,7 @@
 /**
  * Fields
  */
+$GLOBALS['TL_LANG']['tl_module']['use_horizontal']	= array('Horizontale Darstellung', 'Monate werden horizontal dargestellt.');
 $GLOBALS['TL_LANG']['tl_module']['use_navigation']	= array('Navigation anzeigen', 'Wochennavigation wird angezeigt, wenn aktiviert');
 $GLOBALS['TL_LANG']['tl_module']['showDate']		= array('Datum anzeigen', 'Tagesdatum wird angezeigt, wenn aktiviert');
 $GLOBALS['TL_LANG']['tl_module']['showRecurrences']	= array('Wiederholungen ausblenden', 'Wiederholungen werden nicht mehr angezeigt, wenn aktiviert');

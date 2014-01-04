@@ -46,7 +46,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] = $GLOBALS['TL_DCA']['tl
 $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] = str_replace
 (
     ',cal_ctemplate;{protected_legend:hide}',
-    ',cal_ctemplate,use_navigation,linkCurrent;{protected_legend:hide}',
+    ',cal_ctemplate,use_horizontal,use_navigation,linkCurrent;{protected_legend:hide}',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview']
 );
 
@@ -83,13 +83,23 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['showRecurrences'] = array
     'sql'                   => "char(1) NOT NULL default ''"
 );
 
+$GLOBALS['TL_DCA']['tl_module']['fields']['use_horizontal'] = array
+(
+	'label'                 => &$GLOBALS['TL_LANG']['tl_module']['use_horizontal'],
+	'default'               => 0,
+	'exclude'               => true,
+	'inputType'             => 'checkbox',
+	'eval'                  => array('tl_class'=>'w50 m12'),
+    'sql'                   => "char(1) NOT NULL default ''"
+);
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['use_navigation'] = array
 (
 	'label'                 => &$GLOBALS['TL_LANG']['tl_module']['use_navigation'],
 	'default'               => 1,
 	'exclude'               => true,
 	'inputType'             => 'checkbox',
-	'eval'                  => array('tl_class'=>'w50'),
+	'eval'                  => array('tl_class'=>'w50 clr'),
     'sql'                   => "char(1) NOT NULL default ''"
 );
 
