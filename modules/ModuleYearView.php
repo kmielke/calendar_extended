@@ -149,8 +149,7 @@ class ModuleYearView extends \EventsExt
         $this->yearEnd = mktime(23, 59, 59, 12, 31, $intYear);
 
         // Get total count of weeks of the year
-        if (($weeksTotal = date('W', mktime(0, 0, 0, 12, 31, $intYear))) == 1)
-        {
+        if (($weeksTotal = date('W', mktime(0, 0, 0, 12, 31, $intYear))) == 1) {
             $weeksTotal = date('W', mktime(0, 0, 0, 12, 24, $intYear));
         }
 
@@ -285,11 +284,11 @@ class ModuleYearView extends \EventsExt
                     }
                     else
                     {
-                        $arrDays[$d][$m]['label'] = strtoupper(substr($GLOBALS['TL_LANG']['DAYS'][$intCurrentDay],0,2)) . ' ' . $d;
+                    $arrDays[$d][$m]['label'] = strtoupper(substr($GLOBALS['TL_LANG']['DAYS'][$intCurrentDay],0,2)) . ' ' . $d;
                         $arrDays[$d][$m]['weekday'] = strtoupper(substr($GLOBALS['TL_LANG']['DAYS'][$intCurrentDay],0,2));
                         $arrDays[$d][$m]['day'] = $d;
-                        $arrDays[$d][$m]['class'] = $class;
-                    }
+                    $arrDays[$d][$m]['class'] = $class;
+                }
                 }
                 else
                 {
@@ -304,11 +303,11 @@ class ModuleYearView extends \EventsExt
                     }
                     else
                     {
-                        $arrDays[$d][$m]['label'] = '';
+                    $arrDays[$d][$m]['label'] = '';
                         $arrDays[$d][$m]['weekday'] = '';
                         $arrDays[$d][$m]['day'] = '';
-                        $arrDays[$d][$m]['class'] = 'empty';
-                    }
+                    $arrDays[$d][$m]['class'] = 'empty';
+                }
                     $intKey = 'empty';
                 }
 
@@ -347,7 +346,7 @@ class ModuleYearView extends \EventsExt
                 }
                 else
                 {
-                    $arrDays[$d][$m]['events'] = $arrEvents;
+                $arrDays[$d][$m]['events'] = $arrEvents;
                 }
             }
         }
