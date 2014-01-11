@@ -100,7 +100,7 @@ class EventsExt extends \Events
             // Get the current "jumpTo" page
             if ($objCalendar !== null && $objCalendar->jumpTo && ($objTarget = $objCalendar->getRelated('jumpTo')) !== null)
             {
-                $strUrl = $this->generateFrontendUrl($objTarget->row(), ($GLOBALS['TL_CONFIG']['useAutoItem'] ?  '/%s' : '/events/%s'));
+				$strUrl = $this->generateFrontendUrl($objTarget->row(), (($GLOBALS['TL_CONFIG']['useAutoItem'] && !$GLOBALS['TL_CONFIG']['disableAlias']) ?  '/%s' : '/events/%s'));
             }
 
             // Get the events of the current period
@@ -114,6 +114,9 @@ class EventsExt extends \Events
             while ($objEvents->next())
             {
                 $eventRecurrences = (int)$objEvents->recurrences+1;
+
+                $initStartTime = $objEvents->startTime;
+                $initEndTime = $objEvents->endTime;
 
                 $objEvents->pos_idx = 1;
                 $objEvents->pos_cnt = 1;
@@ -451,6 +454,10 @@ class EventsExt extends \Events
                         }
                     }
                 } // end if recurring...
+
+                // Reset times
+                $objEvents->startTime = $initStartTime;
+                $objEvents->endTime = $initEndTime;
             }
         }
 
