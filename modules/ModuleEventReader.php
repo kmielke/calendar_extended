@@ -98,6 +98,9 @@ class ModuleEventReader extends \EventsExt
 		// Get the current event
 		$objEvent = \CalendarEventsModel::findPublishedByParentAndIdOrAlias(\Input::get('events'), $this->cal_calendar);
 
+        $objEvent->author_name = ($objEvent->getRelated("author")->name) ? $objEvent->getRelated("author")->name : null;
+        $objEvent->author_mail = ($objEvent->getRelated("author")->email) ? $objEvent->getRelated("author")->email : null;
+
 		if ($objEvent === null)
 		{
 			// Do not index or cache the page
@@ -123,6 +126,10 @@ class ModuleEventReader extends \EventsExt
 		}
 
 		$span = \Calendar::calculateSpan($objEvent->startTime, $objEvent->endTime);
+
+        // Save original times...
+        $orgStartTime = $objEvent->startTime;
+        $orgEndTime = $objEvent->endTime;
 
         // Do not show dates in the past if the event is recurring (see #923)
         if ($objEvent->recurring)
@@ -334,7 +341,11 @@ class ModuleEventReader extends \EventsExt
             }
         }
 
-		// Override the default image size
+        // Restore event times...
+        $objEvent->startTime = $orgStartTime;
+        $objEvent->endTime = $orgEndTime;
+
+        // Override the default image size
 		if ($this->imgSize != '')
 		{
 			$size = deserialize($this->imgSize);
