@@ -28,7 +28,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'] = str_replace
 $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist'] = str_replace
 (
     '{config_legend},cal_calendar,cal_noSpan,',
-    '{config_legend},cal_calendar,cal_holiday,cal_noSpan,showRecurrences,',
+    '{config_legend},cal_calendar,cal_holiday,cal_noSpan,showOnlyNext,showRecurrences,',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist']
 );
 
@@ -71,6 +71,16 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['cal_holiday'] = array
 	'options_callback'      => array('calendar_Ext', 'getHolidays'),
 	'eval'                  => array('mandatory'=>false, 'multiple'=>true),
     'sql'                   => "text NULL"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['showOnlyNext'] = array
+(
+    'label'                 => &$GLOBALS['TL_LANG']['tl_module']['showOnlyNext'],
+    'default'               => 0,
+    'exclude'               => true,
+    'inputType'             => 'checkbox',
+    'eval'                  => array('tl_class'=>'w50'),
+    'sql'                   => "char(1) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['showRecurrences'] = array
@@ -130,15 +140,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['hideEmptyDays'] = array
 	'exclude'               => true,
 	'inputType'             => 'checkbox',
 	'eval'                  => array('tl_class'=>'w50'),
-    'sql'                   => "char(1) NOT NULL default ''"
-);
-
-$GLOBALS['TL_DCA']['tl_module']['fields']['cal_noSpan'] = array
-(
-    'label'                 => &$GLOBALS['TL_LANG']['tl_module']['cal_noSpan'],
-    'exclude'               => true,
-    'inputType'             => 'checkbox',
-    'eval'                  => array('tl_class'=>'w50'),
     'sql'                   => "char(1) NOT NULL default ''"
 );
 
