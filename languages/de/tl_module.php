@@ -33,11 +33,12 @@
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_module']['use_horizontal']	= array('Horizontale Darstellung', 'Monate werden horizontal dargestellt.');
-$GLOBALS['TL_LANG']['tl_module']['use_navigation']	= array('Navigation anzeigen', 'Wochennavigation wird angezeigt, wenn aktiviert');
-$GLOBALS['TL_LANG']['tl_module']['showDate']		= array('Datum anzeigen', 'Tagesdatum wird angezeigt, wenn aktiviert');
-$GLOBALS['TL_LANG']['tl_module']['showRecurrences']	= array('Wiederholungen ausblenden', 'Wiederholungen werden nicht mehr angezeigt, wenn aktiviert');
-$GLOBALS['TL_LANG']['tl_module']['linkCurrent']		= array('Link "Aktuelles Datum" anzeigen', 'Link für das aktuelle Datum wird angezeigt, wenn aktiviert');
-$GLOBALS['TL_LANG']['tl_module']['hideEmptyDays']	= array('Leere Tage nicht anzeigen', 'Wochentage ohne Events werden ausgeblendet');
+$GLOBALS['TL_LANG']['tl_module']['use_navigation']	= array('Navigation anzeigen', 'Wochennavigation wird angezeigt, wenn aktiviert.');
+$GLOBALS['TL_LANG']['tl_module']['showDate']		= array('Datum anzeigen', 'Tagesdatum wird angezeigt, wenn aktiviert.');
+$GLOBALS['TL_LANG']['tl_module']['showRecurrences']	= array('Wiederholungen ausblenden', 'Wiederholungen werden nicht mehr angezeigt, wenn aktiviert.');
+$GLOBALS['TL_LANG']['tl_module']['showOnlyNext']    = array('Nur nächste Wiederholung', 'Es wird nur die nächste Wiederholung angezeigt (Nur bei Wiederholungen).');
+$GLOBALS['TL_LANG']['tl_module']['linkCurrent']		= array('Link "Aktuelles Datum" anzeigen', 'Link für das aktuelle Datum wird angezeigt, wenn aktiviert.');
+$GLOBALS['TL_LANG']['tl_module']['hideEmptyDays']	= array('Leere Tage nicht anzeigen', 'Wochentage ohne Events werden ausgeblendet.');
 $GLOBALS['TL_LANG']['tl_module']['cal_holiday']		= array('Ferienkalender', 'Bitte wählen Sie einen oder mehrere Kalender für die Ferien und Feiertage.');
 $GLOBALS['TL_LANG']['tl_module']['cal_calendar_ext']= array('Kalender', 'Bitte wählen Sie einen oder mehrere Kalender.');
 $GLOBALS['TL_LANG']['tl_module']['cal_times']		= array('Uhrzeiten anzeigen', 'Uhrzeiten werden rechts angezeigt, und Events gleicher Zeit auf gleicher Höhe angezeigt.');
