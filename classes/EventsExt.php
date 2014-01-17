@@ -202,8 +202,8 @@ class EventsExt extends \Events
                     {
                         if ($fixedDate['new_repeat'])
                         {
-                            // check if we have to stop because of cal_noSpan
-                            if ($this->cal_noSpan && $cntRecurrences > 0)
+                            // check if we have to stop because of showOnlyNext
+                            if ($this->showOnlyNext && $cntRecurrences > 0)
                             {
                                 break;
                             }
@@ -407,12 +407,12 @@ class EventsExt extends \Events
                             continue;
                         }
 
-                        // used for cal_noSpan
+                        // used for showOnlyNext
                         $dateNextStart = date('Ymd', $objEvents->startTime);
                         $dateNextEnd = date('Ymd', $objEvents->endTime);
 
-                        // stop if we have on event and cal_noSpan is true
-                        if ($this->cal_noSpan && $cntRecurrences > 0)
+                        // stop if we have on event and showOnlyNext is true
+                        if ($this->showOnlyNext && $cntRecurrences > 0)
                         {
                             break;
                         }
