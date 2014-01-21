@@ -41,11 +41,15 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['useExceptions']	    = array('Use exce
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEnd']  		= array('End of the recurrences', 'Date of the last recurrence. (calc. automatically)');
 $GLOBALS['TL_LANG']['tl_calendar_events']['weekday']			= array('Weekday', 'Day of week');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatFixedDates']   = array('Repeat event (irregular)', 'Create a irregular recurring event.');
-$GLOBALS['TL_LANG']['tl_calendar_events']['location_legend']    = 'Location and Contact';
+$GLOBALS['TL_LANG']['tl_calendar_events']['location_legend']    = 'Location information';
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_name']      = array('Location', 'Name or short description of the location.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['location_str']       = array('Street', 'Street of the location.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['location_plz']       = array('Zipcode', 'Zipcode of the location.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['location_ort']       = array('City', 'City of the location.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['contact_legend']     = 'Contact information';
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_link']      = array('Link to location', 'e.g. a link to a webpage of the location. (http://www.link.de)');
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_contact']   = array('Contact', 'Name of a contact.');
-$GLOBALS['TL_LANG']['tl_calendar_events']['location_mail']      = array('E-Mail', 'E-Mail Address of the contact.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['location_mail']      = array('E-Mail', 'E-Mail address of the contact.');
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['first']		= 'every first';
 $GLOBALS['TL_LANG']['tl_calendar_events']['second']		= 'every second';
