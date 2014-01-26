@@ -40,6 +40,14 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['recurring'] = str_repla
     $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['recurring']
 );
 
+// change the default palettes
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addTime'] = str_replace
+(
+    'startTime,endTime',
+    'ignoreEndTime,startTime,endTime',
+    $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addTime']
+);
+
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatFixedDates'] = array
 (
     'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatFixedDates'],
@@ -51,6 +59,16 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatFixedDates'] = array
         'buttons'           => array('up' => false, 'down' => false)
     ),
     'sql'               => "blob NULL"
+);
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['ignoreEndTime'] = array
+(
+    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['ignoreEndTime'],
+    'default'           => 0,
+    'exclude'			=> true,
+    'inputType'			=> 'checkbox',
+    'eval'				=> array('tl_class'=>'long clr'),
+    'sql'               => "char(1) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['useExceptions'] = array
@@ -384,6 +402,12 @@ class tl_calendar_events_ext extends \Backend
         {
             $arrSet['startTime'] = strtotime(date('Y-m-d', $arrSet['startTime']) . ' ' . date('H:i:s', $dc->activeRecord->startTime));
             $arrSet['endTime'] = strtotime(date('Y-m-d', $arrSet['endTime']) . ' ' . date('H:i:s', $dc->activeRecord->endTime));
+        }
+
+        // Set endtime to starttime always...
+        if ($dc->activeRecord->ignoreEndTime)
+        {
+            $arrSet['endTime'] = $arrSet['startTime'];
         }
 
         // Adjust end time of "all day" events

@@ -37,6 +37,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEachExt']		= array('Erweitertes
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions']	= array('Ausnahmen nach Datum', 'Bitte geben Sie die Termine an, die sich ändern. Die Anzahl der Wiederholungen muß eventuell angepasst werden.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsInt']= array('Ausnahmen nach Intervall', 'Bitte geben Sie einen Intervall an. Beispiel: "jeden ersten", berücksichtigt jeden ersten gewählten Wochentag im Monat.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsPer']= array('Ausnahmen nach Zeitraum', 'Bitte geben Sie einen Zeitraum an, in dem sich die Termine ändern.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['ignoreEndTime']      = array('Endzeit ignorieren', 'Die Endzeit des Events wird immer auf die Startzeit gesetzt.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['useExceptions']      = array('Ausnahmen definieren', 'Möchten sie Ausnahmen für Wiederholungen angeben?.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEnd']			= array('Ende der Wiederholungen', 'Datum der letzten Wiederholung dieses Events. (automatisch berechnet)');
 $GLOBALS['TL_LANG']['tl_calendar_events']['weekday']			= array('Wochentag', 'Wochentag, an dem das Event stattfindet');

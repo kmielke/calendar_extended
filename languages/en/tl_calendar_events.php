@@ -37,6 +37,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEachExt']		= array('Extended In
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions']	= array('Exception by date', 'Please add changing events here. Adjust the count of the recurrences if needed.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsInt']= array('Exception by interval', 'Please set an interval here. E.g. "every first" will take every first weekday of the month.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsPer']= array('Exception by period', 'Please add an time period. Recurrences in this period are effected.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['ignoreEndTime']      = array('Ignore endtime', 'Endtime is set to starttime.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['useExceptions']	    = array('Use exceptions', 'Do you like to define exceptions?');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatEnd']  		= array('End of the recurrences', 'Date of the last recurrence. (calc. automatically)');
 $GLOBALS['TL_LANG']['tl_calendar_events']['weekday']			= array('Weekday', 'Day of week');
