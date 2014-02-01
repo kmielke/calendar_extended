@@ -197,6 +197,9 @@ class ModuleEventlist extends \EventsExt
         $dateBegin = date('Ymd', $strBegin);
         $dateEnd = date('Ymd', $strEnd);
 
+        // Step 1: get the current time
+        $currTime = time();
+
         // Remove events outside the scope
         foreach ($arrAllEvents as $key=>$days)
         {
@@ -209,6 +212,38 @@ class ModuleEventlist extends \EventsExt
             {
                 foreach ($events as $event)
                 {
+                    // We have to get start and end from DB again, because start is overwritten in addEvent()
+                    $objEV = $this->Database->prepare("select start, stop from tl_calendar_events where id = ?")
+                        ->limit(1)->executeUncached($event['id']);
+                    $eventStart = ($objEV->start) ? $objEV->start : false;
+                    $eventStop = ($objEV->stop) ? $objEV->stop : false;
+                    unset($objEV);
+
+                    // Remove events outside time scope
+                    if ($this->pubTimeRecurrences && ($eventStart && $eventStop))
+                    {
+                        // Step 2: get show from/until times
+                        $startTimeShow = strtotime(date('dmY').' '.date('Hi', $eventStart));
+                        $endTimeShow = strtotime(date('dmY').' '.date('Hi', $eventStop));
+
+                        // Compare the times...
+                        if ($currTime < $startTimeShow || $currTime > $endTimeShow)
+                        {
+                            continue;
+                        }
+                    }
+
+                    // We take the "show from" time or the "event start" time to check the display duration limit
+                    $displayCurrent = strtotime($event['date'].' '.date('Hi', $event['startTime']));
+                    if (strlen($this->displayDuration) > 0)
+                    {
+                        $displayStop = strtotime($this->displayDuration, $displayCurrent);
+                        if ($displayStop < $currTime)
+                        {
+                            continue;
+                        }
+                    }
+
                     $event['firstDay'] = $GLOBALS['TL_LANG']['DAYS'][date('w', $day)];
 					$event['firstDate'] = \Date::parse($objPage->dateFormat, $day);
                     $event['datetime'] = date('Y-m-d', $day);

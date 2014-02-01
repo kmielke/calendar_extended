@@ -719,7 +719,7 @@ class tl_calendar_events_ext extends \Backend
         $arrSet['repeatDates'] = $arrDates;
 
         // Execute the update sql
-        $this->Database->prepare("UPDATE tl_calendar_events %s WHERE id=?")->set($arrSet)->executeUncached($dc->id);
+        $this->Database->prepare("UPDATE tl_calendar_events %s WHERE id=?")->set($arrSet)->execute($dc->id);
     }
 
 

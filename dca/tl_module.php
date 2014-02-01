@@ -28,7 +28,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'] = str_replace
 $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist'] = str_replace
 (
     '{config_legend},cal_calendar,cal_noSpan,',
-    '{config_legend},cal_calendar,cal_holiday,cal_noSpan,showOnlyNext,showRecurrences,',
+    '{config_legend},cal_calendar,cal_holiday,cal_noSpan,pubTimeRecurrences,displayDuration,showOnlyNext,showRecurrences,',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist']
 );
 
@@ -73,13 +73,39 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['cal_holiday'] = array
     'sql'                   => "text NULL"
 );
 
+// $GLOBALS['TL_DCA']['tl_module']['fields']['cal_noSpan']['eval']['tl_class'] = 'w50';
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['pubTimeRecurrences'] = array
+(
+    'label'                 => &$GLOBALS['TL_LANG']['tl_module']['pubTimeRecurrences'],
+    'default'               => 0,
+    'exclude'               => true,
+    'inputType'             => 'checkbox',
+    'eval'                  => array('tl_class'=>'w50'),
+    'sql'                   => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['displayDuration'] = array
+(
+    'label'                 => &$GLOBALS['TL_LANG']['tl_module']['displayDuration'],
+    'default'               => 0,
+    'exclude'               => true,
+    'inputType'             => 'text',
+    'eval'                  => array('tl_class'=>'w50'),
+    'save_callback'     => array
+    (
+        array('calendar_Ext', 'checkDuration')
+    ),
+    'sql'                   => "varchar(128) NOT NULL default ''"
+);
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['showOnlyNext'] = array
 (
     'label'                 => &$GLOBALS['TL_LANG']['tl_module']['showOnlyNext'],
     'default'               => 0,
     'exclude'               => true,
     'inputType'             => 'checkbox',
-    'eval'                  => array('tl_class'=>'w50'),
+    'eval'                  => array('tl_class'=>'clr w50'),
     'sql'                   => "char(1) NOT NULL default ''"
 );
 
@@ -171,6 +197,24 @@ class calendar_Ext extends Backend
 		parent::__construct();
 		$this->import('BackendUser', 'User');
 	}
+
+
+    /**
+     * @param $varValue
+     * @param $dc
+     * @return mixed
+     */
+    public function checkDuration($varValue, $dc)
+    {
+        if (strlen($varValue) > 0)
+        {
+            if (($timestamp = strtotime($varValue)) === false)
+            {
+                throw new Exception($GLOBALS['TL_LANG']['tl_module']['displayDurationError'].': '.$timestamp);
+            }
+        }
+        return $varValue;
+    }
 
 
 	/**
