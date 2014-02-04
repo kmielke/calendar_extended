@@ -98,9 +98,6 @@ class ModuleEventReader extends \EventsExt
 		// Get the current event
 		$objEvent = \CalendarEventsModel::findPublishedByParentAndIdOrAlias(\Input::get('events'), $this->cal_calendar);
 
-        $objEvent->author_name = ($objEvent->getRelated("author")->name) ? $objEvent->getRelated("author")->name : null;
-        $objEvent->author_mail = ($objEvent->getRelated("author")->email) ? $objEvent->getRelated("author")->email : null;
-
 		if ($objEvent === null)
 		{
 			// Do not index or cache the page
@@ -113,7 +110,10 @@ class ModuleEventReader extends \EventsExt
 			return;
 		}
 
-		// Overwrite the page title (see #2853 and #4955)
+        $objEvent->author_name = ($objEvent->getRelated("author")->name) ? $objEvent->getRelated("author")->name : null;
+        $objEvent->author_mail = ($objEvent->getRelated("author")->email) ? $objEvent->getRelated("author")->email : null;
+
+        // Overwrite the page title (see #2853 and #4955)
 		if ($objEvent->title != '')
 		{
 			$objPage->pageTitle = strip_tags(strip_insert_tags($objEvent->title));
@@ -341,10 +341,6 @@ class ModuleEventReader extends \EventsExt
             }
         }
 
-        // Restore event times...
-        $objEvent->startTime = $orgStartTime;
-        $objEvent->endTime = $orgEndTime;
-
         // Override the default image size
 		if ($this->imgSize != '')
 		{
@@ -371,7 +367,11 @@ class ModuleEventReader extends \EventsExt
         $objTemplate->nextDate = ($nextDate) ? $nextDate : null;
         $objTemplate->moveReason = ($moveReason) ? $moveReason : null;
 
-		$objTemplate->details = '';
+        // Restore event times...
+        $objEvent->startTime = $orgStartTime;
+        $objEvent->endTime = $orgEndTime;
+
+        $objTemplate->details = '';
 		$objElement = \ContentModel::findPublishedByPidAndTable($objEvent->id, 'tl_calendar_events');
 
 		if ($objElement !== null)
