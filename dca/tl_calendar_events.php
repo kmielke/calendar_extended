@@ -535,13 +535,13 @@ class tl_calendar_events_ext extends \Backend
             $unit = $arrRange['unit'];
 
             //next month of the event
-            $month = date('n', $dc->activeRecord->startDate);
+            $month = (int)date('n', $dc->activeRecord->startDate);
             //year of the event
-            $year = date('Y', $dc->activeRecord->startDate);
+            $year = (int)date('Y', $dc->activeRecord->startDate);
             //search date for the next event
-            $next = $dc->activeRecord->startDate;
+            $next = (int)$dc->activeRecord->startDate;
             //last month
-            $count = $dc->activeRecord->recurrences;
+            $count = (int)$dc->activeRecord->recurrences;
 
             //array of the exception dates
             $arrDates = array();
@@ -550,8 +550,9 @@ class tl_calendar_events_ext extends \Backend
             {
                 for ($i = 0; $i < $count; $i++)
                 {
-                    $timetoadd = $arg . ' ' . $unit . ' of ' . $arrMonth[$month] . ' ' . $year;
+                    $month++;
 
+                    $timetoadd = $arg . ' ' . $unit . ' of ' . $arrMonth[$month] . ' ' . $year;
                     if (!strtotime($timetoadd, $next))
                     {
                         break;
@@ -561,7 +562,6 @@ class tl_calendar_events_ext extends \Backend
                     $next = $strtotime;
                     $arrDates[$next] = $next;
 
-                    $month++;
                     if (($month % 13) == 0)
                     {
                         $month = 1;
