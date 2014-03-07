@@ -74,7 +74,7 @@ class ModuleEventlist extends \EventsExt
 		foreach (array_merge($this->cal_calendar, $this->cal_holiday) as $cal)
 		{
 			$objBG = $this->Database->prepare("select title, bg_color, fg_color from tl_calendar where id = ?")
-				->limit(1)->executeUncached($cal);
+				->limit(1)->execute($cal);
 
 			$this->calConf[$cal]['calendar'] = $objBG->title;
 
@@ -214,7 +214,7 @@ class ModuleEventlist extends \EventsExt
                 {
                     // We have to get start and end from DB again, because start is overwritten in addEvent()
                     $objEV = $this->Database->prepare("select start, stop from tl_calendar_events where id = ?")
-                        ->limit(1)->executeUncached($event['id']);
+                        ->limit(1)->execute($event['id']);
                     $eventStart = ($objEV->start) ? $objEV->start : false;
                     $eventStop = ($objEV->stop) ? $objEV->stop : false;
                     unset($objEV);

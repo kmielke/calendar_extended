@@ -192,61 +192,6 @@ class EventsExt extends \Events
                 $orgDateEnd = new \Date($objEvents->endTime);
 
                 /*
-                 * next we handle the irregular recurrences
-                 *
-                 * this is a complete different case
-                 */
-                if (!is_null($arrayFixedDates))
-                {
-                    foreach ($arrayFixedDates as $fixedDate)
-                    {
-                        if ($fixedDate['new_repeat'])
-                        {
-                            // check if we have to stop because of showOnlyNext
-                            if ($this->showOnlyNext && $cntRecurrences > 0)
-                            {
-                                break;
-                            }
-
-                            // new start time
-                            $strNewDate = $fixedDate['new_repeat'];
-                            $strNewTime = (strlen($fixedDate['new_start']) ? $fixedDate['new_start'] : $orgDateStart->time);
-                            $newDateStart = new \Date(trim($strNewDate.' '.$strNewTime), \Date::getNumericDatimFormat());
-
-                            $objEvents->startTime = $newDateStart->timestamp;
-                            $dateNextStart = date('Ymd', $objEvents->startTime);
-
-                            // new end time
-                            $strNewTime = (strlen($fixedDate['new_end']) ? $fixedDate['new_end'] : $orgDateEnd->time);
-                            $newDateEnd = new \Date(trim($strNewDate.' '.$strNewTime), \Date::getNumericDatimFormat());
-
-                            $objEvents->endTime = $newDateEnd->timestamp;
-                            $dateNextEnd = date('Ymd', $objEvents->endTime);
-
-                            // set a reason if given...
-                            $objEvents->moveReason = $fixedDate['reason'] ? $fixedDate['reason'] : null;
-
-                            // position of the event
-                            $objEvents->pos_idx++;
-
-                            // add the irregular event to the array
-                            $eventUrl = $strUrl."?day=".date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
-                            $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
-
-                            // Restore the original values
-                            $objEvents->startTime = $orgDateStart->timestamp;
-                            $objEvents->endTime = $orgDateEnd->timestamp;
-
-                            // increase $cntRecurrences if event is in scope
-                            if ($dateNextStart >= $dateBegin && $dateNextEnd <= $dateEnd)
-                            {
-                                $cntRecurrences++;
-                            }
-                        }
-                    }
-                }
-
-                /*
                  * Recurring events and Ext. Recurring events
                  *
                  * Here we manage the recurrences. We take the repeat option and set the new values
@@ -400,10 +345,10 @@ class EventsExt extends \Events
                                 $objEvents->endTime = $oldDate['endTime'];
                             }
                             // reset this values...
-                            $objEvents->moveReason = NULL;
-                            $objEvents->oldDate = NULL;
-                            $objEvents->oldStartTime = NULL;
-                            $objEvents->oldEndTime = NULL;
+                            $objEvents->moveReason = null;
+                            $objEvents->oldDate = null;
+                            $objEvents->oldStartTime = null;
+                            $objEvents->oldEndTime = null;
                             continue;
                         }
 
@@ -435,10 +380,10 @@ class EventsExt extends \Events
                         }
 
                         // reset this values...
-                        $objEvents->moveReason = NULL;
-                        $objEvents->oldDate = NULL;
-                        $objEvents->oldStartTime = NULL;
-                        $objEvents->oldEndTime = NULL;
+                        $objEvents->moveReason = null;
+                        $objEvents->oldDate = null;
+                        $objEvents->oldStartTime = null;
+                        $objEvents->oldEndTime = null;
 
                         // in case of a move we have to reset the original date
                         if ($oldDate)
@@ -453,7 +398,64 @@ class EventsExt extends \Events
                             $cntRecurrences++;
                         }
                     }
+                    unset($objEvents->moveReason);
                 } // end if recurring...
+
+                /*
+                 * next we handle the irregular recurrences
+                 *
+                 * this is a complete different case
+                 */
+                if (!is_null($arrayFixedDates) && $showRecurrences)
+                {
+                    foreach ($arrayFixedDates as $fixedDate)
+                    {
+                        if ($fixedDate['new_repeat'])
+                        {
+                            // check if we have to stop because of showOnlyNext
+                            if ($this->showOnlyNext && $cntRecurrences > 0)
+                            {
+                                break;
+                            }
+
+                            // new start time
+                            $strNewDate = $fixedDate['new_repeat'];
+                            $strNewTime = (strlen($fixedDate['new_start']) ? $fixedDate['new_start'] : $orgDateStart->time);
+                            $newDateStart = new \Date(trim($strNewDate.' '.$strNewTime), \Date::getNumericDatimFormat());
+
+                            $objEvents->startTime = $newDateStart->timestamp;
+                            $dateNextStart = date('Ymd', $objEvents->startTime);
+
+                            // new end time
+                            $strNewTime = (strlen($fixedDate['new_end']) ? $fixedDate['new_end'] : $orgDateEnd->time);
+                            $newDateEnd = new \Date(trim($strNewDate.' '.$strNewTime), \Date::getNumericDatimFormat());
+
+                            $objEvents->endTime = $newDateEnd->timestamp;
+                            $dateNextEnd = date('Ymd', $objEvents->endTime);
+
+                            // set a reason if given...
+                            $objEvents->moveReason = $fixedDate['reason'] ? $fixedDate['reason'] : null;
+
+                            // position of the event
+                            $objEvents->pos_idx++;
+
+                            // add the irregular event to the array
+                            $eventUrl = $strUrl."?day=".date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
+                            $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
+
+                            // Restore the original values
+                            $objEvents->startTime = $orgDateStart->timestamp;
+                            $objEvents->endTime = $orgDateEnd->timestamp;
+
+                            // increase $cntRecurrences if event is in scope
+                            if ($dateNextStart >= $dateBegin && $dateNextEnd <= $dateEnd)
+                            {
+                                $cntRecurrences++;
+                            }
+                        }
+                    }
+                    unset($objEvents->moveReason);
+                }
 
                 // Reset times
                 $objEvents->startTime = $initStartTime;

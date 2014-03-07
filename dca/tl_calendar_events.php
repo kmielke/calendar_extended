@@ -418,11 +418,14 @@ class tl_calendar_events_ext extends \Backend
 
         $arrSet['repeatEnd'] = 0;
 
+        // Array of possible repeatEnd dates...
+        $maxRepeatEnd = array();
+        $maxRepeatEnd[] = $arrSet['repeatEnd'];
+
         // Set the repeatEnd date
         $arrayFixedDates = deserialize($dc->activeRecord->repeatFixedDates) ? deserialize($dc->activeRecord->repeatFixedDates) : null;
         if (!is_null($arrayFixedDates))
         {
-            $maxIrrDate = array();
             foreach ($arrayFixedDates as $fixedDate)
             {
                 $nextValueDate = (strlen($fixedDate['new_repeat'])) ? strtotime($fixedDate['new_repeat']) : $dc->activeRecord->startTime;
@@ -434,19 +437,7 @@ class tl_calendar_events_ext extends \Backend
                 {
                     $nextEndTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", $dc->activeRecord->endTime));
                 }
-
-                $maxIrrDate[] = $nextEndTime;
-            }
-
-            // Let's check if we have some data...
-            if (count($maxIrrDate) > 0)
-            {
-                // In case we only have one value just add a zero...
-                if (count($maxIrrDate) == 1)
-                {
-                    $maxIrrDate[] = 0;
-                }
-                $arrSet['repeatEnd'] = max($maxIrrDate);
+                $maxRepeatEnd[] = $nextEndTime;
             }
         }
         else
@@ -466,7 +457,7 @@ class tl_calendar_events_ext extends \Backend
             $arrSet['repeatEnd'] = strtotime($strtotime, $arrSet['endTime']);
 
             //store the list of dates
-            $next = $dc->activeRecord->startDate;
+            $next = $arrSet['startTime'];
             $count = $dc->activeRecord->recurrences;
 
             //array of the exception dates
@@ -519,6 +510,7 @@ class tl_calendar_events_ext extends \Backend
                     break;
                 }
             }
+            $maxRepeatEnd[] = $arrSet['repeatEnd'];
         }
 
         //list of months we need
@@ -539,7 +531,7 @@ class tl_calendar_events_ext extends \Backend
             //year of the event
             $year = (int)date('Y', $dc->activeRecord->startDate);
             //search date for the next event
-            $next = (int)$dc->activeRecord->startDate;
+            $next = (int)$arrSet['startTime'];
             //last month
             $count = (int)$dc->activeRecord->recurrences;
 
@@ -559,7 +551,7 @@ class tl_calendar_events_ext extends \Backend
                     }
 
                     $strtotime = strtotime($timetoadd, $next);
-                    $next = $strtotime;
+                    $next = strtotime(date('Y-m-d', $strtotime) . ' ' . date('H:i:s', $arrSet['endTime']));
                     $arrDates[$next] = $next;
 
                     if (($month % 13) == 0)
@@ -598,9 +590,14 @@ class tl_calendar_events_ext extends \Backend
                     }
                 }
             }
+            $maxRepeatEnd[] = $arrSet['repeatEnd'];
         }
 
         // the last repeatEnd Date
+        if (count($maxRepeatEnd) > 1)
+        {
+            $arrSet['repeatEnd'] = max($maxRepeatEnd);
+        }
         $currentEndDate = $arrSet['repeatEnd'];
 
         if ($dc->activeRecord->useExceptions)
@@ -699,6 +696,7 @@ class tl_calendar_events_ext extends \Backend
                         if ($newDate > $currentEndDate)
                         {
                             $arrSet['repeatEnd'] = $newDate;
+                            $maxRepeatEnd[] = $arrSet['repeatEnd'];
                         }
 
                         // Find the date and replace it
@@ -715,11 +713,16 @@ class tl_calendar_events_ext extends \Backend
             $arrSet['exceptionList'] = (count($exceptionRows) > 0) ? serialize($exceptionRows) : NULL;
         }
 
+        if (count($maxRepeatEnd) > 1)
+        {
+            $arrSet['repeatEnd'] = max($maxRepeatEnd);
+        }
         // Set the array of dates
         $arrSet['repeatDates'] = $arrDates;
 
         // Execute the update sql
         $this->Database->prepare("UPDATE tl_calendar_events %s WHERE id=?")->set($arrSet)->execute($dc->id);
+        unset($maxRepeatEnd);
     }
 
 

@@ -131,19 +131,26 @@ class ModuleEventReader extends \EventsExt
         $orgStartTime = $objEvent->startTime;
         $orgEndTime = $objEvent->endTime;
 
+        // Save the possible next event date
+        $objEvent->nextStartTime = $objEvent->startTime;
+        $objEvent->nextEndTime = $objEvent->endTime;
+
         // Do not show dates in the past if the event is recurring (see #923)
         if ($objEvent->recurring)
         {
             $arrRange = deserialize($objEvent->repeatEach);
 
-            $objEvent->nextStartTime = $objEvent->startTime;
-            $objEvent->nextEndTime = $objEvent->endTime;
+//            // keep the date
+//            $objEvent->nextStartTime = $objEvent->startTime;
+//            $objEvent->nextEndTime = $objEvent->endTime;
+
             while ($objEvent->nextStartTime < time() && $objEvent->nextEndTime < $objEvent->repeatEnd)
             {
                 $objEvent->nextStartTime = strtotime('+' . $arrRange['value'] . ' ' . $arrRange['unit'], $objEvent->nextStartTime);
                 $objEvent->nextEndTime = strtotime('+' . $arrRange['value'] . ' ' . $arrRange['unit'], $objEvent->nextEndTime);
             }
         }
+
         // Do not show dates in the past if the event is recurringExt
         if ($objEvent->recurringExt)
         {
@@ -153,9 +160,11 @@ class ModuleEventReader extends \EventsExt
             $arrMonth = array(1=>'january', 2=>'february', 3=>'march', 4=>'april', 5=>'may', 6=>'june',
                 7=>'july', 8=>'august', 9=>'september', 10=>'october', 11=>'november', 12=>'december',
             );
-            // keep the date
-            $objEvent->nextStartTime = $objEvent->startTime;
-            $objEvent->nextEndTime = $objEvent->endTime;
+
+//            // keep the date
+//            $objEvent->nextStartTime = $objEvent->startTime;
+//            $objEvent->nextEndTime = $objEvent->endTime;
+
             // month and year of the start date
             $month = date('n', $objEvent->nextStartTime);
             $year = date('Y', $objEvent->nextStartTime);
@@ -184,35 +193,36 @@ class ModuleEventReader extends \EventsExt
             // Check if there are valid data in the array...
             if (strlen($arrFixedDates[0]['new_repeat']))
             {
-                $objEvent->nextStartTime = $objEvent->startTime;
-                $objEvent->nextEndTime = $objEvent->endTime;
-            }
+//            // keep the date
+//            $objEvent->nextStartTime = $objEvent->startTime;
+//            $objEvent->nextEndTime = $objEvent->endTime;
 
-            foreach ($arrFixedDates as $fixedDate)
-            {
-                $nextValueDate = ($fixedDate['new_repeat']) ? strtotime($fixedDate['new_repeat']) : $objEvent->nextStartTime;
-                if (strlen($fixedDate['new_start']))
+                foreach ($arrFixedDates as $fixedDate)
                 {
-                    $nextStartTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", strtotime($fixedDate['new_start'])));
-                }
-                else
-                {
-                    $nextStartTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", $objEvent->nextStartTime));
-                }
-                if (strlen($fixedDate['new_end']))
-                {
-                    $nextEndTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", strtotime($fixedDate['new_end'])));
-                }
-                else
-                {
-                    $nextEndTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", $objEvent->nextEndTime));
-                }
+                    $nextValueDate = ($fixedDate['new_repeat']) ? strtotime($fixedDate['new_repeat']) : $objEvent->nextStartTime;
+                    if (strlen($fixedDate['new_start']))
+                    {
+                        $nextStartTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", strtotime($fixedDate['new_start'])));
+                    }
+                    else
+                    {
+                        $nextStartTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", $objEvent->nextStartTime));
+                    }
+                    if (strlen($fixedDate['new_end']))
+                    {
+                        $nextEndTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", strtotime($fixedDate['new_end'])));
+                    }
+                    else
+                    {
+                        $nextEndTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", $objEvent->nextEndTime));
+                    }
 
-                if ($nextValueDate > time() && $nextEndTime < $objEvent->repeatEnd)
-                {
-                    $objEvent->nextStartTime = $nextStartTime;
-                    $objEvent->nextEndTime = $nextEndTime;
-                    break;
+                    if ($nextValueDate < time() && $nextEndTime < $objEvent->repeatEnd)
+                    {
+                        $objEvent->nextStartTime = $nextStartTime;
+                        $objEvent->nextEndTime = $nextEndTime;
+                        break;
+                    }
                 }
             }
         }

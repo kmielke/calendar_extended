@@ -82,7 +82,7 @@ class ModuleYearView extends \EventsExt
 		foreach (array_merge($this->cal_calendar, $this->cal_holiday) as $cal)
 		{
 			$objBG = $this->Database->prepare("select title, bg_color, fg_color from tl_calendar where id = ?")
-				->limit(1)->executeUncached($cal);
+				->limit(1)->execute($cal);
 
 			$this->calConf[$cal]['calendar'] = $objBG->title;
 
