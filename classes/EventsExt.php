@@ -272,8 +272,9 @@ class EventsExt extends \Events
                             $objEvents->cssClass = str_replace("exception", "", $objEvents->cssClass);
                             unset($objEvents->moveReason);
 
+
                             // date to search for
-                            $searchDate = mktime(0, 0, 0, date('m', $objEvents->startTime), date("d", $objEvents->startTime), date("Y", $objEvents->startTime));
+                            $searchDate = strtotime(date("Ymd", $objEvents->startTime).' '.date("H:i", $objEvents->endTime));
 
                             // store old date values for later reset
                             $oldDate = array();
