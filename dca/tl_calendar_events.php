@@ -551,7 +551,8 @@ class tl_calendar_events_ext extends \Backend
                     }
 
                     $strtotime = strtotime($timetoadd, $next);
-                    $next = strtotime(date('Y-m-d', $strtotime) . ' ' . date('H:i:s', $arrSet['endTime']));
+//                    $next = strtotime(date('Y-m-d', $strtotime) . ' ' . date('H:i:s', $arrSet['endTime']));
+                    $next = strtotime($strtotime);
                     $arrDates[$next] = $next;
 
                     if (($month % 13) == 0)
