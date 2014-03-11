@@ -424,7 +424,7 @@ class tl_calendar_events_ext extends \Backend
 
         // Set the repeatEnd date
         $arrayFixedDates = deserialize($dc->activeRecord->repeatFixedDates) ? deserialize($dc->activeRecord->repeatFixedDates) : null;
-        if (!is_null($arrayFixedDates))
+        if ($arrayFixedDates['new_repeat'])
         {
             foreach ($arrayFixedDates as $fixedDate)
             {
@@ -551,7 +551,6 @@ class tl_calendar_events_ext extends \Backend
                     }
 
                     $strtotime = strtotime($timetoadd, $next);
-//                    $next = strtotime(date('Y-m-d', $strtotime) . ' ' . date('H:i:s', $arrSet['endTime']));
                     $next = strtotime($strtotime);
                     $arrDates[$next] = $next;
 
@@ -606,39 +605,6 @@ class tl_calendar_events_ext extends \Backend
             // this will be he list of the exception
             $exceptionRows = array();
 
-            // ... and last but not least by range
-            if ($dc->activeRecord->repeatExceptionsPer)
-            {
-                // exception rules
-                $rows = deserialize($dc->activeRecord->repeatExceptionsPer);
-
-                // all recurrences...
-                $repeatDates = deserialize($dc->activeRecord->repeatDates);
-
-                // run thru all dates
-                foreach ($rows as $row)
-                {
-                    if (!$row['exception'])
-                    {
-                        continue;
-                    }
-
-                    // now we have to find all dates matching the exception rules...
-                    $dateFrom = strtotime($row['exception']);
-                    $dateTo = strtotime($row['exceptionTo']);
-                    unset($row['exceptionTo']);
-
-                    foreach ($repeatDates as $k => $repeatDate)
-                    {
-                        if ($k >= $dateFrom && $k <= $dateTo)
-                        {
-                            $row['exception'] = $k;
-                            $exceptionRows[$k] = $row;
-                        }
-                    }
-                }
-            }
-
             // ... then we check them by interval...
             if ($dc->activeRecord->repeatExceptionsInt)
             {
@@ -667,8 +633,45 @@ class tl_calendar_events_ext extends \Backend
                         $month = date('n', $k);
                         $year = date('Y', $k);
 
-                        $dateToFind = $arg.' '.$unit.' of '.$arrMonth[$month].' '.$year;
-                        if ($k == strtotime($dateToFind))
+                        $strDateToFind = $arg.' '.$unit.' of '.$arrMonth[$month].' '.$year;
+                        $dateToFind = strtotime($strDateToFind);
+                        if (date('dmY', $k) == date('dmY', $dateToFind))
+                        {
+                            $row['exception'] = $k;
+                            $exceptionRows[$k] = $row;
+                        }
+                    }
+                }
+            }
+
+            // ... and last but not least by range
+            if ($dc->activeRecord->repeatExceptionsPer)
+            {
+                // exception rules
+                $rows = deserialize($dc->activeRecord->repeatExceptionsPer);
+
+                // all recurrences...
+                $repeatDates = deserialize($dc->activeRecord->repeatDates);
+
+                // run thru all dates
+                foreach ($rows as $row)
+                {
+                    if (!$row['exception'])
+                    {
+                        continue;
+                    }
+
+                    $row['new_start'] = ($row['new_start']) ? $row['new_start'] : '00:00';
+                    $row['new_end'] = ($row['new_end']) ? $row['new_end'] : '23:59';
+
+                    // now we have to find all dates matching the exception rules...
+                    $dateFrom = strtotime($row['exception'].' '.$row['new_start']);
+                    $dateTo = strtotime($row['exceptionTo'].' '.$row['new_end']);
+                    unset($row['exceptionTo']);
+
+                    foreach ($repeatDates as $k => $repeatDate)
+                    {
+                        if ($k >= $dateFrom && $k <= $dateTo)
                         {
                             $row['exception'] = $k;
                             $exceptionRows[$k] = $row;
