@@ -424,7 +424,7 @@ class tl_calendar_events_ext extends \Backend
 
         // Set the repeatEnd date
         $arrayFixedDates = deserialize($dc->activeRecord->repeatFixedDates) ? deserialize($dc->activeRecord->repeatFixedDates) : null;
-        if ($arrayFixedDates['new_repeat'])
+        if (!is_null($arrayFixedDates))
         {
             foreach ($arrayFixedDates as $fixedDate)
             {
@@ -551,7 +551,7 @@ class tl_calendar_events_ext extends \Backend
                     }
 
                     $strtotime = strtotime($timetoadd, $next);
-                    $next = strtotime($strtotime);
+                    $next = $strtotime;
                     $arrDates[$next] = $next;
 
                     if (($month % 13) == 0)

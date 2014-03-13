@@ -87,9 +87,13 @@ class CalendarEventsModel extends \Model
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
 
-		return static::findBy($arrColumns, $intPid, array('order'=>"$t.startTime"), $arrOptions);
-	}
+		if (!isset($arrOptions['order']))
+		{
+			$arrOptions['order']  = "$t.startTime";
+	    }
 
+		return static::findBy($arrColumns, $intPid, $arrOptions);
+	}
 
 	/**
 	 * Find published events with the default redirect target by their parent ID
@@ -110,9 +114,13 @@ class CalendarEventsModel extends \Model
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
 
-		return static::findBy($arrColumns, $intPid, array('order'=>"$t.startTime DESC"), $arrOptions);
-	}
+		if (!isset($arrOptions['order']))
+		{
+			$arrOptions['order']  = "$t.startTime DESC";
+	    }
 
+		return static::findBy($arrColumns, $intPid, $arrOptions);
+	}
 
 	/**
 	 * Find upcoming events by their parent IDs
