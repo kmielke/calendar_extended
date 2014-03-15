@@ -471,7 +471,7 @@ class tl_calendar_events_ext extends \Backend
             // last date of the recurrences
             $end = $arrSet['repeatEnd'];
 
-            while ($next < $end)
+            while ($next <= $end)
             {
                 $timetoadd = '+ ' . $arrRange['value'] . ' ' . $unit;
 
@@ -501,7 +501,7 @@ class tl_calendar_events_ext extends \Backend
                 }
                 if ($store === true)
                 {
-                    $arrDates[$next] = $next;
+                    $arrDates[$next] = date('d.m.Y H:i', $next);
                 }
 
                 //check if have the configured max value
@@ -552,7 +552,7 @@ class tl_calendar_events_ext extends \Backend
 
                     $strtotime = strtotime($timetoadd, $next);
                     $next = $strtotime;
-                    $arrDates[$next] = $next;
+                    $arrDates[$next] = date('d.m.Y H:i', $next);
 
                     if (($month % 13) == 0)
                     {
@@ -580,7 +580,7 @@ class tl_calendar_events_ext extends \Backend
                     $strtotime = strtotime($timetoadd, $next);
                     $next = $strtotime;
 
-                    $arrDates[$next] = $next;
+                    $arrDates[$next] = date('d.m.Y H:i', $next);
 
                     $month++;
                     if (($month % 13) == 0)
@@ -592,6 +592,7 @@ class tl_calendar_events_ext extends \Backend
             }
             $maxRepeatEnd[] = $arrSet['repeatEnd'];
         }
+        unset($next);
 
         // the last repeatEnd Date
         if (count($maxRepeatEnd) > 1)
@@ -608,14 +609,11 @@ class tl_calendar_events_ext extends \Backend
             // ... then we check them by interval...
             if ($dc->activeRecord->repeatExceptionsInt)
             {
-                // exception rules
-                $rows = deserialize($dc->activeRecord->repeatExceptionsInt);
-
                 // weekday
                 $unit = $GLOBALS['TL_CONFIG']['tl_calendar_events']['weekdays'][$dc->activeRecord->weekday];
 
-                // all recurrences...
-                $repeatDates = deserialize($dc->activeRecord->repeatDates);
+                // exception rules
+                $rows = deserialize($dc->activeRecord->repeatExceptionsInt);
 
                 // run thru all dates
                 foreach ($rows as $row)
@@ -628,18 +626,34 @@ class tl_calendar_events_ext extends \Backend
                     // now we have to find all dates matching the exception rules...
                     $arg = $row['exception'];
 
-                    foreach ($repeatDates as $k => $repeatDate)
+                    $searchNext = $arrSet['startTime'];
+                    $searchEnd = $arrSet['repeatEnd'];
+                    $month = (int)date('n', $searchNext);
+                    $year = (int)date('Y', $searchNext);
+                    while ($searchNext <= $searchEnd)
                     {
-                        $month = date('n', $k);
-                        $year = date('Y', $k);
-
                         $strDateToFind = $arg.' '.$unit.' of '.$arrMonth[$month].' '.$year;
-                        $dateToFind = strtotime($strDateToFind);
-                        if (date('dmY', $k) == date('dmY', $dateToFind))
+                        $searchNext = strtotime($strDateToFind);
+
+                        if ($searchNext < $arrSet['startTime'])
                         {
-                            $row['exception'] = strtotime(date('d.m.Y', $k));
-                            $row['exception_date'] = date('d.m.Y', $k);
-                            $exceptionRows[$k] = $row;
+                            $month++;
+                            if (($month % 13) == 0)
+                            {
+                                $month = 1;
+                                $year += 1;
+                            }
+                            continue;
+                        }
+                        $row['exception'] = strtotime(date('Y-m-d', $searchNext));
+                        $row['exception_date'] = date('Y-m-d', $searchNext);
+                        $exceptionRows[$searchNext] = $row;
+
+                        $month++;
+                        if (($month % 13) == 0)
+                        {
+                            $month = 1;
+                            $year += 1;
                         }
                     }
                 }
@@ -674,7 +688,8 @@ class tl_calendar_events_ext extends \Backend
                     {
                         if ($k >= $dateFrom && $k <= $dateTo)
                         {
-                            $row['exception'] = $k;
+                            $row['exception'] = strtotime(date('Y-m-d', $k));
+                            $row['exception_date'] = date('Y-m-d', $k);
                             $exceptionRows[$k] = $row;
                         }
                     }
@@ -694,7 +709,9 @@ class tl_calendar_events_ext extends \Backend
                         continue;
                     }
 
-                    $k = $row['exception'];
+                    $row['exception'] = strtotime(date('Y-m-d', $row['exception']));
+                    $row['exception_date'] = date('Y-m-d', $row['exception']);
+
                     if ($row['action'] == 'move')
                     {
                         $newDate = strtotime($row['new_exception'], $row['exception']);
@@ -705,17 +722,20 @@ class tl_calendar_events_ext extends \Backend
                         }
 
                         // Find the date and replace it
-                        $pos = array_search($row['values']['exception'], $arrDates);
-                        if ($pos)
+                        if (array_key_exists($row['exception'], $arrDates))
                         {
-                            $arrDates[$pos] = $newDate;
+                            $arrDates[$row['exception']] = date('d.m.Y H:i', $newDate);
                         }
                     }
-                    $exceptionRows[$k] = $row;
+                    $exceptionRows[$row['exception']] = $row;
                 }
             }
 
-            $arrSet['exceptionList'] = (count($exceptionRows) > 0) ? serialize($exceptionRows) : NULL;
+            if (count($exceptionRows) > 1)
+            {
+                ksort($exceptionRows);
+            }
+            $arrSet['exceptionList'] = (count($exceptionRows) > 0) ? serialize($exceptionRows) : null;
         }
 
         if (count($maxRepeatEnd) > 1)
