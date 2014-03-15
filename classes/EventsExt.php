@@ -273,7 +273,7 @@ class EventsExt extends \Events
                             unset($objEvents->moveReason);
 
                             // date to search for
-                            $searchDate = strtotime(date("Ymd", $objEvents->startTime)); //.' '.date("H:i", $objEvents->startTime));
+                            $searchDate = strtotime(date("d.m.Y", $objEvents->startTime));
 
                             // store old date values for later reset
                             $oldDate = array();

@@ -637,7 +637,8 @@ class tl_calendar_events_ext extends \Backend
                         $dateToFind = strtotime($strDateToFind);
                         if (date('dmY', $k) == date('dmY', $dateToFind))
                         {
-                            $row['exception'] = $k;
+                            $row['exception'] = strtotime(date('d.m.Y', $k));
+                            $row['exception_date'] = date('d.m.Y', $k);
                             $exceptionRows[$k] = $row;
                         }
                     }
