@@ -1,14 +1,14 @@
-<?php 
+<?php
 
 /**
  * Contao Open Source CMS
- * 
+ *
  * Copyright (C) 2005-2012 Leo Feyer
- * 
- * @package   Contao 
- * @author    Kester Mielke 
- * @license   LGPL 
- * @copyright Kester Mielke 2010-2013 
+ *
+ * @package   Contao
+ * @author    Kester Mielke
+ * @license   LGPL
+ * @copyright Kester Mielke 2010-2013
  */
 
 
@@ -18,10 +18,10 @@
 namespace Contao;
 
 /**
- * Class EventExt 
+ * Class EventExt
  *
- * @copyright  Kester Mielke 2010-2013 
- * @author     Kester Mielke 
+ * @copyright  Kester Mielke 2010-2013
+ * @author     Kester Mielke
  * @package    Devtools
  */
 class EventsExt extends \Events
@@ -177,7 +177,7 @@ class EventsExt extends \Events
                 // store the entry if everything is fine...
                 if ($store === true)
                 {
-                    $eventUrl = $strUrl."?day=".Date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
+                    $eventUrl = $strUrl."?day=".date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
                     $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
 
                     // increase $cntRecurrences if event is in scope
@@ -376,7 +376,7 @@ class EventsExt extends \Events
                         }
                         if ($store === true)
                         {
-                            $eventUrl = $strUrl."?day=".Date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
+                            $eventUrl = $strUrl."?day=".date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
                             $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
                         }
 
