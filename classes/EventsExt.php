@@ -190,6 +190,7 @@ class EventsExt extends \Events
                 // keep the original values
                 $orgDateStart = new \Date($objEvents->startTime);
                 $orgDateEnd = new \Date($objEvents->endTime);
+                $orgDateSpan = \Calendar::calculateSpan($objEvents->startTime, $objEvents->endTime);
 
                 /*
                  * Recurring events and Ext. Recurring events
@@ -430,6 +431,12 @@ class EventsExt extends \Events
                             // new end time
                             $strNewTime = (strlen($fixedDate['new_end']) ? $fixedDate['new_end'] : $orgDateEnd->time);
                             $newDateEnd = new \Date(trim($strNewDate.' '.$strNewTime), \Date::getNumericDatimFormat());
+
+                            // Use the multi-day span of the event
+                            if ($orgDateSpan > 0)
+                            {
+                                $newDateEnd = new \Date(strtotime('+' . $orgDateSpan . ' days', $newDateEnd->timestamp), \Date::getNumericDatimFormat());
+                            }
 
                             $objEvents->endTime = $newDateEnd->timestamp;
                             $dateNextEnd = date('Ymd', $objEvents->endTime);
