@@ -11,8 +11,14 @@
  * @copyright Kester Mielke 2010-2013 
  */
 
-$GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = array('tl_calendar_events_ext', 'adjustTime');
-$GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = array('tl_calendar_events', 'scheduleUpdate');
+foreach ($GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'] as $k => $v)
+{
+    if ($v[0] == 'tl_calendar_events' && $v[1] == 'adjustTime')
+    {
+        unset($GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][$k]);
+        array_insert($GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'], 0, array(array('tl_calendar_events_ext','adjustTime')));
+    }
+}
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
 (
