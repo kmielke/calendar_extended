@@ -682,8 +682,8 @@ class tl_calendar_events_ext extends \Backend
                         continue;
                     }
 
-                    $row['new_start'] = ($row['new_start']) ? $row['new_start'] : '00:00';
-                    $row['new_end'] = ($row['new_end']) ? $row['new_end'] : '23:59';
+                    $row['new_start'] = ($row['new_start']) ? $row['new_start'] : date('H:i', $dc->activeRecord->startTime); #'00:00';
+                    $row['new_end'] = ($row['new_end']) ? $row['new_end'] : date('H:i', $dc->activeRecord->endTime); #'23:59';
 
                     // now we have to find all dates matching the exception rules...
                     $dateFrom = strtotime($row['exception'].' '.$row['new_start']);
@@ -694,7 +694,8 @@ class tl_calendar_events_ext extends \Backend
                     {
                         if ($k >= $dateFrom && $k <= $dateTo)
                         {
-                            $row['exception'] = strtotime(date('Y-m-d', $k));
+                            $k = strtotime(date('Y-m-d', $k));
+                            $row['exception'] = $k;
                             $row['exception_date'] = date('Y-m-d', $k);
                             $exceptionRows[$k] = $row;
                         }
