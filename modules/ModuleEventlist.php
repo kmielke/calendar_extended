@@ -262,6 +262,12 @@ class ModuleEventlist extends \EventsExt
                     {
                         $event['fgstyle'] = $this->calConf[$event['pid']]['foreground'];
                     }
+                    // Set endtime to starttime always...
+                    if ((int)$event['ignoreEndTime'] == 1)
+                    {
+                        $event['endTime'] = '';
+                        $event['time'] = \Date::parse($objPage->timeFormat, $event['startTime']);
+                    }
 
                     $arrEvents[] = $event;
                 }

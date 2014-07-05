@@ -651,6 +651,15 @@ class tl_calendar_events_ext extends \Backend
                             }
                             continue;
                         }
+
+                        $row['new_start'] = ($row['new_start']) ? $row['new_start'] : date('H:i', $dc->activeRecord->startTime); #'00:00';
+                        $row['new_end'] = ($row['new_end']) ? $row['new_end'] : date('H:i', $dc->activeRecord->endTime); #'23:59';
+                        // Set endtime to starttime always...
+                        if ($dc->activeRecord->ignoreEndTime)
+                        {
+                            $row['new_end'] = '';
+                        }
+
                         $row['exception'] = strtotime(date('Y-m-d', $searchNext));
                         $row['exception_date'] = date('Y-m-d', $searchNext);
                         $exceptionRows[$searchNext] = $row;
@@ -684,6 +693,11 @@ class tl_calendar_events_ext extends \Backend
 
                     $row['new_start'] = ($row['new_start']) ? $row['new_start'] : date('H:i', $dc->activeRecord->startTime); #'00:00';
                     $row['new_end'] = ($row['new_end']) ? $row['new_end'] : date('H:i', $dc->activeRecord->endTime); #'23:59';
+                    // Set endtime to starttime always...
+                    if ($dc->activeRecord->ignoreEndTime)
+                    {
+                        $row['new_end'] = '';
+                    }
 
                     // now we have to find all dates matching the exception rules...
                     $dateFrom = strtotime($row['exception'].' '.$row['new_start']);
@@ -718,6 +732,14 @@ class tl_calendar_events_ext extends \Backend
 
                     $row['exception'] = strtotime(date('Y-m-d', $row['exception']));
                     $row['exception_date'] = date('Y-m-d', $row['exception']);
+
+                    $row['new_start'] = ($row['new_start']) ? $row['new_start'] : date('H:i', $dc->activeRecord->startTime); #'00:00';
+                    $row['new_end'] = ($row['new_end']) ? $row['new_end'] : date('H:i', $dc->activeRecord->endTime); #'23:59';
+                    // Set endtime to starttime always...
+                    if ($dc->activeRecord->ignoreEndTime)
+                    {
+                        $row['new_end'] = '';
+                    }
 
                     if ($row['action'] == 'move')
                     {
