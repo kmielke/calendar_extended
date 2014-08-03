@@ -192,6 +192,9 @@ class EventsExt extends \Events
                 $orgDateEnd = new \Date($objEvents->endTime);
                 $orgDateSpan = \Calendar::calculateSpan($objEvents->startTime, $objEvents->endTime);
 
+                // keep the css class of the event
+                $masterCSSClass = $objEvents->cssClass;
+
                 /*
                  * Recurring events and Ext. Recurring events
                  *
@@ -269,8 +272,8 @@ class EventsExt extends \Events
                         // check if there is any exception
                         if (is_array($arrEventSkipInfo[$objEvents->id]))
                         {
-                            // reset cssClass
-                            $objEvents->cssClass = str_replace("exception", "", $objEvents->cssClass);
+                            // modify the css class of the exceptions
+                            $objEvents->cssClass = $masterCSSClass;
                             unset($objEvents->moveReason);
 
                             // date to search for
@@ -284,15 +287,13 @@ class EventsExt extends \Events
                             {
                                 $r = $searchDate;
                                 $action = $arrEventSkipInfo[$objEvents->id][$r]['action'];
+                                $cssClass = $arrEventSkipInfo[$objEvents->id][$r]['cssclass'];
+                                $objEvents->cssClass .= ($cssClass) ? $cssClass.' ' : '';
+
                                 if ($action == "hide")
                                 {
                                     //continue the while since we don't want to show the event
                                     continue;
-                                }
-                                else if ($action == "mark")
-                                {
-                                    //just add the css class to the event
-                                    $objEvents->cssClass .= "exception";
                                 }
                                 else if ($action == "move")
                                 {

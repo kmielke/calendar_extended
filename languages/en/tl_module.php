@@ -35,7 +35,7 @@
 $GLOBALS['TL_LANG']['tl_module']['use_horizontal']	= array('Display horizontal', 'Months will be displayed horizontal.');
 $GLOBALS['TL_LANG']['tl_module']['use_navigation']	= array('Display navigation', 'Week navigation will be displayed if checked');
 $GLOBALS['TL_LANG']['tl_module']['showDate']		= array('Display date', 'Date of weekday will be displayed if checked');
-$GLOBALS['TL_LANG']['tl_module']['showRecurrences']	= array('Hide recurrences', 'Recurrences are not displayed if checked');
+$GLOBALS['TL_LANG']['tl_module']['showRecurrences']	= array('Shortened view (recurrences)', 'Show recurring events only once. Please modify your Template to show.');
 $GLOBALS['TL_LANG']['tl_module']['showOnlyNext']    = array('Next recurrence only', 'Only the next recurrence will be displayed (for recurrences only).');
 $GLOBALS['TL_LANG']['tl_module']['linkCurrent']		= array('Display link "current date"', 'Link to jump to current date will be displayed if checked');
 $GLOBALS['TL_LANG']['tl_module']['hideEmptyDays']	= array('Hide empty days', 'Weekdays without events will not be displayed if checked');

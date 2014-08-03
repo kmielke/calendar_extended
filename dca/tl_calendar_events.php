@@ -816,7 +816,6 @@ class tl_calendar_events_ext extends \Backend
                     // fill array for option action
                     $arrSource2['move'] = $GLOBALS['TL_LANG']['tl_calendar_events']['move'];
                     $arrSource2['hide'] = $GLOBALS['TL_LANG']['tl_calendar_events']['hide'];
-                    $arrSource2['mark'] = $GLOBALS['TL_LANG']['tl_calendar_events']['mark'];
                 }
             }
 
@@ -852,7 +851,7 @@ class tl_calendar_events_ext extends \Backend
                 'exclude'   => true,
                 'inputType' => 'select',
                 'options'   => $arrSource4,
-                'eval'      => array('style'=>'width:65px', 'includeBlankOption'=>true)
+                'eval'      => array('style'=>'width:60px', 'includeBlankOption'=>true)
             ),
             'new_end' => array
             (
@@ -860,7 +859,7 @@ class tl_calendar_events_ext extends \Backend
                 'exclude'   => true,
                 'inputType' => 'select',
                 'options'   => $arrSource4,
-                'eval'      => array('style'=>'width:65px', 'includeBlankOption'=>true)
+                'eval'      => array('style'=>'width:60px', 'includeBlankOption'=>true)
             ),
             'action' => array
             (
@@ -868,7 +867,7 @@ class tl_calendar_events_ext extends \Backend
                 'exclude'   => true,
                 'inputType' => 'select',
                 'options'   => $arrSource2,
-                'eval'      => array('style'=>'width:110px', 'includeBlankOption'=>true)
+                'eval'      => array('style'=>'width:80px', 'includeBlankOption'=>true)
             ),
             'new_exception' => array
             (
@@ -876,14 +875,21 @@ class tl_calendar_events_ext extends \Backend
                 'exclude'   => true,
                 'inputType' => 'select',
                 'options'   => $arrSource3,
-                'eval'      => array('style'=>'width:85px', 'includeBlankOption'=>true)
+                'eval'      => array('style'=>'width:80px', 'includeBlankOption'=>true)
+            ),
+            'cssclass' => array
+            (
+                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['cssclass'],
+                'exclude'   => true,
+                'inputType' => 'text',
+                'eval'      => array('style'=>'width:50px')
             ),
             'reason' => array
             (
                 'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['reason'],
                 'exclude'   => true,
                 'inputType' => 'text',
-                'eval'      => array('style'=>'width:100px')
+                'eval'      => array('style'=>'width:150px')
             )
         );
 
@@ -895,7 +901,7 @@ class tl_calendar_events_ext extends \Backend
                 'exclude'   => true,
                 'inputType' => 'select',
                 'options'   => $arrSource1,
-                'eval'      => array('style'=>'width:130px', 'includeBlankOption'=>true)
+                'eval'      => array('style'=>'width:120px', 'includeBlankOption'=>true)
             );
         }
 
@@ -908,7 +914,7 @@ class tl_calendar_events_ext extends \Backend
                 'inputType' => 'select',
                 'options'   => array('first', 'second', 'third', 'fourth', 'last'),
                 'reference' => &$GLOBALS['TL_LANG']['tl_calendar_events'],
-                'eval'      => array('style'=>'width:130px', 'includeBlankOption'=>true)
+                'eval'      => array('style'=>'width:120px', 'includeBlankOption'=>true)
             );
         }
 
@@ -926,6 +932,13 @@ class tl_calendar_events_ext extends \Backend
                 'exclude'   => true,
                 'inputType' => 'text',
                 'eval'      => array('rgxp'=>'date', 'doNotCopy'=>true, 'style'=>'width:60px', 'datepicker'=>true, 'tl_class'=>'wizard')
+            );
+            $columnFields['reason'] = array
+            (
+                    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['reason'],
+                    'exclude'   => true,
+                    'inputType' => 'text',
+                    'eval'      => array('style'=>'width:80px')
             );
 
             // add the field to the columnFields array

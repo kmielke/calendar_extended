@@ -35,7 +35,7 @@
 $GLOBALS['TL_LANG']['tl_module']['use_horizontal']	= array('Horizontale Darstellung', 'Monate werden horizontal dargestellt.');
 $GLOBALS['TL_LANG']['tl_module']['use_navigation']	= array('Navigation anzeigen', 'Wochennavigation wird angezeigt, wenn aktiviert.');
 $GLOBALS['TL_LANG']['tl_module']['showDate']		= array('Datum anzeigen', 'Tagesdatum wird angezeigt, wenn aktiviert.');
-$GLOBALS['TL_LANG']['tl_module']['showRecurrences']	= array('Wiederholungen ausblenden', 'Wiederholungen werden nicht mehr angezeigt, wenn aktiviert.');
+$GLOBALS['TL_LANG']['tl_module']['showRecurrences']	= array('Verkürzte Darstellung (Wiederholungen)', 'Events nur einmal anzeigen, auch wenn wiederholt werden. Template muss angepasst werden.');
 $GLOBALS['TL_LANG']['tl_module']['showOnlyNext']    = array('Nur nächste Wiederholung', 'Es wird nur die nächste Wiederholung angezeigt (Nur bei Wiederholungen).');
 $GLOBALS['TL_LANG']['tl_module']['linkCurrent']		= array('Link "Aktuelles Datum" anzeigen', 'Link für das aktuelle Datum wird angezeigt, wenn aktiviert.');
 $GLOBALS['TL_LANG']['tl_module']['hideEmptyDays']	= array('Leere Tage nicht anzeigen', 'Wochentage ohne Events werden ausgeblendet.');
