@@ -32,23 +32,65 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist'] = str_replace
     $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist']
 );
 
+//// Palette for timetable
+//$GLOBALS['TL_DCA']['tl_module']['palettes']['timetable'] = $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'];
+//$GLOBALS['TL_DCA']['tl_module']['palettes']['timetable'] = str_replace
+//(
+//    ',cal_ctemplate;{protected_legend:hide}',
+//    ',cal_ctemplate,showDate,hideEmptyDays,use_navigation,linkCurrent,cal_times;{protected_legend:hide}',
+//    $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable']
+//);
+//
+//// Palette for yearview
+//$GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] = $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'];
+//$GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] = str_replace
+//(
+//    ',cal_ctemplate;{protected_legend:hide}',
+//    ',cal_ctemplate,use_horizontal,use_navigation,linkCurrent;{protected_legend:hide}',
+//    $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview']
+//);
+
 // Palette for timetable
 $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable'] = $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'];
-$GLOBALS['TL_DCA']['tl_module']['palettes']['timetable'] = str_replace
-(
-    ',cal_ctemplate;{protected_legend:hide}',
-    ',cal_ctemplate,showDate,hideEmptyDays,use_navigation,linkCurrent,cal_times;{protected_legend:hide}',
-    $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable']
-);
+if (version_compare(VERSION . '.' . BUILD, '3.3.0', '>'))
+{
+    $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable'] = str_replace
+    (
+        ',cal_ctemplate,customTpl;{protected_legend:hide}',
+        ',cal_ctemplate,customTpl,showDate,hideEmptyDays,use_navigation,linkCurrent,cal_times;{protected_legend:hide}',
+        $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable']
+    );
+}
+else
+{
+    $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable'] = str_replace
+    (
+        ',cal_ctemplate;{protected_legend:hide}',
+        ',cal_ctemplate,showDate,hideEmptyDays,use_navigation,linkCurrent,cal_times;{protected_legend:hide}',
+        $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable']
+    );
+}
 
 // Palette for yearview
 $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] = $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'];
-$GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] = str_replace
-(
-    ',cal_ctemplate;{protected_legend:hide}',
-    ',cal_ctemplate,use_horizontal,use_navigation,linkCurrent;{protected_legend:hide}',
-    $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview']
-);
+if (version_compare(VERSION . '.' . BUILD, '3.3.0', '>'))
+{
+    $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] = str_replace
+    (
+        ',cal_ctemplate,customTpl;{protected_legend:hide}',
+        ',cal_ctemplate,customTpl,use_horizontal,use_navigation,linkCurrent;{protected_legend:hide}',
+        $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview']
+    );
+}
+else
+{
+    $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] = str_replace
+    (
+        ',cal_ctemplate;{protected_legend:hide}',
+        ',cal_ctemplate,use_horizontal,use_navigation,linkCurrent;{protected_legend:hide}',
+        $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview']
+    );
+}
 
 /**
  * Add fields to tl_module
