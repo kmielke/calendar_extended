@@ -28,27 +28,9 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'] = str_replace
 $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist'] = str_replace
 (
     '{config_legend},cal_calendar,cal_noSpan,',
-    '{config_legend},cal_calendar,cal_holiday,cal_noSpan,pubTimeRecurrences,displayDuration,showOnlyNext,showRecurrences,',
+    '{config_legend},cal_calendar,cal_holiday,cal_noSpan,range_date,pubTimeRecurrences,displayDuration,showOnlyNext,showRecurrences,',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist']
 );
-
-//// Palette for timetable
-//$GLOBALS['TL_DCA']['tl_module']['palettes']['timetable'] = $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'];
-//$GLOBALS['TL_DCA']['tl_module']['palettes']['timetable'] = str_replace
-//(
-//    ',cal_ctemplate;{protected_legend:hide}',
-//    ',cal_ctemplate,showDate,hideEmptyDays,use_navigation,linkCurrent,cal_times;{protected_legend:hide}',
-//    $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable']
-//);
-//
-//// Palette for yearview
-//$GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] = $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'];
-//$GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] = str_replace
-//(
-//    ',cal_ctemplate;{protected_legend:hide}',
-//    ',cal_ctemplate,use_horizontal,use_navigation,linkCurrent;{protected_legend:hide}',
-//    $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview']
-//);
 
 // Palette for timetable
 $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable'] = $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'];
@@ -114,8 +96,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['cal_holiday'] = array
 	'eval'                  => array('mandatory'=>false, 'multiple'=>true),
     'sql'                   => "text NULL"
 );
-
-// $GLOBALS['TL_DCA']['tl_module']['fields']['cal_noSpan']['eval']['tl_class'] = 'w50';
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['pubTimeRecurrences'] = array
 (
@@ -220,6 +200,20 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['cal_times'] = array
     'sql'                   => "char(1) NOT NULL default ''"
 );
 
+// list of exceptions
+$GLOBALS['TL_DCA']['tl_module']['fields']['range_date'] = array
+(
+    'label'				=> &$GLOBALS['TL_LANG']['tl_module']['range_date'],
+    'exclude'			=> true,
+    'inputType'         => 'multiColumnWizard',
+    'eval'				=> array
+    (
+        'columnsCallback'   => array('calendar_Ext', 'getRange'),
+        'buttons'           => array('up'=>false, 'down'=>false, 'copy'=>false)
+    ),
+    'sql'               => "text NULL"
+);
+
 /**
  * Class timetableExt
  *
@@ -239,6 +233,35 @@ class calendar_Ext extends Backend
 		parent::__construct();
 		$this->import('BackendUser', 'User');
 	}
+
+
+    /**
+     * @param $var
+     */
+    public function getRange($var)
+    {
+        $columnFields = null;
+
+        $columnFields = array
+        (
+            'date_from' => array(
+                'label'     => &$GLOBALS['TL_LANG']['tl_module']['range_from'],
+                'exclude'   => true,
+                'default'   => null,
+                'inputType' => 'text',
+                'eval'      => array('rgxp'=>'datim', 'doNotCopy'=>true, 'style'=>'width:120px', 'datepicker'=>true, 'tl_class'=>'wizard')
+            ),
+            'date_to'   => array(
+                'label'     => &$GLOBALS['TL_LANG']['tl_module']['range_to'],
+                'exclude'   => true,
+                'default'   => null,
+                'inputType' => 'text',
+                'eval'      => array('rgxp'=>'datim', 'doNotCopy'=>true, 'style'=>'width:120px', 'datepicker'=>true, 'tl_class'=>'wizard')
+            )
+        );
+
+        return $columnFields;
+    }
 
 
     /**

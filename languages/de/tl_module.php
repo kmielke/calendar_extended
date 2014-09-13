@@ -45,6 +45,10 @@ $GLOBALS['TL_LANG']['tl_module']['cal_times']		= array('Uhrzeiten anzeigen', 'Uh
 $GLOBALS['TL_LANG']['tl_module']['pubTimeRecurrences'] = array('Uhrzeit bei Wiederholungen berücksichtigen', 'Wiederholungen werden nur angezeigt, wenn die Zeit des Events innerhalb der Uhrzeit von "Anzeigen von/bis" liegt.');
 $GLOBALS['TL_LANG']['tl_module']['displayDuration'] = array('Anzeigedauer der Events', 'Anzeigedauer der Events wird begrenzt. Bitte "strtotime" Syntax (+7 days, +2 weeks) verwenden.');
 
+$GLOBALS['TL_LANG']['tl_module']['range_date']      = array('Anzeigeformat (erweitert)', 'Standard Anzeigeformat wird ignoriert, wenn gesetzt. Hier können die Events auf ein Start- und End-Datum eingegrenzt werden.');
+$GLOBALS['TL_LANG']['tl_module']['range_from']      = array('Datum von', 'Start-Datum der Events.');
+$GLOBALS['TL_LANG']['tl_module']['range_to']        = array('Datum bis', 'End-Datum der Events.');
+
 /**
  * References
  */

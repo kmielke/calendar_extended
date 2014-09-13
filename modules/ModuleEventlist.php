@@ -181,6 +181,24 @@ class ModuleEventlist extends \EventsExt
 
         list($strBegin, $strEnd, $strEmpty) = $this->getDatesFromFormat($this->Date, $this->cal_format);
 
+        // we will overwrite $strBegin, $strEnd if range_date is set
+        $arrRange = deserialize($this->range_date);
+        if (is_array($arrRange))
+        {
+            $startRange = strtotime($arrRange[0]['date_from']);
+            $endRange = strtotime($arrRange[0]['date_to']);
+
+            if ($startRange && $endRange)
+            {
+                if (checkdate(date('m',$startRange),date('d',$startRange),date('Y',$startRange)) &&
+                    checkdate(date('m',$endRange),date('d',$endRange),date('Y',$endRange)))
+                {
+                    $strBegin = strtotime($arrRange[0]['date_from']);
+                    $strEnd = strtotime($arrRange[0]['date_to']);
+                }
+            }
+        }
+
         // we have to check if we have to show recurrences and pass it to the getAllEventsExt function...
         $showRecurrences = ($this->showRecurrences) ? false : true;
 

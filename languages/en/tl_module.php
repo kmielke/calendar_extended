@@ -45,6 +45,10 @@ $GLOBALS['TL_LANG']['tl_module']['cal_times']		= array('Display times', 'Times w
 $GLOBALS['TL_LANG']['tl_module']['pubTimeRecurrences'] = array('Check time of recurrences', 'Recurrences are displayed only if the time of the event is inside "Show from/until" time.');
 $GLOBALS['TL_LANG']['tl_module']['displayDuration'] = array('Display duration of events', 'Limit of the display duration of events. Please use "strtotime" Syntax (+7 days, +2 week).');
 
+$GLOBALS['TL_LANG']['tl_module']['range_date']      = array('Event list format (extended)', 'Default event list format will be ignored if set. Here you can choose the event list date range.');
+$GLOBALS['TL_LANG']['tl_module']['range_from']      = array('Date from', 'Start-Date of the event list.');
+$GLOBALS['TL_LANG']['tl_module']['range_to']        = array('Date to', 'End-Date of the event list.');
+
 /**
  * References
  */
