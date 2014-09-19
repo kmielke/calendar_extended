@@ -28,7 +28,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'] = str_replace
 $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist'] = str_replace
 (
     '{config_legend},cal_calendar,cal_noSpan,',
-    '{config_legend},cal_calendar,cal_holiday,cal_noSpan,range_date,pubTimeRecurrences,displayDuration,showOnlyNext,showRecurrences,',
+    '{config_legend},cal_calendar,cal_holiday,cal_noSpan,showRecurrences,hide_started,pubTimeRecurrences,showOnlyNext,displayDuration,range_date,',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist']
 );
 
@@ -127,7 +127,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['showOnlyNext'] = array
     'default'               => 0,
     'exclude'               => true,
     'inputType'             => 'checkbox',
-    'eval'                  => array('tl_class'=>'clr w50'),
+    'eval'                  => array('tl_class'=>'w50 clr'),
     'sql'                   => "char(1) NOT NULL default ''"
 );
 
@@ -181,6 +181,31 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['linkCurrent'] = array
     'sql'                   => "char(1) NOT NULL default ''"
 );
 
+$GLOBALS['TL_DCA']['tl_module']['fields']['cal_noSpan'] = array
+(
+    'label'                 => &$GLOBALS['TL_LANG']['tl_module']['cal_noSpan'],
+    'exclude'               => true,
+    'inputType'             => 'checkbox',
+    'eval'                  => array('tl_class'=>'w50'),
+    'sql'                   => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['cal_format'] = array
+(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['cal_format'],
+    'default'                 => 'cal_month',
+    'exclude'                 => true,
+    'inputType'               => 'select',
+    'options_callback'        => array('tl_module_calendar', 'getFormats'),
+    'reference'               => &$GLOBALS['TL_LANG']['tl_module'],
+    'eval'                    => array('tl_class'=>'clr w50'),
+    'wizard' => array
+    (
+        array('tl_module_calendar', 'hideStartDay')
+    ),
+    'sql'                     => "varchar(32) NOT NULL default ''"
+);
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['hideEmptyDays'] = array
 (
 	'label'                 => &$GLOBALS['TL_LANG']['tl_module']['hideEmptyDays'],
@@ -197,6 +222,15 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['cal_times'] = array
     'exclude'               => true,
     'inputType'             => 'checkbox',
     'eval'                  => array('tl_class'=>'w50'),
+    'sql'                   => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['hide_started'] = array
+(
+    'label'                 => &$GLOBALS['TL_LANG']['tl_module']['hide_started'],
+    'exclude'               => true,
+    'inputType'             => 'checkbox',
+    'eval'                  => array('tl_class'=>'w50 clr'),
     'sql'                   => "char(1) NOT NULL default ''"
 );
 

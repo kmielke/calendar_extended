@@ -256,14 +256,20 @@ class ModuleEventlist extends \EventsExt
                     }
 
                     // We take the "show from" time or the "event start" time to check the display duration limit
-                    $displayCurrent = strtotime($event['date'].' '.date('Hi', $event['startTime']));
+                    $displayStart = ($event['start']) ? $event['start'] : $event['startTime'];
                     if (strlen($this->displayDuration) > 0)
                     {
-                        $displayStop = strtotime($this->displayDuration, $displayCurrent);
+                        $displayStop = strtotime($this->displayDuration, $displayStart);
                         if ($displayStop < $currTime)
                         {
                             continue;
                         }
+                    }
+
+                    // Hide Events that are already started
+                    if ($this->hide_started && $event['startTime'] < $currTime)
+                    {
+                        continue;
                     }
 
                     $event['firstDay'] = $GLOBALS['TL_LANG']['DAYS'][date('w', $day)];
