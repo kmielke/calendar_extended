@@ -290,7 +290,9 @@ class ModuleCalendar extends \EventsExt
 			}
 
 			$intKey = date('Ym', $this->Date->tstamp) . ((strlen($intDay) < 2) ? '0' . $intDay : $intDay);
-			$strClass .= ($intKey == date('Ymd')) ? ' today' : '';
+			$strClass .= ((int)$intKey == (int)date('Ymd')) ? ' today' : '';
+			$strClass .= ((int)$intKey < (int)date('Ymd')) ? ' bygone' : '';
+			$strClass .= ((int)$intKey > (int)date('Ymd')) ? ' upcomming' : '';
 
 			// Mark the selected day (see #1784)
 			if ($intKey == \Input::get('day'))
