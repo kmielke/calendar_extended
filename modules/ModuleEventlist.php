@@ -234,19 +234,12 @@ class ModuleEventlist extends \EventsExt
             {
                 foreach ($events as $event)
                 {
-                    // We have to get start and end from DB again, because start is overwritten in addEvent()
-                    $objEV = $this->Database->prepare("select start, stop from tl_calendar_events where id = ?")
-                        ->limit(1)->execute($event['id']);
-                    $eventStart = ($objEV->start) ? $objEV->start : false;
-                    $eventStop = ($objEV->stop) ? $objEV->stop : false;
-                    unset($objEV);
-
                     // Remove events outside time scope
-                    if ($this->pubTimeRecurrences && ($eventStart && $eventStop))
+                    if ($this->pubTimeRecurrences && ($event['start'] && $event['stop']))
                     {
                         // Step 2: get show from/until times
-                        $startTimeShow = strtotime(date('dmY').' '.date('Hi', $eventStart));
-                        $endTimeShow = strtotime(date('dmY').' '.date('Hi', $eventStop));
+                        $startTimeShow = strtotime(date('dmY').' '.date('Hi', $event['start']));
+                        $endTimeShow = strtotime(date('dmY').' '.date('Hi', $event['stop']));
 
                         // Compare the times...
                         if ($currTime < $startTimeShow || $currTime > $endTimeShow)
@@ -393,11 +386,12 @@ class ModuleEventlist extends \EventsExt
 				$objTemplate->details = $event['teaser'];
 			}
 
-            // Add template variables
+			// Add the template variables
             $objTemplate->classList = $event['class'] . ((($headerCount % 2) == 0) ? ' even' : ' odd') . (($headerCount == 0) ? ' first' : '') . ($blnIsLastEvent ? ' last' : '') . ' cal_' . $event['parent'];
             $objTemplate->classUpcoming = $event['class'] . ((($eventCount % 2) == 0) ? ' even' : ' odd') . (($eventCount == 0) ? ' first' : '') . ((($offset + $eventCount + 1) >= $limit) ? ' last' : '') . ' cal_' . $event['parent'];
             $objTemplate->readMore = specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $event['title']));
             $objTemplate->more = $GLOBALS['TL_LANG']['MSC']['more'];
+			$objTemplate->locationLabel = $GLOBALS['TL_LANG']['MSC']['location'];
 
             // Short view
             if ($this->cal_noSpan)

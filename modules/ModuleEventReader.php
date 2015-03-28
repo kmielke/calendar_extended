@@ -366,7 +366,7 @@ class ModuleEventReader extends \EventsExt
 		$objTemplate->setData($objEvent->row());
 
 		$objTemplate->date = $date;
-		$objTemplate->start = $objEvent->startTime;
+		$objTemplate->begin = $objEvent->startTime;
 		$objTemplate->end = $objEvent->endTime;
 		$objTemplate->class = ($objEvent->cssClass != '') ? ' ' . $objEvent->cssClass : '';
 		$objTemplate->recurring = $recurring;

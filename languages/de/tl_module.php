@@ -54,3 +54,4 @@ $GLOBALS['TL_LANG']['tl_module']['range_to']        = array('Datum bis', 'End-Da
  * References
  */
 $GLOBALS['TL_LANG']['tl_module']['displayDurationError'] = 'strtotime Wert nicht lesbar.';
+$GLOBALS['TL_LANG']['tl_module']['config_ext_legend']   = 'Modul-Konfiguration (erweitert)';

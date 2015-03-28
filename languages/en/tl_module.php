@@ -54,3 +54,4 @@ $GLOBALS['TL_LANG']['tl_module']['range_to']        = array('Date to', 'End-Date
  * References
  */
 $GLOBALS['TL_LANG']['tl_module']['displayDurationError'] = 'Error parsing strtotime value.';
+$GLOBALS['TL_LANG']['tl_module']['config_ext_legend']   = 'Module configuration (extended)';
