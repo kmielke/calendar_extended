@@ -124,6 +124,18 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['recurring'] = array
     )
 );
 
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatEach'] = array
+(
+    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatEach'],
+    'default'           => 1,
+    'exclude'           => true,
+    'inputType'         => 'timePeriod',
+    'options'           => array('days', 'weeks', 'months', 'years'),
+    'reference'         => &$GLOBALS['TL_LANG']['tl_calendar_events'],
+    'eval'              => array('mandatory'=>true, 'rgxp'=>'natural', 'minval'=>1, 'tl_class'=>'w50'),
+    'sql'               => "varchar(64) NOT NULL default ''"
+);
+
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['hideOnWeekend'] = array
 (
     'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['hideOnWeekend'],

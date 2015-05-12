@@ -234,12 +234,19 @@ class ModuleEventlist extends \EventsExt
             {
                 foreach ($events as $event)
                 {
+                    // We have to get start and end from DB again, because start is overwritten in addEvent()
+                    $objEV = $this->Database->prepare("select start, stop from tl_calendar_events where id = ?")
+                        ->limit(1)->execute($event['id']);
+                    $eventStart = ($objEV->start) ? $objEV->start : false;
+                    $eventStop = ($objEV->stop) ? $objEV->stop : false;
+                    unset($objEV);
+
                     // Remove events outside time scope
-                    if ($this->pubTimeRecurrences && ($event['start'] && $event['stop']))
+                    if ($this->pubTimeRecurrences && ($eventStart && $eventStop))
                     {
                         // Step 2: get show from/until times
-                        $startTimeShow = strtotime(date('dmY').' '.date('Hi', $event['start']));
-                        $endTimeShow = strtotime(date('dmY').' '.date('Hi', $event['stop']));
+                        $startTimeShow = strtotime(date('dmY').' '.date('Hi', $eventStart));
+                        $endTimeShow = strtotime(date('dmY').' '.date('Hi', $eventStop));
 
                         // Compare the times...
                         if ($currTime < $startTimeShow || $currTime > $endTimeShow)
