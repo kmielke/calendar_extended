@@ -69,7 +69,10 @@ class ModuleEventReader extends \EventsExt
 			return '';
 		}
 
-		$this->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar));
+        $cals = ($this->cal_holiday)
+            ? array_merge(deserialize($this->cal_calendar), deserialize($this->cal_holiday))
+            : deserialize($this->cal_calendar);
+        $this->cal_calendar = $this->sortOutProtected($cals);
 
 		// Do not index or cache the page if there are no calendars
 		if (!is_array($this->cal_calendar) || empty($this->cal_calendar))

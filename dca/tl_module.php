@@ -50,6 +50,14 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist'] = str_replace
     $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist']
 );
 
+// Palette for eventreader
+$GLOBALS['TL_DCA']['tl_module']['palettes']['eventreader'] = str_replace
+(
+    '{config_legend},cal_calendar',
+    '{config_legend},cal_calendar,cal_holiday',
+    $GLOBALS['TL_DCA']['tl_module']['palettes']['eventreader']
+);
+
 /**
  * Add fields to tl_module
  */
