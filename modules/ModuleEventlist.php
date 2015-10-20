@@ -181,6 +181,13 @@ class ModuleEventlist extends \EventsExt
 
         list($strBegin, $strEnd, $strEmpty) = $this->getDatesFromFormat($this->Date, $this->cal_format);
 
+        // we will overwrite $strBegin, $strEnd if cal_format_ext is set
+        if ($this->cal_format_ext != '')
+        {
+            //$strBegin = strtotime($arrRange[0]['date_from']);
+            $strEnd = strtotime($this->cal_format_ext, strtotime(\Date::parse('d.m.Y', $strBegin).' 23:59'));
+        }
+
         // we will overwrite $strBegin, $strEnd if range_date is set
         $arrRange = deserialize($this->range_date);
         if (is_array($arrRange))

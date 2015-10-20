@@ -46,7 +46,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] = str_replace
 $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist'] = str_replace
 (
     ';{template_legend:hide}',
-    ';{config_ext_legend},cal_holiday,range_date,displayDuration,showRecurrences,hide_started,pubTimeRecurrences,showOnlyNext;{template_legend:hide}',
+    ';{config_ext_legend},cal_holiday,cal_format_ext,range_date,displayDuration,showRecurrences,hide_started,pubTimeRecurrences,showOnlyNext;{template_legend:hide}',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist']
 );
 
@@ -91,6 +91,20 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['pubTimeRecurrences'] = array
     'sql'                   => "char(1) NOT NULL default ''"
 );
 
+$GLOBALS['TL_DCA']['tl_module']['fields']['cal_format_ext'] = array
+(
+    'label'                 => &$GLOBALS['TL_LANG']['tl_module']['cal_format_ext'],
+    'default'               => 0,
+    'exclude'               => true,
+    'inputType'             => 'text',
+    'eval'                  => array('tl_class'=>'clr'),
+    'save_callback'         => array
+    (
+        array('calendar_Ext', 'checkDuration')
+    ),
+    'sql'                   => "varchar(128) NOT NULL default ''"
+);
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['displayDuration'] = array
 (
     'label'                 => &$GLOBALS['TL_LANG']['tl_module']['displayDuration'],
@@ -98,7 +112,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['displayDuration'] = array
     'exclude'               => true,
     'inputType'             => 'text',
     'eval'                  => array('tl_class'=>'clr'),
-    'save_callback'     => array
+    'save_callback'         => array
     (
         array('calendar_Ext', 'checkDuration')
     ),
@@ -163,31 +177,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['linkCurrent'] = array
 	'inputType'             => 'checkbox',
 	'eval'                  => array('tl_class'=>'w50'),
     'sql'                   => "char(1) NOT NULL default ''"
-);
-
-$GLOBALS['TL_DCA']['tl_module']['fields']['cal_noSpan'] = array
-(
-    'label'                 => &$GLOBALS['TL_LANG']['tl_module']['cal_noSpan'],
-    'exclude'               => true,
-    'inputType'             => 'checkbox',
-    'eval'                  => array('tl_class'=>'w50'),
-    'sql'                   => "char(1) NOT NULL default ''"
-);
-
-$GLOBALS['TL_DCA']['tl_module']['fields']['cal_format'] = array
-(
-    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['cal_format'],
-    'default'                 => 'cal_month',
-    'exclude'                 => true,
-    'inputType'               => 'select',
-    'options_callback'        => array('tl_module_calendar', 'getFormats'),
-    'reference'               => &$GLOBALS['TL_LANG']['tl_module'],
-    'eval'                    => array('tl_class'=>'clr w50'),
-    'wizard' => array
-    (
-        array('tl_module_calendar', 'hideStartDay')
-    ),
-    'sql'                     => "varchar(32) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['hideEmptyDays'] = array
@@ -291,9 +280,13 @@ class calendar_Ext extends Backend
     {
         if (strlen($varValue) > 0)
         {
-            if (($timestamp = strtotime($varValue)) === false)
+            if (($timestamp = strtotime($varValue, time())) === false)
             {
                 throw new Exception($GLOBALS['TL_LANG']['tl_module']['displayDurationError'].': '.$timestamp);
+            }
+            if (($timestamp = date('dmY', strtotime($varValue, time()))) === date('dmY', time()))
+            {
+                throw new Exception($GLOBALS['TL_LANG']['tl_module']['displayDurationError2'].': '.$timestamp);
             }
         }
         return $varValue;

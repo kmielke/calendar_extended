@@ -46,7 +46,8 @@ $GLOBALS['TL_LANG']['tl_module']['pubTimeRecurrences'] = array('Uhrzeit bei Wied
 $GLOBALS['TL_LANG']['tl_module']['displayDuration'] = array('Anzeigedauer der Events', 'Anzeigedauer der Events wird begrenzt. Bitte "strtotime" Syntax (+7 days, +2 weeks) verwenden.');
 $GLOBALS['TL_LANG']['tl_module']['hide_started']    = array('Laufende Events nicht anzeigen', 'Events, die bereits gestartet sind, werden nicht mehr angezeigt.');
 
-$GLOBALS['TL_LANG']['tl_module']['range_date']      = array('Anzeigeformat (erweitert)', 'Standard Anzeigeformat wird ignoriert, wenn gesetzt. Hier können die Events auf ein Start- und End-Datum eingegrenzt werden.');
+$GLOBALS['TL_LANG']['tl_module']['range_date']      = array('Anzeigeformat (erweitert Zeitraum)', 'Standard Anzeigeformat wird ignoriert, wenn gesetzt. Hier können die Events auf ein Start- und End-Datum eingegrenzt werden. Kann nicht mit (erweitert strtotime) verwendet werden.');
+$GLOBALS['TL_LANG']['tl_module']['cal_format_ext']  = array('Anzeigeformat (erweitert strtotime)', 'Standard Anzeigeformat wird ignoriert, wenn gesetzt. Bitte "strtotime" Syntax (+7 days, +2 weeks) verwenden. +2 days => aktueller Tag + 2 Tage. Kann nicht mit (erweitert Zeitraum) verwendet werden.');
 $GLOBALS['TL_LANG']['tl_module']['range_from']      = array('Datum von', 'Start-Datum der Events.');
 $GLOBALS['TL_LANG']['tl_module']['range_to']        = array('Datum bis', 'End-Datum der Events.');
 
@@ -54,4 +55,5 @@ $GLOBALS['TL_LANG']['tl_module']['range_to']        = array('Datum bis', 'End-Da
  * References
  */
 $GLOBALS['TL_LANG']['tl_module']['displayDurationError'] = 'strtotime Wert nicht lesbar.';
+$GLOBALS['TL_LANG']['tl_module']['displayDurationError2'] = 'strtotime Wert flasch. Ergibt aktuelles Datum.';
 $GLOBALS['TL_LANG']['tl_module']['config_ext_legend']   = 'Modul-Konfiguration (erweitert)';
