@@ -2,28 +2,19 @@
 
 /**
  * Contao Open Source CMS
- * 
- * Copyright (C) 2005-2013 Leo Feyer
- * 
- * @package Calendar
- * @link    https://contao.org
- * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
+ *
+ * Copyright (c) 2005-2015 Leo Feyer
+ *
+ * @license LGPL-3.0+
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
 /**
- * Class ModuleEventReader
- *
  * Front end module "event reader".
- * @copyright  Leo Feyer 2005-2013
- * @author     Leo Feyer <https://contao.org>
- * @package    Calendar
+ *
+ * @author Leo Feyer <https://github.com/leofeyer>
  */
 class ModuleEventReader extends \EventsExt
 {
@@ -37,12 +28,14 @@ class ModuleEventReader extends \EventsExt
 
 	/**
 	 * Display a wildcard in the back end
+	 *
 	 * @return string
 	 */
 	public function generate()
 	{
 		if (TL_MODE == 'BE')
 		{
+			/** @var \BackendTemplate|object $objTemplate */
 			$objTemplate = new \BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['eventreader'][0]) . ' ###';
@@ -55,7 +48,7 @@ class ModuleEventReader extends \EventsExt
 		}
 
 		// Set the item from the auto_item parameter
-		if (!isset($_GET['events']) && $GLOBALS['TL_CONFIG']['useAutoItem'] && isset($_GET['auto_item']))
+		if (!isset($_GET['events']) && \Config::get('useAutoItem') && isset($_GET['auto_item']))
 		{
 			\Input::setGet('events', \Input::get('auto_item'));
 		}
@@ -63,9 +56,12 @@ class ModuleEventReader extends \EventsExt
 		// Do not index or cache the page if no event has been specified
 		if (!\Input::get('events'))
 		{
+			/** @var \PageModel $objPage */
 			global $objPage;
+
 			$objPage->noSearch = 1;
 			$objPage->cache = 0;
+
 			return '';
 		}
 
@@ -77,9 +73,12 @@ class ModuleEventReader extends \EventsExt
 		// Do not index or cache the page if there are no calendars
 		if (!is_array($this->cal_calendar) || empty($this->cal_calendar))
 		{
+			/** @var \PageModel $objPage */
 			global $objPage;
+
 			$objPage->noSearch = 1;
 			$objPage->cache = 0;
+
 			return '';
 		}
 
@@ -92,6 +91,7 @@ class ModuleEventReader extends \EventsExt
 	 */
 	protected function compile()
 	{
+		/** @var \PageModel $objPage */
 		global $objPage;
 
 		$this->Template->event = '';
@@ -101,22 +101,18 @@ class ModuleEventReader extends \EventsExt
 		// Get the current event
 		$objEvent = \CalendarEventsModel::findPublishedByParentAndIdOrAlias(\Input::get('events'), $this->cal_calendar);
 
-		if ($objEvent === null)
+		if (null === $objEvent)
 		{
-			// Do not index or cache the page
-			$objPage->noSearch = 1;
-			$objPage->cache = 0;
-
-			// Send a 404 header
-			header('HTTP/1.1 404 Not Found');
-			$this->Template->event = '<p class="error">' . sprintf($GLOBALS['TL_LANG']['MSC']['invalidPage'], \Input::get('events')) . '</p>';
-			return;
+			/** @var \PageError404 $objHandler */
+			$objHandler = new $GLOBALS['TL_PTY']['error_404']();
+			$objHandler->generate($objPage->id);
 		}
 
-        $objEvent->author_name = ($objEvent->getRelated("author")->name) ? $objEvent->getRelated("author")->name : null;
-        $objEvent->author_mail = ($objEvent->getRelated("author")->email) ? $objEvent->getRelated("author")->email : null;
+		// Add author info
+		$objEvent->author_name = ($objEvent->getRelated("author")->name) ? $objEvent->getRelated("author")->name : null;
+		$objEvent->author_mail = ($objEvent->getRelated("author")->email) ? $objEvent->getRelated("author")->email : null;
 
-        // Overwrite the page title (see #2853 and #4955)
+		// Overwrite the page title (see #2853 and #4955)
 		if ($objEvent->title != '')
 		{
 			$objPage->pageTitle = strip_tags(strip_insert_tags($objEvent->title));
@@ -128,162 +124,129 @@ class ModuleEventReader extends \EventsExt
 			$objPage->description = $this->prepareMetaDescription($objEvent->teaser);
 		}
 
-		$span = \Calendar::calculateSpan($objEvent->startTime, $objEvent->endTime);
+		$intStartTime = $objEvent->startTime;
+		$intEndTime = $objEvent->endTime;
+		$span = \Calendar::calculateSpan($intStartTime, $intEndTime);
 
-        // Save original times...
-        $orgStartTime = $objEvent->startTime;
-        $orgEndTime = $objEvent->endTime;
+		// Save original times...
+		$orgStartTime = $objEvent->startTime;
+		$orgEndTime = $objEvent->endTime;
 
-        // Save the possible next event date
-        $objEvent->nextStartTime = $objEvent->startTime;
-        $objEvent->nextEndTime = $objEvent->endTime;
-
-        // Do not show dates in the past if the event is recurring (see #923)
-        if ($objEvent->recurring)
-        {
-            $arrRange = deserialize($objEvent->repeatEach);
-
-//            // keep the date
-//            $objEvent->nextStartTime = $objEvent->startTime;
-//            $objEvent->nextEndTime = $objEvent->endTime;
-
-            while ($objEvent->nextStartTime < time() && $objEvent->nextEndTime < $objEvent->repeatEnd)
-            {
-                $objEvent->nextStartTime = strtotime('+' . $arrRange['value'] . ' ' . $arrRange['unit'], $objEvent->nextStartTime);
-                $objEvent->nextEndTime = strtotime('+' . $arrRange['value'] . ' ' . $arrRange['unit'], $objEvent->nextEndTime);
-            }
-        }
-
-        // Do not show dates in the past if the event is recurringExt
-        if ($objEvent->recurringExt)
-        {
-            $arrRange = deserialize($objEvent->repeatEachExt);
-
-            // list of months we need
-            $arrMonth = array(1=>'january', 2=>'february', 3=>'march', 4=>'april', 5=>'may', 6=>'june',
-                7=>'july', 8=>'august', 9=>'september', 10=>'october', 11=>'november', 12=>'december',
-            );
-
-//            // keep the date
-//            $objEvent->nextStartTime = $objEvent->startTime;
-//            $objEvent->nextEndTime = $objEvent->endTime;
-
-            // month and year of the start date
-            $month = date('n', $objEvent->nextStartTime);
-            $year = date('Y', $objEvent->nextStartTime);
-            while ($objEvent->nextStartTime < time() && $objEvent->nextEndTime < $objEvent->repeatEnd)
-            {
-                // find the next date
-                $nextValueStr = $arrRange['value'].' '.$arrRange['unit'].' of '.$arrMonth[$month].' '.$year;
-                $nextValueDate = strtotime($nextValueStr, $objEvent->nextStartTime);
-                // add time to the new date
-                $objEvent->nextStartTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", $objEvent->startTime));
-                $objEvent->nextEndTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", $objEvent->endTime));
-
-                $month++;
-                if (($month % 13) == 0)
-                {
-                    $month = 1;
-                    $year += 1;
-                }
-            }
-        }
-        // Do not show dates in the past if the event is recurring irregular
-        if (!is_null($objEvent->repeatFixedDates))
-        {
-            $arrFixedDates = deserialize($objEvent->repeatFixedDates);
-
-            // Check if there are valid data in the array...
-            if (strlen($arrFixedDates[0]['new_repeat']))
-            {
-//            // keep the date
-//            $objEvent->nextStartTime = $objEvent->startTime;
-//            $objEvent->nextEndTime = $objEvent->endTime;
-
-                foreach ($arrFixedDates as $fixedDate)
-                {
-                    $nextValueDate = ($fixedDate['new_repeat']) ? strtotime($fixedDate['new_repeat']) : $objEvent->nextStartTime;
-                    if (strlen($fixedDate['new_start']))
-                    {
-                        $nextStartTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", strtotime($fixedDate['new_start'])));
-                    }
-                    else
-                    {
-                        $nextStartTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", $objEvent->nextStartTime));
-                    }
-                    if (strlen($fixedDate['new_end']))
-                    {
-                        $nextEndTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", strtotime($fixedDate['new_end'])));
-                    }
-                    else
-                    {
-                        $nextEndTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", $objEvent->nextEndTime));
-                    }
-
-                    if ($nextValueDate < time() && $nextEndTime < $objEvent->repeatEnd)
-                    {
-                        $objEvent->nextStartTime = $nextStartTime;
-                        $objEvent->nextEndTime = $nextEndTime;
-                        break;
-                    }
-                }
-            }
-        }
-
-        // Replace the date an time with the correct ones from the recurring event
-        if (\Input::get('times'))
-        {
-            list($objEvent->startTime, $objEvent->endTime) = explode(",", \Input::get('times'));
-            if ($objEvent->nextStartTime && ($objEvent->nextStartTime == $objEvent->startTime))
-            {
-                $objEvent->nextStartTime = null;
-            }
-        }
-
-        if ($objPage->outputFormat == 'xhtml')
+		// Do not show dates in the past if the event is recurring (see #923)
+		if ($objEvent->recurring)
 		{
-			$strTimeStart = '';
-			$strTimeEnd = '';
-			$strTimeClose = '';
-		}
-		else
-		{
-			$strTimeStart = '<time datetime="' . date('Y-m-d\TH:i:sP', $objEvent->startTime) . '">';
-			$strTimeEnd = '<time datetime="' . date('Y-m-d\TH:i:sP', $objEvent->endTime) . '">';
-			$strTimeClose = '</time>';
+			$arrRange = deserialize($objEvent->repeatEach);
+
+			while ($intStartTime < time() && $intEndTime < $objEvent->repeatEnd)
+			{
+				$intStartTime = strtotime('+' . $arrRange['value'] . ' ' . $arrRange['unit'], $intStartTime);
+				$intEndTime = strtotime('+' . $arrRange['value'] . ' ' . $arrRange['unit'], $intEndTime);
+			}
 		}
 
-        // Get date
+		// Do not show dates in the past if the event is recurringExt
+		if ($objEvent->recurringExt)
+		{
+			$arrRange = deserialize($objEvent->repeatEachExt);
+
+			// list of months we need
+			$arrMonth = array(1=>'january', 2=>'february', 3=>'march', 4=>'april', 5=>'may', 6=>'june',
+					7=>'july', 8=>'august', 9=>'september', 10=>'october', 11=>'november', 12=>'december',
+			);
+
+			// month and year of the start date
+			$month = date('n', $intStartTime);
+			$year = date('Y', $intEndTime);
+			while ($intStartTime < time() && $intEndTime < $objEvent->repeatEnd)
+			{
+				// find the next date
+				$nextValueStr = $arrRange['value'].' '.$arrRange['unit'].' of '.$arrMonth[$month].' '.$year;
+				$nextValueDate = strtotime($nextValueStr, $intStartTime);
+				// add time to the new date
+				$intStartTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", $intStartTime));
+				$intEndTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", $intEndTime));
+
+				$month++;
+				if (($month % 13) == 0)
+				{
+					$month = 1;
+					$year += 1;
+				}
+			}
+		}
+
+		// Do not show dates in the past if the event is recurring irregular
+		if (!is_null($objEvent->repeatFixedDates))
+		{
+			$arrFixedDates = deserialize($objEvent->repeatFixedDates);
+
+			// Check if there are valid data in the array...
+			if (strlen($arrFixedDates[0]['new_repeat']))
+			{
+				foreach ($arrFixedDates as $fixedDate)
+				{
+					$nextValueDate = ($fixedDate['new_repeat']) ? strtotime($fixedDate['new_repeat']) : $intStartTime;
+					if (strlen($fixedDate['new_start']))
+					{
+						$nextStartTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", strtotime($fixedDate['new_start'])));
+					}
+					else
+					{
+						$nextStartTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", $intStartTime));
+					}
+					if (strlen($fixedDate['new_end']))
+					{
+						$nextEndTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", strtotime($fixedDate['new_end'])));
+					}
+					else
+					{
+						$nextEndTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", $intEndTime));
+					}
+
+					if ($nextValueDate < time() && $nextEndTime < $objEvent->repeatEnd)
+					{
+						$intStartTime = $nextStartTime;
+						$intEndTime = $nextEndTime;
+						break;
+					}
+				}
+			}
+		}
+
+		// Replace the date an time with the correct ones from the recurring event
+		if (\Input::get('times'))
+		{
+			list($intStartTime, $intEndTime) = explode(",", \Input::get('times'));
+			if ($intStartTime && ($intStartTime == $objEvent->startTime))
+			{
+				$intStartTime = null;
+			}
+		}
+
+		$strDate = \Date::parse($objPage->dateFormat, $intStartTime);
+
 		if ($span > 0)
 		{
-			$date = $strTimeStart . \Date::parse(($objEvent->addTime ? $objPage->datimFormat : $objPage->dateFormat), $objEvent->startTime) . $strTimeClose . ' - ' . $strTimeEnd . \Date::parse(($objEvent->addTime ? $objPage->datimFormat : $objPage->dateFormat), $objEvent->endTime) . $strTimeClose;
-            if ($objEvent->nextStartTime)
-            {
-                $nextDate = $strTimeStart .
-                    \Date::parse(($objEvent->addTime ? $objPage->datimFormat : $objPage->dateFormat), $objEvent->nextStartTime) . $strTimeClose .
-                    ' - ' . $strTimeEnd . \Date::parse(($objEvent->addTime ? $objPage->datimFormat : $objPage->dateFormat), $objEvent->nextEndTime) . $strTimeClose;
-            }
-        }
-		elseif ($objEvent->startTime == $objEvent->endTime)
-		{
-			$date = $strTimeStart . \Date::parse($objPage->dateFormat, $objEvent->startTime) . ($objEvent->addTime ? ' (' . \Date::parse($objPage->timeFormat, $objEvent->startTime) . ')' : '') . $strTimeClose;
-            if ($objEvent->nextStartTime)
-            {
-                $nextDate = $strTimeStart .
-                    \Date::parse($objPage->dateFormat, $objEvent->nextStartTime) . ($objEvent->addTime ? ' (' .
-                    \Date::parse($objPage->timeFormat, $objEvent->nextStartTime) . ')' : '') . $strTimeClose;
-            }
+			$strDate = \Date::parse($objPage->dateFormat, $intStartTime) . ' – ' . \Date::parse($objPage->dateFormat, $intEndTime);
 		}
-		else
+
+		$strTime = '';
+
+		if ($objEvent->addTime)
 		{
-			$date = $strTimeStart . \Date::parse($objPage->dateFormat, $objEvent->startTime) . ($objEvent->addTime ? ' (' . \Date::parse($objPage->timeFormat, $objEvent->startTime) . $strTimeClose . ' - ' . $strTimeEnd . \Date::parse($objPage->timeFormat, $objEvent->endTime) . ')' : '') . $strTimeClose;
-            if ($objEvent->nextStartTime)
-            {
-                $nextDate = $strTimeStart .
-                    \Date::parse($objPage->dateFormat, $objEvent->nextStartTime) . ($objEvent->addTime ? ' (' . \Date::parse($objPage->timeFormat, $objEvent->nextStartTime) . $strTimeClose .
-                    ' - ' . $strTimeEnd . \Date::parse($objPage->timeFormat, $objEvent->nextEndTime) . ')' : '') . $strTimeClose;
-            }
-        }
+			if ($span > 0)
+			{
+				$strDate = \Date::parse($objPage->datimFormat, $intStartTime) . ' – ' . \Date::parse($objPage->datimFormat, $intEndTime);
+			}
+			elseif ($intStartTime == $intEndTime)
+			{
+				$strTime = \Date::parse($objPage->timeFormat, $intStartTime);
+			}
+			else
+			{
+				$strTime = \Date::parse($objPage->timeFormat, $intStartTime) . ' – ' . \Date::parse($objPage->timeFormat, $intEndTime);
+			}
+		}
 
 		$until = '';
 		$recurring = '';
@@ -301,123 +264,179 @@ class ModuleEventReader extends \EventsExt
 			}
 		}
 
-        // Recurring eventExt
-        if ($objEvent->recurringExt)
-        {
-            $arrRange = deserialize($objEvent->repeatEachExt);
-            $strKey = 'cal_' . $arrRange['value'];
-            $strVal = $GLOBALS['TL_LANG']['DAYS'][$GLOBALS['TL_LANG']['DAYS'][$arrRange['unit']]];
-            $recurring = sprintf($GLOBALS['TL_LANG']['MSC'][$strKey], $strVal);
-
-            if ($objEvent->recurrences > 0)
-            {
-                $until = sprintf($GLOBALS['TL_LANG']['MSC']['cal_until'], \Date::parse($objPage->dateFormat, $objEvent->repeatEnd));
-            }
-        }
-
-        // moveReason fix...
-        $moveReason = null;
-
-        // get moveReason from exceptions
-        if ($objEvent->useExceptions)
-        {
-            $exceptions = deserialize($objEvent->exceptionList);
-            if ($exceptions)
-            {
-                foreach ($exceptions as $fixedDate)
-                {
-                    // look for the reason only if we have a move action
-                    if ($fixedDate['action'] === "move")
-                    {
-                        // value to add to the old date
-                        $addToDate = $fixedDate['new_exception'];
-                        $newDate = strtotime($addToDate, $fixedDate['exception']);
-                        if (date("Ymd", $newDate) == date("Ymd", $objEvent->startTime))
-                        {
-                            $moveReason = ($fixedDate['reason']) ? $fixedDate['reason'] : null;
-                        }
-                    }
-                }
-            }
-        }
-
-        // get moveReason from fixed dates if exists...
-        if (!is_null($objEvent->repeatFixedDates))
-        {
-            $arrFixedDates = deserialize($objEvent->repeatFixedDates);
-            foreach ($arrFixedDates as $fixedDate)
-            {
-                if (date("Ymd", strtotime($fixedDate['new_repeat'])) == date("Ymd", $objEvent->startTime))
-                {
-                    $moveReason = ($fixedDate['reason']) ? $fixedDate['reason'] : null;
-                }
-            }
-        }
-
-        // Override the default image size
-		if ($this->imgSize != '')
+		// Recurring eventExt
+		if ($objEvent->recurringExt)
 		{
-			$size = deserialize($this->imgSize);
+			$arrRange = deserialize($objEvent->repeatEachExt);
+			$strKey = 'cal_' . $arrRange['value'];
+			$strVal = $GLOBALS['TL_LANG']['DAYS'][$GLOBALS['TL_LANG']['DAYS'][$arrRange['unit']]];
+			$recurring = sprintf($GLOBALS['TL_LANG']['MSC'][$strKey], $strVal);
 
-			if ($size[0] > 0 || $size[1] > 0)
+			if ($objEvent->recurrences > 0)
 			{
-				$objEvent->size = $this->imgSize;
+				$until = sprintf($GLOBALS['TL_LANG']['MSC']['cal_until'], \Date::parse($objPage->dateFormat, $objEvent->repeatEnd));
 			}
 		}
 
+		// moveReason fix...
+		$moveReason = null;
+
+		// get moveReason from exceptions
+		if ($objEvent->useExceptions)
+		{
+			$exceptions = deserialize($objEvent->exceptionList);
+			if ($exceptions)
+			{
+				foreach ($exceptions as $fixedDate)
+				{
+					// look for the reason only if we have a move action
+					if ($fixedDate['action'] === "move")
+					{
+						// value to add to the old date
+						$addToDate = $fixedDate['new_exception'];
+						$newDate = strtotime($addToDate, $fixedDate['exception']);
+						if (date("Ymd", $newDate) == date("Ymd", $objEvent->startTime))
+						{
+							$moveReason = ($fixedDate['reason']) ? $fixedDate['reason'] : null;
+						}
+					}
+				}
+			}
+		}
+
+		// get moveReason from fixed dates if exists...
+		if (!is_null($objEvent->repeatFixedDates))
+		{
+			$arrFixedDates = deserialize($objEvent->repeatFixedDates);
+			foreach ($arrFixedDates as $fixedDate)
+			{
+				if (date("Ymd", strtotime($fixedDate['new_repeat'])) == date("Ymd", $objEvent->startTime))
+				{
+					$moveReason = ($fixedDate['reason']) ? $fixedDate['reason'] : null;
+				}
+			}
+		}
+
+		$nextDate = null;
+		if ($objEvent->repeatDates)
+		{
+			$arrNext = deserialize($objEvent->repeatDates);
+			foreach ($arrNext as $nextDate)
+			{
+				if (strtotime($nextDate) > time())
+				{
+					$nextDate = \Date::parse($objPage->dateFormat, strtotime($nextDate)).' '.$strTime;
+					break;
+				}
+			}
+		}
+
+		/** @var \FrontendTemplate|object $objTemplate */
 		$objTemplate = new \FrontendTemplate($this->cal_template);
 		$objTemplate->setData($objEvent->row());
 
-		$objTemplate->date = $date;
-		$objTemplate->begin = $objEvent->startTime;
-		$objTemplate->end = $objEvent->endTime;
+		$objTemplate->date = $strDate;
+		$objTemplate->time = $strTime;
+		$objTemplate->datetime = $objEvent->addTime ? date('Y-m-d\TH:i:sP', $intStartTime) : date('Y-m-d', $intStartTime);
+		$objTemplate->begin = $intStartTime;
+		$objTemplate->end = $intEndTime;
 		$objTemplate->class = ($objEvent->cssClass != '') ? ' ' . $objEvent->cssClass : '';
 		$objTemplate->recurring = $recurring;
 		$objTemplate->until = $until;
 		$objTemplate->locationLabel = $GLOBALS['TL_LANG']['MSC']['location'];
+		$objTemplate->details = '';
+		$objTemplate->hasDetails = false;
+		$objTemplate->hasTeaser = false;
 
-        // set other values...
-        $objTemplate->nextDate = ($nextDate) ? $nextDate : null;
-        $objTemplate->moveReason = ($moveReason) ? $moveReason : null;
+		$objTemplate->nextDate = $nextDate;
+		$objTemplate->moveReason = ($moveReason) ? $moveReason : null;
 
-        // Restore event times...
-        $objEvent->startTime = $orgStartTime;
-        $objEvent->endTime = $orgEndTime;
+		// Restore event times...
+		$objEvent->startTime = $orgStartTime;
+		$objEvent->endTime = $orgEndTime;
 
-        $objTemplate->details = '';
-		$objElement = \ContentModel::findPublishedByPidAndTable($objEvent->id, 'tl_calendar_events');
-
-		if ($objElement !== null)
+		// Clean the RTE output
+		if ($objEvent->teaser != '')
 		{
-			while ($objElement->next())
+			$objTemplate->hasTeaser = true;
+
+			if ($objPage->outputFormat == 'xhtml')
 			{
-				$objTemplate->details .= $this->getContentElement($objElement->id);
+				$objTemplate->teaser = \StringUtil::toXhtml($objEvent->teaser);
 			}
+			else
+			{
+				$objTemplate->teaser = \StringUtil::toHtml5($objEvent->teaser);
+			}
+
+			$objTemplate->teaser = \StringUtil::encodeEmail($objTemplate->teaser);
+		}
+
+		// Display the "read more" button for external/article links
+		if ($objEvent->source != 'default')
+		{
+			$objTemplate->details = true;
+			$objTemplate->hasDetails = true;
+		}
+
+		// Compile the event text
+		else
+		{
+			$id = $objEvent->id;
+
+			$objTemplate->details = function () use ($id)
+			{
+				$strDetails = '';
+				$objElement = \ContentModel::findPublishedByPidAndTable($id, 'tl_calendar_events');
+
+				if ($objElement !== null)
+				{
+					while ($objElement->next())
+					{
+						$strDetails .= $this->getContentElement($objElement->current());
+					}
+				}
+
+				return $strDetails;
+			};
+
+			$objTemplate->hasDetails = (\ContentModel::countPublishedByPidAndTable($id, 'tl_calendar_events') > 0);
 		}
 
 		$objTemplate->addImage = false;
 
-        // Add an image
-        if ($objEvent->addImage && $objEvent->singleSRC != '')
-        {
-            $objModel = \FilesModel::findByUuid($objEvent->singleSRC);
+		// Add an image
+		if ($objEvent->addImage && $objEvent->singleSRC != '')
+		{
+			$objModel = \FilesModel::findByUuid($objEvent->singleSRC);
 
-            if ($objModel === null)
-            {
-                if (!\Validator::isUuid($objEvent->singleSRC))
-                {
-                    $objTemplate->text = '<p class="error">'.$GLOBALS['TL_LANG']['ERR']['version2format'].'</p>';
-                }
-            }
-            elseif (is_file(TL_ROOT . '/' . $objModel->path))
-            {
-                // Do not override the field now that we have a model registry (see #6303)
-                $arrEvent = $objEvent->row();
-                $arrEvent['singleSRC'] = $objModel->path;
+			if ($objModel === null)
+			{
+				if (!\Validator::isUuid($objEvent->singleSRC))
+				{
+					$objTemplate->text = '<p class="error">'.$GLOBALS['TL_LANG']['ERR']['version2format'].'</p>';
+				}
+			}
+			elseif (is_file(TL_ROOT . '/' . $objModel->path))
+			{
+				// Do not override the field now that we have a model registry (see #6303)
+				$arrEvent = $objEvent->row();
 
-                $this->addImageToTemplate($objTemplate, $arrEvent);
-            }
-        }
+				// Override the default image size
+				if ($this->imgSize != '')
+				{
+					$size = deserialize($this->imgSize);
+
+					if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]))
+					{
+						$arrEvent['size'] = $this->imgSize;
+					}
+				}
+
+				$arrEvent['singleSRC'] = $objModel->path;
+				$this->addImageToTemplate($objTemplate, $arrEvent);
+			}
+		}
 
 		$objTemplate->enclosure = array();
 
@@ -433,9 +452,11 @@ class ModuleEventReader extends \EventsExt
 		if ($objEvent->noComments || !in_array('comments', \ModuleLoader::getActive()))
 		{
 			$this->Template->allowComments = false;
+
 			return;
 		}
 
+		/** @var \CalendarModel $objCalendar */
 		$objCalendar = $objEvent->getRelated('pid');
 		$this->Template->allowComments = $objCalendar->allowComments;
 
@@ -461,6 +482,7 @@ class ModuleEventReader extends \EventsExt
 		// Notify the author
 		if ($objCalendar->notify != 'notify_admin')
 		{
+			/** @var \UserModel $objAuthor */
 			if (($objAuthor = $objEvent->getRelated('author')) !== null && $objAuthor->email != '')
 			{
 				$arrNotifies[] = $objAuthor->email;

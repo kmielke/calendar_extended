@@ -561,6 +561,11 @@ class tl_calendar_events_ext extends \Backend
                 for ($i = 0; $i < $count; $i++)
                 {
                     $month++;
+                    if (($month % 13) == 0)
+                    {
+                        $month = 1;
+                        $year += 1;
+                    }
 
                     $timetoadd = $arg . ' ' . $unit . ' of ' . $arrMonth[$month] . ' ' . $year;
                     if (!strtotime($timetoadd, $next))
@@ -571,12 +576,6 @@ class tl_calendar_events_ext extends \Backend
                     $strtotime = strtotime($timetoadd, $next);
                     $next = $strtotime;
                     $arrDates[$next] = date('d.m.Y H:i', $next);
-
-                    if (($month % 13) == 0)
-                    {
-                        $month = 1;
-                        $year += 1;
-                    }
                 }
                 $arrSet['repeatEnd'] = $next;
             }
