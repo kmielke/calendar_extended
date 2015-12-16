@@ -395,6 +395,7 @@ class tl_calendar_events_ext extends \Backend
         }
 
         $maxCount = ($GLOBALS['TL_CONFIG']['tl_calendar_events']['maxRepeatExceptions']) ? $GLOBALS['TL_CONFIG']['tl_calendar_events']['maxRepeatExceptions'] : 365;
+        $maxELCount = 250;
 
         $arrSet['weekday'] = (int)date("w", $dc->activeRecord->startDate);
         $arrSet['startTime'] = $dc->activeRecord->startDate;
@@ -673,7 +674,10 @@ class tl_calendar_events_ext extends \Backend
 
                         $row['exception'] = strtotime(date('Y-m-d', $searchNext));
                         $row['exception_date'] = date('Y-m-d', $searchNext);
-                        $exceptionRows[$searchNext] = $row;
+                        if (count($exceptionRows) < $maxELCount)
+                        {
+                            $exceptionRows[$searchNext] = $row;
+                        }
 
                         $month++;
                         if (($month % 13) == 0)
@@ -722,7 +726,10 @@ class tl_calendar_events_ext extends \Backend
                             $k = strtotime(date('Y-m-d', $k));
                             $row['exception'] = $k;
                             $row['exception_date'] = date('Y-m-d', $k);
-                            $exceptionRows[$k] = $row;
+                            if (count($exceptionRows) < $maxELCount)
+                            {
+                                $exceptionRows[$k] = $row;
+                            }
                         }
                     }
                 }
@@ -767,7 +774,10 @@ class tl_calendar_events_ext extends \Backend
                             $arrDates[$row['exception']] = date('d.m.Y H:i', $newDate);
                         }
                     }
-                    $exceptionRows[$row['exception']] = $row;
+                    if (count($exceptionRows) < $maxELCount)
+                    {
+                        $exceptionRows[$row['exception']] = $row;
+                    }
                 }
             }
 
