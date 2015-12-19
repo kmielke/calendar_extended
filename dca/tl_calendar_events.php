@@ -27,12 +27,24 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
     $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default']
 );
 
-$GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
-(
-    '{recurring_legend},recurring;',
-    '{location_legend},location_name,location_str,location_plz,location_ort;{contact_legend},location_link,location_contact,location_mail;{recurring_legend},recurring;{recurring_legend_ext},recurringExt;{repeatFixedDates_legend},repeatFixedDates;{exception_legend},useExceptions;',
-    $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default']
-);
+if (class_exists('Efg\Formdata'))
+{
+    $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
+    (
+        '{recurring_legend},recurring;',
+        '{location_legend},location_name,location_str,location_plz,location_ort;{contact_legend},location_link,location_contact,location_mail;{regform_legend},regform, regperson;{recurring_legend},recurring;{recurring_legend_ext},recurringExt;{repeatFixedDates_legend},repeatFixedDates;{exception_legend},useExceptions;',
+        $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default']
+    );
+}
+else
+{
+    $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
+    (
+        '{recurring_legend},recurring;',
+        '{location_legend},location_name,location_str,location_plz,location_ort;{contact_legend},location_link,location_contact,location_mail;{recurring_legend},recurring;{recurring_legend_ext},recurringExt;{repeatFixedDates_legend},repeatFixedDates;{exception_legend},useExceptions;',
+        $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default']
+    );
+}
 
 // change the default palettes
 array_insert($GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'], 99, 'recurringExt');
@@ -52,6 +64,33 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addTime'] = str_replace
     'startTime,endTime',
     'ignoreEndTime,startTime,endTime',
     $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addTime']
+);
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regform'] = array
+(
+    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['regform'],
+    'exclude'			=> true,
+    'filter'			=> true,
+    'inputType'			=> 'select',
+    'options_callback'  => array('tl_calendar_events_ext', 'listRegForms'),
+    'eval'				=> array('tl_class'=>'w50 m12', 'includeBlankOption'=>true, 'chosen'=>true),
+    'sql'               => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regperson'] = array
+(
+    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['regperson'],
+    'default'           => 0,
+    'exclude'			=> true,
+    'filter'			=> false,
+    'inputType'         => 'multiColumnWizard',
+    'load_callback'     => array(array('tl_calendar_events_ext', 'getmaxperson')),
+    'eval'				=> array
+    (
+        'columnsCallback'   => array('tl_calendar_events_ext', 'setmaxperson'),
+        'buttons'           => array('up' => false, 'down' => false, 'delete' => false, 'copy' => false)
+    ),
+    'sql'               => "text NULL"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatFixedDates'] = array
@@ -802,6 +841,74 @@ class tl_calendar_events_ext extends \Backend
 
 
     /**
+     * @param $dc
+     * @return string
+     */
+    public function getmaxperson($var, $dc)
+    {
+        $values = deserialize($var);
+        if (!is_array($values))
+        {
+            return null;
+        }
+
+        $eid = (int)$dc->activeRecord->id;
+        $fid = (int)$dc->activeRecord->regform;
+
+        $arrsql[] = 'select count(td.id) as count';
+        $arrsql[] = 'from tl_form tf, tl_formdata td, tl_formdata_details dd';
+        $arrsql[] = 'where tf.id = '.$fid.' and td.form = tf.title';
+        $arrsql[] = 'and dd.pid = td.id and dd.ff_name = "eventid"';
+        $arrsql[] = 'and dd.value = '.$eid;
+        $sql = implode(' ', $arrsql);
+
+        $regform = $this->Database->prepare($sql)->execute();
+
+        $values[0]['curr'] = (int)$regform->count;
+        $values[0]['free'] = $values[0]['maxi'] - $values[0]['curr'];
+
+        return serialize($values);
+    }
+
+
+    /**
+     * @param $dc
+     * @return array
+     */
+    public function setmaxperson($dc)
+    {
+        $columnFields = null;
+
+        $columnFields = array
+        (
+            'maxi' => array
+            (
+                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['maxi'],
+                'exclude'   => true,
+                'inputType' => 'text',
+                'eval'      => array('style'=>'width:60px')
+            ),
+            'curr' => array
+            (
+                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['curr'],
+                'exclude'   => true,
+                'inputType' => 'text',
+                'eval'      => array('style'=>'width:60px', 'disabled'=>'true')
+            ),
+            'free' => array
+            (
+                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['free'],
+                'exclude'   => true,
+                'inputType' => 'text',
+                'eval'      => array('style'=>'width:60px', 'disabled'=>'true')
+            )
+        );
+
+        return $columnFields;
+    }
+
+
+    /**
      * listMultiExceptions()
      *
      * Read the list of exception dates from the db
@@ -1012,4 +1119,33 @@ class tl_calendar_events_ext extends \Backend
 
         return $columnFields;
     }
+
+    /**
+     * @param $a
+     * @return array
+     */
+    public function listRegForms($a)
+    {
+        if ($this->User->isAdmin)
+        {
+            $objForms = \FormModel::findAll();
+        }
+        else
+        {
+            $objForms = \FormModel::findMultipleByIds($this->User->forms);
+        }
+
+        $return = array();
+
+        if ($objForms !== null)
+        {
+            while ($objForms->next())
+            {
+                $return[$objForms->id] = $objForms->title;
+            }
+        }
+
+        return $return;
+    }
+
 }

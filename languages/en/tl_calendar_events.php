@@ -51,6 +51,11 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['contact_legend']     = 'Contact infor
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_link']      = array('Link to location', 'e.g. a link to a webpage of the location. (http://www.link.de)');
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_contact']   = array('Contact', 'Name of a contact.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_mail']      = array('E-Mail', 'E-Mail address of the contact.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['regform']            = array('Registerform', 'The selected form will be inserted into the modified event template.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['regperson']          = array('Number of participants', 'Count of max participants, registration and free places.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['maxi']               = 'max';
+$GLOBALS['TL_LANG']['tl_calendar_events']['curr']               = 'current';
+$GLOBALS['TL_LANG']['tl_calendar_events']['free']               = 'free';
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['first']		= 'every first';
 $GLOBALS['TL_LANG']['tl_calendar_events']['second']		= 'every second';
@@ -73,6 +78,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['recurring_legend_ext']       = 'Recur
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatFixedDates_legend']	= 'Recurrence settings (irregular)';
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions_legend']	= 'Define exceptions for the recurrences';
 $GLOBALS['TL_LANG']['tl_calendar_events']['exception_legend']	        = 'Exception settings (extended)';
+$GLOBALS['TL_LANG']['tl_calendar_events']['regform_legend']             = 'Register via a form';
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['checkRecurring']     = "Only one option can be active for recurrences.";
 $GLOBALS['TL_LANG']['tl_calendar_events']['checkExceptions']    = "No option for recurrences is active.";

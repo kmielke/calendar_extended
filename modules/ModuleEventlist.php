@@ -279,6 +279,42 @@ class ModuleEventlist extends \EventsExt
                         continue;
                     }
 
+                    // Show Register Info
+                    unset($event['reginfo']);
+                    if (class_exists('Efg\Formdata'))
+                    {
+                        if ($event['regperson'])
+                        {
+                            $values = deserialize($event['regperson']);
+                            if (is_array($values))
+                            {
+                                // Anmeldungen ermittlen und anzeigen
+                                $eid = (int)$event['id'];
+                                $fid = (int)$event['regform'];
+
+                                // SQL bauen
+                                $arrsql[] = 'select count(td.id) as count';
+                                $arrsql[] = 'from tl_form tf, tl_formdata td, tl_formdata_details dd';
+                                $arrsql[] = 'where tf.id = '.$fid.' and td.form = tf.title';
+                                $arrsql[] = 'and dd.pid = td.id and dd.ff_name = "eventid"';
+                                $arrsql[] = 'and dd.value = '.$eid;
+                                $sql = implode(' ', $arrsql);
+                                // und ausführen
+                                $regform = $this->Database->prepare($sql)->execute();
+                                // Werte setzen
+                                $values[0]['maxi'] = (int)$values[0]['maxi'];
+                                $values[0]['curr'] = (int)$regform->count;
+                                $values[0]['free'] = $values[0]['maxi'] - $values[0]['curr'];
+                                $event['reginfo']['maxi'] = $values[0]['maxi'];
+                                $event['reginfo']['curr'] = $values[0]['curr'];
+                                $event['reginfo']['free'] = $values[0]['free'];
+                                $event['class'] = ($values[0]['free'] > 0) ? ' regopen' : ' regclose';
+                                unset($arrsql);
+                            }
+                            unset($values);
+                        }
+                    }
+
                     $event['firstDay'] = $GLOBALS['TL_LANG']['DAYS'][date('w', $day)];
 					$event['firstDate'] = \Date::parse($objPage->dateFormat, $day);
                     $event['datetime'] = date('Y-m-d', $day);

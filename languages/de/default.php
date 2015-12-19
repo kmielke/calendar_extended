@@ -27,3 +27,5 @@ $GLOBALS['TL_LANG']['MSC']['cal_second']    = 'Dieser Termin wiederholt sich jed
 $GLOBALS['TL_LANG']['MSC']['cal_third']     = 'Dieser Termin wiederholt sich jeden dritten %s im Monat';
 $GLOBALS['TL_LANG']['MSC']['cal_fourth']    = 'Dieser Termin wiederholt sich jeden vierten %s im Monat';
 $GLOBALS['TL_LANG']['MSC']['cal_last']      = 'Dieser Termin wiederholt sich jeden letzten %s im Monat';
+
+$GLOBALS['TL_LANG']['MSC']['regfull']       = 'Alle Plätze sind belegt. Ein Anmeldung ist aktuell nicht mehr möglich.';

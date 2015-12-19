@@ -27,3 +27,5 @@ $GLOBALS['TL_LANG']['MSC']['cal_second']    = 'This event is repeated every seco
 $GLOBALS['TL_LANG']['MSC']['cal_third']     = 'This event is repeated every third %s of the month';
 $GLOBALS['TL_LANG']['MSC']['cal_fourth']    = 'This event is repeated every fourth %s of the month';
 $GLOBALS['TL_LANG']['MSC']['cal_last']      = 'This event is repeated every last %s of the month';
+
+$GLOBALS['TL_LANG']['MSC']['regfull']       = 'Sorry, no more free places...';

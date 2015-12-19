@@ -217,10 +217,10 @@ class ModuleEventReader extends \EventsExt
 		if (\Input::get('times'))
 		{
 			list($intStartTime, $intEndTime) = explode(",", \Input::get('times'));
-			if ($intStartTime && ($intStartTime == $objEvent->startTime))
-			{
-				$intStartTime = null;
-			}
+			//if ($intStartTime && ($intStartTime == $objEvent->startTime))
+			//{
+			//	$intStartTime = null;
+			//}
 		}
 
 		$strDate = \Date::parse($objPage->dateFormat, $intStartTime);
@@ -350,6 +350,49 @@ class ModuleEventReader extends \EventsExt
 
 		$objTemplate->nextDate = $nextDate;
 		$objTemplate->moveReason = ($moveReason) ? $moveReason : null;
+
+		// Formular für Anmeldung, wenn EFG installiert ist...
+		$objTemplate->regform = null;
+		if (class_exists('Efg\Formdata'))
+		{
+            // ... und im Event ein Formular ausgewählt wurde
+            if ($objEvent->regform)
+            {
+                // Anmeldungen ermittlen und anzeigen
+                $eid = (int)$objEvent->id;
+                $fid = (int)$objEvent->regform;
+
+                // SQL bauen
+                $arrsql[] = 'select count(td.id) as count';
+                $arrsql[] = 'from tl_form tf, tl_formdata td, tl_formdata_details dd';
+                $arrsql[] = 'where tf.id = '.$fid.' and td.form = tf.title';
+                $arrsql[] = 'and dd.pid = td.id and dd.ff_name = "eventid"';
+                $arrsql[] = 'and dd.value = '.$eid;
+                $sql = implode(' ', $arrsql);
+                // und ausführen
+                $regform = $this->Database->prepare($sql)->execute();
+                // Werte setzen
+                $values = deserialize($objEvent->regperson);
+                $values[0]['maxi'] = (int)$values[0]['maxi'];
+                $values[0]['curr'] = (int)$regform->count;
+                $values[0]['free'] = $values[0]['maxi'] - $values[0]['curr'];
+                // Reg Info's für die Ausgabe
+                $objTemplate->reginfo = $values[0];
+
+                if ($values[0]['free'] > 0)
+                {
+                    $regform = \Form::getForm($objEvent->regform);
+                }
+                else
+                {
+                    $regform = $GLOBALS['TL_LANG']['MSC']['regfull'];
+                }
+                unset($values, $arrsql);
+
+                // Einsetzen der aktuell Event ID, damit diese mit dem Formular gespeichert wird.
+                $objTemplate->regform = str_replace('value="eventid"', 'value="'.$objEvent->id.'"', $regform);
+            }
+		}
 
 		// Restore event times...
 		$objEvent->startTime = $orgStartTime;
