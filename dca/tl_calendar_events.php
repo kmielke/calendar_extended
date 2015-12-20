@@ -276,7 +276,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatEachExt'] = array
     'inputType'			=> 'timePeriodExt',
     'options'			=> array
     (
-        array('first', 'second', 'third', 'fourth', 'last'),
+        array('first', 'second', 'third', 'fourth', 'fifth', 'last'),
         array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')
     ),
     'reference'         => &$GLOBALS['TL_LANG']['tl_calendar_events'],
@@ -1040,7 +1040,7 @@ class tl_calendar_events_ext extends \Backend
                 'label'     => $GLOBALS['TL_LANG']['tl_calendar_events']['exceptionInt'].$GLOBALS['TL_LANG']['DAYS'][$var1->activeRecord->weekday],
                 'exclude'   => true,
                 'inputType' => 'select',
-                'options'   => array('first', 'second', 'third', 'fourth', 'last'),
+                'options'   => array('first', 'second', 'third', 'fourth', 'fifth', 'last'),
                 'reference' => &$GLOBALS['TL_LANG']['tl_calendar_events'],
                 'eval'      => array('style'=>'width:120px', 'includeBlankOption'=>true)
             );
