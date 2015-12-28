@@ -295,7 +295,7 @@ class ModuleEventReader extends \EventsExt
 						// value to add to the old date
 						$addToDate = $fixedDate['new_exception'];
 						$newDate = strtotime($addToDate, $fixedDate['exception']);
-						if (date("Ymd", $newDate) == date("Ymd", $objEvent->startTime))
+						if (date("Ymd", $newDate) == date("Ymd", $intStartTime))
 						{
 							$moveReason = ($fixedDate['reason']) ? $fixedDate['reason'] : null;
 						}
@@ -310,7 +310,7 @@ class ModuleEventReader extends \EventsExt
 			$arrFixedDates = deserialize($objEvent->repeatFixedDates);
 			foreach ($arrFixedDates as $fixedDate)
 			{
-				if (date("Ymd", strtotime($fixedDate['new_repeat'])) == date("Ymd", $objEvent->startTime))
+				if (date("Ymd", strtotime($fixedDate['new_repeat'])) == date("Ymd", $intStartTime))
 				{
 					$moveReason = ($fixedDate['reason']) ? $fixedDate['reason'] : null;
 				}
@@ -373,25 +373,37 @@ class ModuleEventReader extends \EventsExt
                 $regform = $this->Database->prepare($sql)->execute();
                 // Werte setzen
                 $values = deserialize($objEvent->regperson);
+                $values[0]['mini'] = (int)$values[0]['mini'];
                 $values[0]['maxi'] = (int)$values[0]['maxi'];
                 $values[0]['curr'] = (int)$regform->count;
                 $values[0]['free'] = $values[0]['maxi'] - $values[0]['curr'];
-                // Reg Info's für die Ausgabe
-                $objTemplate->reginfo = $values[0];
+                $values[0]['info'] = $GLOBALS['TL_LANG']['MSC']['reginfo'];
 
+				// Formular auf null setzen
+                $objTemplate->regform = null;
                 if ($values[0]['free'] > 0)
+                // Maximale Anzahl noch nicht erreicht. Dann Formluar setzen
                 {
                     $regform = \Form::getForm($objEvent->regform);
+					// Einsetzen der aktuell Event ID, damit diese mit dem Formular gespeichert wird.
+					$objTemplate->regform = str_replace('value="eventid"', 'value="'.$objEvent->id.'"', $regform);
                 }
-                else
+				else
+                // Maximale Anzahl erreicht.
+				{
+					$values[0]['info'] = $GLOBALS['TL_LANG']['MSC']['regmaxi'];
+				}
+                // Info darüber, ob die minimal Anzahl erreicht ist.
+                if ($values[0]['mini'] > 0 && $values[0]['curr'] < $values[0]['mini'])
                 {
-                    $regform = $GLOBALS['TL_LANG']['MSC']['regfull'];
+					$values[0]['info'] = $GLOBALS['TL_LANG']['MSC']['regmini'];
                 }
-                unset($values, $arrsql);
 
-                // Einsetzen der aktuell Event ID, damit diese mit dem Formular gespeichert wird.
-                $objTemplate->regform = str_replace('value="eventid"', 'value="'.$objEvent->id.'"', $regform);
-            }
+				// Reg Info's für die Ausgabe
+				$objTemplate->reginfo = $values[0];
+
+				unset($values, $arrsql);
+			}
 		}
 
 		// Restore event times...

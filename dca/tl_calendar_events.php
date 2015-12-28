@@ -849,7 +849,12 @@ class tl_calendar_events_ext extends \Backend
         $values = deserialize($var);
         if (!is_array($values))
         {
-            return null;
+            $values = [];
+            $values[0]['mini'] = 0;
+            $values[0]['maxi'] = 0;
+            $values[0]['curr'] = 0;
+            $values[0]['free'] = 0;
+            return $values;
         }
 
         $eid = (int)$dc->activeRecord->id;
@@ -864,6 +869,7 @@ class tl_calendar_events_ext extends \Backend
 
         $regform = $this->Database->prepare($sql)->execute();
 
+        $values[0]['mini'] = ($values[0]['mini']) ? $values[0]['mini'] : 0;
         $values[0]['curr'] = (int)$regform->count;
         $values[0]['free'] = $values[0]['maxi'] - $values[0]['curr'];
 
@@ -881,6 +887,14 @@ class tl_calendar_events_ext extends \Backend
 
         $columnFields = array
         (
+            'mini' => array
+            (
+                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['mini'],
+                'default'   => '0',
+                'exclude'   => true,
+                'inputType' => 'text',
+                'eval'      => array('style'=>'width:60px')
+            ),
             'maxi' => array
             (
                 'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['maxi'],
