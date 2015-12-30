@@ -281,7 +281,7 @@ class ModuleEventlist extends \EventsExt
 
                     // Show Register Info
                     unset($event['reginfo']);
-                    if (class_exists('Efg\Formdata'))
+                    if (class_exists('Efg\Formdata') && $event['useRegistration'])
                     {
                         if ($event['regperson'])
                         {
