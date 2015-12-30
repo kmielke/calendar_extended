@@ -32,7 +32,7 @@ if (class_exists('Efg\Formdata'))
     $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
     (
         '{recurring_legend},recurring;',
-        '{location_legend},location_name,location_str,location_plz,location_ort;{contact_legend},location_link,location_contact,location_mail;{regform_legend},regform, regperson;{recurring_legend},recurring;{recurring_legend_ext},recurringExt;{repeatFixedDates_legend},repeatFixedDates;{exception_legend},useExceptions;',
+        '{location_legend},location_name,location_str,location_plz,location_ort;{contact_legend},location_link,location_contact,location_mail;{regform_legend},useRegistration;{recurring_legend},recurring;{recurring_legend_ext},recurringExt;{repeatFixedDates_legend},repeatFixedDates;{exception_legend},useExceptions;',
         $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default']
     );
 }
@@ -49,6 +49,7 @@ else
 // change the default palettes
 array_insert($GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'], 99, 'recurringExt');
 array_insert($GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'], 99, 'useExceptions');
+array_insert($GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'], 99, 'useRegistration');
 
 // change the default palettes
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['recurring'] = str_replace
@@ -129,6 +130,15 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['useExceptions'] = array
     )
 );
 
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['useRegistration'] = array
+(
+    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['useRegistration'],
+    'exclude'			=> true,
+    'inputType'			=> 'checkbox',
+    'eval'				=> array('submitOnChange'=>true, 'tl_class'=>'long clr'),
+    'sql'               => "char(1) NOT NULL default ''"
+);
+
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['showOnFreeDay'] = array
 (
     'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['showOnFreeDay'],
@@ -188,6 +198,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['hideOnWeekend'] = array
 // change the default palettes
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['recurringExt'] = 'repeatEachExt,recurrences,repeatEnd';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['useExceptions'] = 'repeatExceptionsInt,repeatExceptionsPer,repeatExceptions';
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['useRegistration'] = 'regform,regperson';
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['recurringExt'] = array
 (
