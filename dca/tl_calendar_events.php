@@ -75,7 +75,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regform'] = array
     'inputType'			=> 'select',
     'options_callback'  => array('tl_calendar_events_ext', 'listRegForms'),
     'eval'				=> array('tl_class'=>'w50 m12', 'includeBlankOption'=>true, 'chosen'=>true),
-    'sql'               => "int(10) unsigned NOT NULL default ''"
+    'sql'               => "int(10) unsigned NOT NULL default '0'"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regperson'] = array
