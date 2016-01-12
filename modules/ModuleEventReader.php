@@ -353,7 +353,7 @@ class ModuleEventReader extends \EventsExt
 
 		// Formular für Anmeldung, wenn EFG installiert ist...
 		$objTemplate->regform = null;
-		if (class_exists('Efg\Formdata'))
+		if (class_exists('Efg\Formdata') && $objEvent->useRegistration)
 		{
             // ... und im Event ein Formular ausgewählt wurde
             if ($objEvent->regform)
