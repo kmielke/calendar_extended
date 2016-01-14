@@ -860,7 +860,7 @@ class tl_calendar_events_ext extends \Backend
         $values = deserialize($var);
         if (!is_array($values))
         {
-            $values = [];
+            $values = array();
             $values[0]['mini'] = 0;
             $values[0]['maxi'] = 0;
             $values[0]['curr'] = 0;
