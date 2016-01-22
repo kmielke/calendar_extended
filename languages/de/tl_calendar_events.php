@@ -51,6 +51,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['contact_legend']     = 'Kontaktinform
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_link']      = array('Link auf Veranstaltungsort', 'z.B. ein Link auf eine Webseite des Veranstaltungsorts (http://www.link.de)');
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_contact']   = array('Kontaktperson', 'Name einer Kontaktperson.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_mail']      = array('E-Mail', 'E-Mail Adresse der Kontaktperson.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['useRegistration']    = array('Anmeldung', 'Aktivierung der Anmeldung für dieses Event.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['regform']            = array('Anmeldeformlar', 'Das gewählte Anmeldeformular wird im angepassten Event Template eingefügt.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['regperson']          = array('Anzahl Teilnehmer', 'Anzahl der min. und max, Teilnehmer, Anmeldungen und freie Plätze. ');
 $GLOBALS['TL_LANG']['tl_calendar_events']['mini']               = 'minimal';
