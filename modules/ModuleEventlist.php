@@ -190,7 +190,7 @@ class ModuleEventlist extends \EventsExt
 
         // we will overwrite $strBegin, $strEnd if range_date is set
         $arrRange = deserialize($this->range_date);
-        if (is_array($arrRange))
+        if (is_array($arrRange) && $arrRange[0]['date_from'])
         {
             $startRange = strtotime($arrRange[0]['date_from']);
             $endRange = strtotime($arrRange[0]['date_to']);
@@ -335,7 +335,11 @@ class ModuleEventlist extends \EventsExt
                     if ((int)$event['ignoreEndTime'] == 1)
                     {
                         $event['endTime'] = '';
-                        $event['time'] = \Date::parse($objPage->timeFormat, $event['startTime']);
+                        $event['time'] = '';
+                        if ($event['addTime'])
+                        {
+                            $event['time'] = \Date::parse($objPage->timeFormat, $event['startTime']);
+                        }
                     }
 
                     $arrEvents[] = $event;
