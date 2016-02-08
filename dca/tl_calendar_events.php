@@ -879,10 +879,11 @@ class tl_calendar_events_ext extends \Backend
         $sql = implode(' ', $arrsql);
 
         $regform = $this->Database->prepare($sql)->execute();
-
-        $values[0]['mini'] = ($values[0]['mini']) ? $values[0]['mini'] : 0;
         $values[0]['curr'] = (int)$regform->count;
-        $values[0]['free'] = $values[0]['maxi'] - $values[0]['curr'];
+        $values[0]['mini'] = ($values[0]['mini']) ? (int)$values[0]['mini'] : 0;
+        $values[0]['maxi'] = ($values[0]['maxi']) ? (int)$values[0]['maxi'] : 0;
+        $useMaxi = ($values[0]['maxi'] > 0) ? true : false;
+        $values[0]['free'] = ($useMaxi) ? $values[0]['maxi'] - $values[0]['curr'] : 0;
 
         return serialize($values);
     }

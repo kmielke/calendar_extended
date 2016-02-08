@@ -232,9 +232,12 @@ class ModuleEventlist extends \EventsExt
         // Remove events outside the scope
         foreach ($arrAllEvents as $key=>$days)
         {
-            if ($key < $dateBegin || $key > $dateEnd)
+            if ($showRecurrences == true)
             {
-                continue;
+                if ($key < $dateBegin || $key > $dateEnd)
+                {
+                    continue;
+                }
             }
 
             foreach ($days as $day=>$events)
@@ -248,6 +251,7 @@ class ModuleEventlist extends \EventsExt
                     $eventStop = ($objEV->stop) ? $objEV->stop : false;
                     unset($objEV);
 
+                    if ($event['show'])
                     // Remove events outside time scope
                     if ($this->pubTimeRecurrences && ($eventStart && $eventStop))
                     {
@@ -302,15 +306,17 @@ class ModuleEventlist extends \EventsExt
                                 // und ausführen
                                 $regform = $this->Database->prepare($sql)->execute();
                                 // Werte setzen
+                                $values[0]['curr'] = (int)$regform->count;
                                 $values[0]['mini'] = (int)$values[0]['mini'];
                                 $values[0]['maxi'] = (int)$values[0]['maxi'];
-                                $values[0]['curr'] = (int)$regform->count;
-                                $values[0]['free'] = $values[0]['maxi'] - $values[0]['curr'];
+                                $useMaxi = ($values[0]['maxi'] > 0) ? true : false;
+                                $values[0]['free'] = ($useMaxi) ? $values[0]['maxi'] - $values[0]['curr'] : 0;
+
                                 $event['reginfo']['mini'] = $values[0]['mini'];
                                 $event['reginfo']['maxi'] = $values[0]['maxi'];
                                 $event['reginfo']['curr'] = $values[0]['curr'];
                                 $event['reginfo']['free'] = $values[0]['free'];
-                                $event['class'] = ($values[0]['free'] > 0) ? ' regopen' : ' regclose';
+                                $event['class'] = ($useMaxi && ($values[0]['free'] > 0)) ? ' regopen' : ' regclose';
                                 unset($arrsql);
                             }
                             unset($values);

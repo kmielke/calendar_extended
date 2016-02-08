@@ -371,28 +371,34 @@ class ModuleEventReader extends \EventsExt
                 $sql = implode(' ', $arrsql);
                 // und ausführen
                 $regform = $this->Database->prepare($sql)->execute();
+
                 // Werte setzen
                 $values = deserialize($objEvent->regperson);
+				$values[0]['curr'] = (int)$regform->count;
                 $values[0]['mini'] = (int)$values[0]['mini'];
                 $values[0]['maxi'] = (int)$values[0]['maxi'];
-                $values[0]['curr'] = (int)$regform->count;
-                $values[0]['free'] = $values[0]['maxi'] - $values[0]['curr'];
+
+				$useMaxi = ($values[0]['maxi'] === 0) ? false : true;
+
+                $values[0]['free'] = ($useMaxi) ? $values[0]['maxi'] - $values[0]['curr'] : 0;
                 $values[0]['info'] = $GLOBALS['TL_LANG']['MSC']['reginfo'];
 
 				// Formular auf null setzen
                 $objTemplate->regform = null;
-                if ($values[0]['free'] > 0)
                 // Maximale Anzahl noch nicht erreicht. Dann Formluar setzen
+                if (($useMaxi && $values[0]['free'] > 0) || (!$useMaxi && $values[0]['free'] == 0))
                 {
                     $regform = \Form::getForm($objEvent->regform);
 					// Einsetzen der aktuell Event ID, damit diese mit dem Formular gespeichert wird.
 					$objTemplate->regform = str_replace('value="eventid"', 'value="'.$objEvent->id.'"', $regform);
                 }
-				else
+
                 // Maximale Anzahl erreicht.
+				if ($useMaxi && $values[0]['free'] == 0)
 				{
 					$values[0]['info'] = $GLOBALS['TL_LANG']['MSC']['regmaxi'];
 				}
+
                 // Info darüber, ob die minimal Anzahl erreicht ist.
                 if ($values[0]['mini'] > 0 && $values[0]['curr'] < $values[0]['mini'])
                 {
