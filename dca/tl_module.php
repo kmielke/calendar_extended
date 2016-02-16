@@ -94,7 +94,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['pubTimeRecurrences'] = array
 $GLOBALS['TL_DCA']['tl_module']['fields']['cal_format_ext'] = array
 (
     'label'                 => &$GLOBALS['TL_LANG']['tl_module']['cal_format_ext'],
-    'default'               => 0,
     'exclude'               => true,
     'inputType'             => 'text',
     'eval'                  => array('tl_class'=>'clr'),
@@ -108,7 +107,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['cal_format_ext'] = array
 $GLOBALS['TL_DCA']['tl_module']['fields']['displayDuration'] = array
 (
     'label'                 => &$GLOBALS['TL_LANG']['tl_module']['displayDuration'],
-    'default'               => 0,
     'exclude'               => true,
     'inputType'             => 'text',
     'eval'                  => array('tl_class'=>'clr'),
