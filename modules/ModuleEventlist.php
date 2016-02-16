@@ -190,7 +190,7 @@ class ModuleEventlist extends \EventsExt
 
         // we will overwrite $strBegin, $strEnd if range_date is set
         $arrRange = deserialize($this->range_date);
-        if (is_array($arrRange))
+        if (is_array($arrRange) && $arrRange[0]['date_from'])
         {
             $startRange = strtotime($arrRange[0]['date_from']);
             $endRange = strtotime($arrRange[0]['date_to']);
@@ -232,9 +232,12 @@ class ModuleEventlist extends \EventsExt
         // Remove events outside the scope
         foreach ($arrAllEvents as $key=>$days)
         {
-            if ($key < $dateBegin || $key > $dateEnd)
+            if ($showRecurrences == true)
             {
-                continue;
+                if ($key < $dateBegin || $key > $dateEnd)
+                {
+                    continue;
+                }
             }
 
             foreach ($days as $day=>$events)
@@ -248,6 +251,7 @@ class ModuleEventlist extends \EventsExt
                     $eventStop = ($objEV->stop) ? $objEV->stop : false;
                     unset($objEV);
 
+                    if ($event['show'])
                     // Remove events outside time scope
                     if ($this->pubTimeRecurrences && ($eventStart && $eventStop))
                     {
@@ -281,7 +285,7 @@ class ModuleEventlist extends \EventsExt
 
                     // Show Register Info
                     unset($event['reginfo']);
-                    if (class_exists('Efg\Formdata'))
+                    if (class_exists('Efg\Formdata') && $event['useRegistration'])
                     {
                         if ($event['regperson'])
                         {
@@ -302,15 +306,17 @@ class ModuleEventlist extends \EventsExt
                                 // und ausführen
                                 $regform = $this->Database->prepare($sql)->execute();
                                 // Werte setzen
+                                $values[0]['curr'] = (int)$regform->count;
                                 $values[0]['mini'] = (int)$values[0]['mini'];
                                 $values[0]['maxi'] = (int)$values[0]['maxi'];
-                                $values[0]['curr'] = (int)$regform->count;
-                                $values[0]['free'] = $values[0]['maxi'] - $values[0]['curr'];
+                                $useMaxi = ($values[0]['maxi'] > 0) ? true : false;
+                                $values[0]['free'] = ($useMaxi) ? $values[0]['maxi'] - $values[0]['curr'] : 0;
+
                                 $event['reginfo']['mini'] = $values[0]['mini'];
                                 $event['reginfo']['maxi'] = $values[0]['maxi'];
                                 $event['reginfo']['curr'] = $values[0]['curr'];
                                 $event['reginfo']['free'] = $values[0]['free'];
-                                $event['class'] = ($values[0]['free'] > 0) ? ' regopen' : ' regclose';
+                                $event['class'] = ($useMaxi && ($values[0]['free'] > 0)) ? ' regopen' : ' regclose';
                                 unset($arrsql);
                             }
                             unset($values);
@@ -331,13 +337,37 @@ class ModuleEventlist extends \EventsExt
                     {
                         $event['fgstyle'] = $this->calConf[$event['pid']]['foreground'];
                     }
+
+                    $strTime = \Date::parse($objPage->timeFormat, $event['startTime']);
+
                     // Set endtime to starttime always...
                     if ((int)$event['ignoreEndTime'] == 1)
                     {
                         $event['endTime'] = '';
-                        $event['time'] = \Date::parse($objPage->timeFormat, $event['startTime']);
+                        $event['time'] = '';
+                        if ($event['addTime'])
+                        {
+                            $event['time'] = $strTime;
+                        }
                     }
 
+                    // Set the next date
+                    $nextDate = null;
+                    if ($event['repeatDates'])
+                    {
+                        $arrNext = deserialize($event['repeatDates']);
+                        foreach ($arrNext as $nextDate)
+                        {
+                            if (strtotime($nextDate) > time())
+                            {
+                                $nextDate = \Date::parse($objPage->dateFormat, strtotime($nextDate)).' '.$strTime;
+                                break;
+                            }
+                        }
+                        $event['nextDate'] = $nextDate;
+                    }
+
+                    // Add the event to the array
                     $arrEvents[] = $event;
                 }
             }
