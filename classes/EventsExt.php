@@ -503,7 +503,10 @@ class EventsExt extends \Events
                 while ($objEvents->next())
                 {
                     // at last we add the free multi-day / holiday or what ever kind of event
-                    $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
+                    if (!$this->show_holiday)
+                    {
+                        $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
+                    }
 
                     /**
                      * Multi-day event
