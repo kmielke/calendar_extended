@@ -151,7 +151,7 @@ class EventsExt extends \Events
                 $store = true;
                 if ($objEvents->hideOnWeekend)
                 {
-                    if ($weekday == 0 || $weekday == 6)
+                    if ($weekday === 0 || $weekday === 6)
                     {
                         $store = false;
                     }
@@ -177,8 +177,13 @@ class EventsExt extends \Events
                 // store the entry if everything is fine...
                 if ($store === true)
                 {
+                    $eventEnd = $objEvents->endTime;
+                    if ($objEvents->recurring && !$showRecurrences)
+                    {
+                        $eventEnd = $objEvents->repeatEnd;
+                    }
                     $eventUrl = $strUrl."?day=".date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
-                    $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
+                    $this->addEvent($objEvents, $objEvents->startTime, $eventEnd, $eventUrl, $intStart, $intEnd, $id);
 
                     // increase $cntRecurrences if event is in scope
                     if ($dateNextStart >= $dateBegin && $dateNextEnd <= $dateEnd)
@@ -503,7 +508,10 @@ class EventsExt extends \Events
                 while ($objEvents->next())
                 {
                     // at last we add the free multi-day / holiday or what ever kind of event
-                    $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
+                    if (!$this->show_holiday)
+                    {
+                        $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
+                    }
 
                     /**
                      * Multi-day event
