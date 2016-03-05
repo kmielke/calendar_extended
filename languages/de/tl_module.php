@@ -40,6 +40,7 @@ $GLOBALS['TL_LANG']['tl_module']['showOnlyNext']    = array('Nur nächste Wieder
 $GLOBALS['TL_LANG']['tl_module']['linkCurrent']		= array('Link "Aktuelles Datum" anzeigen', 'Link für das aktuelle Datum wird angezeigt, wenn aktiviert.');
 $GLOBALS['TL_LANG']['tl_module']['hideEmptyDays']	= array('Leere Tage nicht anzeigen', 'Wochentage ohne Events werden ausgeblendet.');
 $GLOBALS['TL_LANG']['tl_module']['cal_holiday']		= array('Ferienkalender', 'Bitte wählen Sie einen oder mehrere Kalender für die Ferien und Feiertage.');
+$GLOBALS['TL_LANG']['tl_module']['show_holiday']	= array('Ferien ausblenden', 'Ferien und Feiertage nicht anzeigen.');
 $GLOBALS['TL_LANG']['tl_module']['cal_calendar_ext']= array('Kalender', 'Bitte wählen Sie einen oder mehrere Kalender.');
 $GLOBALS['TL_LANG']['tl_module']['cal_times']		= array('Uhrzeiten anzeigen', 'Uhrzeiten werden rechts angezeigt, und Events gleicher Zeit auf gleicher Höhe angezeigt.');
 $GLOBALS['TL_LANG']['tl_module']['pubTimeRecurrences'] = array('Uhrzeit bei Wiederholungen berücksichtigen', 'Wiederholungen werden nur angezeigt, wenn die Zeit des Events innerhalb der Uhrzeit von "Anzeigen von/bis" liegt.');

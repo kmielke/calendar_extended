@@ -54,6 +54,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['location_mail']      = array('E-Mail'
 $GLOBALS['TL_LANG']['tl_calendar_events']['useRegistration']    = array('Anmeldung', 'Aktivierung der Anmeldung für dieses Event.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['regform']            = array('Anmeldeformlar', 'Das gewählte Anmeldeformular wird im angepassten Event Template eingefügt.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['regperson']          = array('Anzahl Teilnehmer', 'Anzahl der min. und max, Teilnehmer, Anmeldungen und freie Plätze. ');
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatWeekday']      = array('Wochentag', 'Auswahl der Wochentage bei täglicher Wiederholung. Alle Tage, wenn keine Auswahl getroffen wird.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['mini']               = 'minimal';
 $GLOBALS['TL_LANG']['tl_calendar_events']['maxi']               = 'maximal';
 $GLOBALS['TL_LANG']['tl_calendar_events']['curr']               = 'aktuell';

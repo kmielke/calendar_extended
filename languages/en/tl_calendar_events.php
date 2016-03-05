@@ -54,6 +54,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['location_mail']      = array('E-Mail'
 $GLOBALS['TL_LANG']['tl_calendar_events']['useRegistration']    = array('Registration', 'Activate registration for this Event.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['regform']            = array('Registerform', 'The selected form will be inserted into the modified event template.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['regperson']          = array('Number of participants', 'Count of min and max participants, registrations and free places.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['repeatWeekday']      = array('Weekday', 'Select the weekday if event is recurring daily. No selection means all.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['mini']               = 'min';
 $GLOBALS['TL_LANG']['tl_calendar_events']['maxi']               = 'max';
 $GLOBALS['TL_LANG']['tl_calendar_events']['curr']               = 'current';

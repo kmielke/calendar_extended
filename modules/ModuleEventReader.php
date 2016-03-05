@@ -317,14 +317,38 @@ class ModuleEventReader extends \EventsExt
 			}
 		}
 
+		// check the repeat values
+		$unit = '';
+		if ($objEvent->recurring)
+		{
+			$arrRepeat = deserialize($objEvent->repeatEach) ? deserialize($objEvent->repeatEach) : null;
+			$unit = $arrRepeat['unit'];
+		}
+		if ($objEvent->recurringExt)
+		{
+			$arrRepeat = deserialize($objEvent->repeatEachExt) ? deserialize($objEvent->repeatEachExt) : null;
+			$unit = $arrRepeat['unit'];
+		}
+
+		// get the configured weekdays if any
+		$useWeekdays = ($weekdays = deserialize($objEvent->repeatWeekday)) ? true : false;
+
 		$nextDate = null;
 		if ($objEvent->repeatDates)
 		{
 			$arrNext = deserialize($objEvent->repeatDates);
-			foreach ($arrNext as $nextDate)
+			foreach ($arrNext as $k => $nextDate)
 			{
 				if (strtotime($nextDate) > time())
 				{
+					// check if we have the correct weekday
+					if ($useWeekdays && $unit === 'days')
+					{
+						if (!in_array(date('w', $k), $weekdays))
+						{
+							continue;
+						}
+					}
 					$nextDate = \Date::parse($objPage->dateFormat, strtotime($nextDate)).' '.$strTime;
 					break;
 				}

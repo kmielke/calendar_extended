@@ -40,6 +40,7 @@ $GLOBALS['TL_LANG']['tl_module']['showOnlyNext']    = array('Next recurrence onl
 $GLOBALS['TL_LANG']['tl_module']['linkCurrent']		= array('Display link "current date"', 'Link to jump to current date will be displayed if checked');
 $GLOBALS['TL_LANG']['tl_module']['hideEmptyDays']	= array('Hide empty days', 'Weekdays without events will not be displayed if checked');
 $GLOBALS['TL_LANG']['tl_module']['cal_holiday']     = array('Holiday calendars', 'Please select one or more calendars for holidays.');
+$GLOBALS['TL_LANG']['tl_module']['show_holiday']	= array('Hide holidays', 'Holidays and free days will not be displayed.');
 $GLOBALS['TL_LANG']['tl_module']['cal_calendar_ext']= array('Calendars', 'Please select one or more calendars.');
 $GLOBALS['TL_LANG']['tl_module']['cal_times']		= array('Display times', 'Times will be displayed and the events with the same time will be displayed on same level.');
 $GLOBALS['TL_LANG']['tl_module']['pubTimeRecurrences'] = array('Check time of recurrences', 'Recurrences are displayed only if the time of the event is inside "Show from/until" time.');

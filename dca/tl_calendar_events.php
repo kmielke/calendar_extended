@@ -55,7 +55,7 @@ array_insert($GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['recurring'] = str_replace
 (
     'repeatEach,recurrences',
-    'hideOnWeekend,repeatEach,recurrences,repeatEnd',
+    'hideOnWeekend,repeatEach,recurrences,repeatWeekday,repeatEnd',
     $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['recurring']
 );
 
@@ -65,6 +65,19 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addTime'] = str_replace
     'startTime,endTime',
     'ignoreEndTime,startTime,endTime',
     $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addTime']
+);
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatWeekday'] = array
+(
+    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatWeekday'],
+    'exclude'			=> true,
+    'filter'			=> true,
+    'inputType'			=> 'checkbox',
+    'options'			=> array(1, 2, 3, 4, 5, 6, 0),
+    'reference'			=> &$GLOBALS['TL_LANG']['DAYS'],
+    'load_callback'     => array(array('tl_calendar_events_ext', 'getWeekday')),
+    'eval'              => array('multiple'=>true, 'tl_class'=>'long'),
+    'sql'               => "varchar(128) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regform'] = array
@@ -387,6 +400,21 @@ class tl_calendar_events_ext extends \Backend
     {
         parent::__construct();
         $this->import('BackendUser', 'User');
+    }
+
+
+    /**
+     * @param $varValue
+     * @param DataContainer $dc
+     * @return null
+     */
+    public function getWeekday($varValue, \DataContainer $dc)
+    {
+        if ($varValue === '')
+        {
+            return 9;
+        }
+        return $varValue;
     }
 
 

@@ -360,15 +360,39 @@ class ModuleEventlist extends \EventsExt
                         }
                     }
 
+                    // check the repeat values
+                    $unit = '';
+                    if ($event['recurring'])
+                    {
+                        $arrRepeat = deserialize($event['repeatEach']) ? deserialize($event['repeatEach']) : null;
+                        $unit = $arrRepeat['unit'];
+                    }
+                    if ($event['recurringExt'])
+                    {
+                        $arrRepeat = deserialize($event['repeatEachExt']) ? deserialize($event['repeatEachExt']) : null;
+                        $unit = $arrRepeat['unit'];
+                    }
+
+                    // get the configured weekdays if any
+                    $useWeekdays = ($weekdays = deserialize($event['repeatWeekday'])) ? true : false;
+
                     // Set the next date
                     $nextDate = null;
                     if ($event['repeatDates'])
                     {
                         $arrNext = deserialize($event['repeatDates']);
-                        foreach ($arrNext as $nextDate)
+                        foreach ($arrNext as $k => $nextDate)
                         {
                             if (strtotime($nextDate) > time())
                             {
+                                // check if we have the correct weekday
+                                if ($useWeekdays && $unit === 'days')
+                                {
+                                    if (!in_array(date('w', $k), $weekdays))
+                                    {
+                                        continue;
+                                    }
+                                }
                                 $nextDate = \Date::parse($objPage->dateFormat, strtotime($nextDate)).' '.$strTime;
                                 break;
                             }

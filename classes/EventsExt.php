@@ -151,7 +151,7 @@ class EventsExt extends \Events
                 $store = true;
                 if ($objEvents->hideOnWeekend)
                 {
-                    if ($weekday == 0 || $weekday == 6)
+                    if ($weekday === 0 || $weekday === 6)
                     {
                         $store = false;
                     }
@@ -177,8 +177,13 @@ class EventsExt extends \Events
                 // store the entry if everything is fine...
                 if ($store === true)
                 {
+                    $eventEnd = $objEvents->endTime;
+                    if ($objEvents->recurring && !$showRecurrences)
+                    {
+                        $eventEnd = $objEvents->repeatEnd;
+                    }
                     $eventUrl = $strUrl."?day=".date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
-                    $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
+                    $this->addEvent($objEvents, $objEvents->startTime, $eventEnd, $eventUrl, $intStart, $intEnd, $id);
 
                     // increase $cntRecurrences if event is in scope
                     if ($dateNextStart >= $dateBegin && $dateNextEnd <= $dateEnd)
@@ -225,6 +230,9 @@ class EventsExt extends \Events
                         $arrEventSkipInfo[$objEvents->id] = deserialize($objEvents->exceptionList);
                     }
 
+                    // get the configured weekdays if any
+                    $useWeekdays = ($weekdays = deserialize($objEvents->repeatWeekday)) ? true : false;
+
                     // time of the next event
                     $nextTime = $objEvents->endTime;
                     while ($nextTime < $intEnd)
@@ -268,6 +276,15 @@ class EventsExt extends \Events
                             $objEvents->endTime = strtotime($strtotime . ' ' . $eventEndTime, $objEvents->endTime);
                         }
                         $nextTime = $objEvents->endTime;
+
+                        // check if we have the correct weekday
+                        if ($useWeekdays && $unit === 'days')
+                        {
+                            if (!in_array(date('w', $nextTime), $weekdays))
+                            {
+                                continue;
+                            }
+                        }
 
                         // check if there is any exception
                         if (is_array($arrEventSkipInfo[$objEvents->id]))
@@ -503,7 +520,10 @@ class EventsExt extends \Events
                 while ($objEvents->next())
                 {
                     // at last we add the free multi-day / holiday or what ever kind of event
-                    $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
+                    if (!$this->show_holiday)
+                    {
+                        $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
+                    }
 
                     /**
                      * Multi-day event
