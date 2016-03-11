@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (C) 2005-2012 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @package   Contao
  * @author    Kester Mielke
@@ -119,7 +119,8 @@ class ModuleTimeTable extends \EventsExt
 
         if ($this->jumpTo && ($objTarget = $this->objModel->getRelated('jumpTo')) !== null)
         {
-            $this->strLink = $this->generateFrontendUrl($objTarget->row());
+			/** @var \PageModel $objTarget */
+			$this->strLink = $objTarget->getFrontendUrl();
         }
 
         return parent::generate();
@@ -131,34 +132,47 @@ class ModuleTimeTable extends \EventsExt
      */
     protected function compile()
     {
-        // Respond to month
-        if (\Input::get('month'))
+        // Create the date object
+        try
         {
-            $this->Date = new \Date(\Input::get('month').'01', 'Ymd');
-        }
+            // Respond to month
+            if (\Input::get('month'))
+            {
+                $this->Date = new \Date(\Input::get('month').'01', 'Ymd');
+            }
 
-        // Respond to week
-        elseif (\Input::get('week'))
-        {
-            $selYear = (int)substr(\Input::get('week'), 0, 4);
-            $selWeek = (int)substr(\Input::get('week'), -2);
-            $selDay = ($selWeek == 1) ? 4 : 1;
-            $dt = new \DateTime();
-            $dt->setISODate($selYear, $selWeek, $selDay);
-            $this->Date = new \Date($dt->format('Ymd'), 'Ymd');
-            unset($dt);
-        }
+            // Respond to week
+            elseif (\Input::get('week'))
+            {
+                $selYear = (int)substr(\Input::get('week'), 0, 4);
+                $selWeek = (int)substr(\Input::get('week'), -2);
+                $selDay = ($selWeek == 1) ? 4 : 1;
+                $dt = new \DateTime();
+                $dt->setISODate($selYear, $selWeek, $selDay);
+                $this->Date = new \Date($dt->format('Ymd'), 'Ymd');
+                unset($dt);
+            }
 
-        // Respond to day
-        elseif (\Input::get('day'))
-        {
-            $this->Date = new \Date(\Input::get('day'), 'Ymd');
-        }
+            // Respond to day
+            elseif (\Input::get('day'))
+            {
+                $this->Date = new \Date(\Input::get('day'), 'Ymd');
+            }
 
-        // Fallback to today
-        else
-        {
-            $this->Date = new \Date();
+            // Fallback to today
+            else
+            {
+                $this->Date = new \Date();
+            }
+        }
+        catch (\OutOfBoundsException $e)
+		{
+            /** @var \PageModel $objPage */
+            global $objPage;
+
+            /** @var \PageError404 $objHandler */
+            $objHandler = new $GLOBALS['TL_PTY']['error_404']();
+            $objHandler->generate($objPage->id);
         }
 
         // Get the Year and the week of the given date
@@ -190,14 +204,15 @@ class ModuleTimeTable extends \EventsExt
             $weeksTotal = date('W', mktime(0, 0, 0, 12, 24, $intYear));
         }
 
-        $time = time();
+		$time = \Date::floorToMinute();
 
         // Find the boundaries
         $objMinMax = $this->Database->query("SELECT MIN(startTime) AS dateFrom, MAX(endTime) AS dateTo, MAX(repeatEnd) AS repeatUntil FROM tl_calendar_events WHERE pid IN(". implode(',', array_map('intval', $this->cal_calendar)) .")" . (!BE_USER_LOGGED_IN ? " AND (start='' OR start<$time) AND (stop='' OR stop>$time) AND published=1" : ""));
         $intLeftBoundary = date('YW', $objMinMax->dateFrom);
         $intRightBoundary = date('YW', max($objMinMax->dateTo, $objMinMax->repeatUntil));
 
-        $objTemplate = new \FrontendTemplate(($this->cal_ctemplate ? $this->cal_ctemplate : 'cal_timetable'));
+		/** @var \FrontendTemplate|object $objTemplate */
+		$objTemplate = new \FrontendTemplate(($this->cal_ctemplate ? $this->cal_ctemplate : 'cal_timetable'));
 
         $objTemplate->intYear = $intYear;
         $objTemplate->intWeek = $intWeek;
@@ -217,7 +232,7 @@ class ModuleTimeTable extends \EventsExt
                 $currYear = date('o');
                 $currWeek = (int)date('W');
                 $lblCurrent = $GLOBALS['TL_LANG']['MSC']['curr_week'];
-                $objTemplate->currHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'week=' . $currYear . str_pad($currWeek, 2, 0, STR_PAD_LEFT);
+                $objTemplate->currHref = $this->strUrl . (\Config::get('disableAlias') ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'week=' . $currYear . str_pad($currWeek, 2, 0, STR_PAD_LEFT);
                 $objTemplate->currTitle = specialchars($lblCurrent);
                 $objTemplate->currLink = $lblCurrent;
                 $objTemplate->currLabel = $GLOBALS['TL_LANG']['MSC']['cal_previous'];
@@ -231,7 +246,7 @@ class ModuleTimeTable extends \EventsExt
 
 //            if ($intPrevYm >= $intLeftBoundary)
 //            {
-            $objTemplate->prevHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'week=' . $prevYear . str_pad($prevWeek, 2, 0, STR_PAD_LEFT);
+            $objTemplate->prevHref = $this->strUrl . (\Config::get('disableAlias') ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'week=' . $prevYear . str_pad($prevWeek, 2, 0, STR_PAD_LEFT);
             $objTemplate->prevTitle = specialchars($lblPrevious);
             $objTemplate->prevLink = $GLOBALS['TL_LANG']['MSC']['cal_previous'] . ' ' . $lblPrevious;
             $objTemplate->prevLabel = $GLOBALS['TL_LANG']['MSC']['cal_previous'];
@@ -244,6 +259,7 @@ class ModuleTimeTable extends \EventsExt
             $objTemplate->current = $GLOBALS['TL_LANG']['MSC']['calendar_week'] . ' ' .$intWeek . ' ' . $intYear;
 
             // Next month
+            // Next month
             $nextWeek = ($intWeek == $weeksTotal) ? 1 : ($intWeek + 1);
             $nextYear = ($intWeek == $weeksTotal) ? ($intYear + 1) : $intYear;
             $lblNext = $GLOBALS['TL_LANG']['MSC']['calendar_week'] . ' ' .$nextWeek.' '.$nextYear;
@@ -252,7 +268,7 @@ class ModuleTimeTable extends \EventsExt
             // Only generate a link if there are events (see #4160)
 //            if ($intNextYm <= $intRightBoundary)
 //            {
-            $objTemplate->nextHref = $this->strUrl . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'week=' . $nextYear . str_pad($nextWeek, 2, 0, STR_PAD_LEFT);
+            $objTemplate->nextHref = $this->strUrl . (\Config::get('disableAlias') ? '?id=' . \Input::get('id') . '&amp;' : '?') . 'week=' . $nextYear . str_pad($nextWeek, 2, 0, STR_PAD_LEFT);
             $objTemplate->nextTitle = specialchars($lblNext);
             $objTemplate->nextLink = $lblNext . ' ' . $GLOBALS['TL_LANG']['MSC']['cal_next'];
             $objTemplate->nextLabel = $GLOBALS['TL_LANG']['MSC']['cal_next'];

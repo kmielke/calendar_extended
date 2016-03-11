@@ -100,7 +100,8 @@ class EventsExt extends \Events
             // Get the current "jumpTo" page
             if ($objCalendar !== null && $objCalendar->jumpTo && ($objTarget = $objCalendar->getRelated('jumpTo')) !== null)
             {
-				$strUrl = $this->generateFrontendUrl($objTarget->row(), (($GLOBALS['TL_CONFIG']['useAutoItem'] && !$GLOBALS['TL_CONFIG']['disableAlias']) ?  '/%s' : '/events/%s'));
+				/** @var \PageModel $objTarget */
+				$strUrl = $objTarget->getFrontendUrl((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/events/%s');
             }
 
             // Get the events of the current period

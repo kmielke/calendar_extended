@@ -3,18 +3,11 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (C) 2005-2012 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
- * @package   Contao
- * @author    Kester Mielke
- * @license   LGPL
- * @copyright Kester Mielke 2010-2013
+ * @license LGPL-3.0+
  */
 
-
-/**
- * Namespace
- */
 namespace Contao;
 
 
@@ -30,7 +23,7 @@ class ModuleEventlist extends \EventsExt
 
     /**
      * Current date object
-     * @var integer
+	 * @var \Date
      */
     protected $Date;
     protected $calConf = array();
@@ -44,12 +37,14 @@ class ModuleEventlist extends \EventsExt
 
     /**
      * Display a wildcard in the back end
+	 *
      * @return string
      */
     public function generate()
     {
         if (TL_MODE == 'BE')
         {
+			/** @var \BackendTemplate|object $objTemplate */
             $objTemplate = new \BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['eventlist'][0]) . ' ###';
@@ -108,7 +103,7 @@ class ModuleEventlist extends \EventsExt
 		}
 
         // Show the event reader if an item has been selected
-        if ($this->cal_readerModule > 0  && (isset($_GET['events']) || ($GLOBALS['TL_CONFIG']['useAutoItem'] && isset($_GET['auto_item']))))
+		if ($this->cal_readerModule > 0  && (isset($_GET['events']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
         {
             return $this->getFrontendModule($this->cal_readerModule, $this->strColumn);
         }
@@ -122,6 +117,7 @@ class ModuleEventlist extends \EventsExt
      */
     protected function compile()
     {
+		/** @var \PageModel $objPage */
         global $objPage;
         $blnClearInput = false;
 
@@ -152,32 +148,38 @@ class ModuleEventlist extends \EventsExt
 
         $blnDynamicFormat = (!$this->cal_ignoreDynamic && in_array($this->cal_format, array('cal_day', 'cal_month', 'cal_year')));
 
-        // Display year
-		if ($blnDynamicFormat && $intYear)
-        {
-			$this->Date = new \Date($intYear, 'Y');
-            $this->cal_format = 'cal_year';
-            $this->headline .= ' ' . date('Y', $this->Date->tstamp);
-        }
-        // Display month
-		elseif ($blnDynamicFormat && $intMonth)
-        {
-			$this->Date = new \Date($intMonth, 'Ym');
-            $this->cal_format = 'cal_month';
-			$this->headline .= ' ' . \Date::parse('F Y', $this->Date->tstamp);
-        }
-        // Display day
-		elseif ($blnDynamicFormat && $intDay)
-        {
-			$this->Date = new \Date($intDay, 'Ymd');
-            $this->cal_format = 'cal_day';
-			$this->headline .= ' ' . \Date::parse($objPage->dateFormat, $this->Date->tstamp);
-        }
-        // Display all events or upcoming/past events
-        else
-        {
-            $this->Date = new \Date();
-        }
+		// Create the date object
+		try
+		{
+            if ($blnDynamicFormat && $intYear)
+            {
+                $this->Date = new \Date($intYear, 'Y');
+                $this->cal_format = 'cal_year';
+                $this->headline .= ' ' . date('Y', $this->Date->tstamp);
+            }
+            elseif ($blnDynamicFormat && $intMonth)
+            {
+                $this->Date = new \Date($intMonth, 'Ym');
+                $this->cal_format = 'cal_month';
+                $this->headline .= ' ' . \Date::parse('F Y', $this->Date->tstamp);
+            }
+            elseif ($blnDynamicFormat && $intDay)
+            {
+                $this->Date = new \Date($intDay, 'Ymd');
+                $this->cal_format = 'cal_day';
+                $this->headline .= ' ' . \Date::parse($objPage->dateFormat, $this->Date->tstamp);
+            }
+            else
+            {
+                $this->Date = new \Date();
+            }
+		}
+		catch (\OutOfBoundsException $e)
+		{
+			/** @var \PageError404 $objHandler */
+			$objHandler = new $GLOBALS['TL_PTY']['error_404']();
+			$objHandler->generate($objPage->id);
+		}
 
         list($strBegin, $strEnd, $strEmpty) = $this->getDatesFromFormat($this->Date, $this->cal_format);
 
@@ -227,8 +229,7 @@ class ModuleEventlist extends \EventsExt
         $dateEnd = date('Ymd', $strEnd);
 
         // Step 1: get the current time
-        $currTime = time();
-
+        $currTime = \Date::floorToMinute();
         // Remove events outside the scope
         foreach ($arrAllEvents as $key=>$days)
         {
@@ -422,24 +423,20 @@ class ModuleEventlist extends \EventsExt
         if ($this->perPage > 0)
         {
             $id = 'page_e' . $this->id;
-            $page = \Input::get($id) ?: 1;
+			$page = (\Input::get($id) !== null) ? \Input::get($id) : 1;
 
             // Do not index or cache the page if the page number is outside the range
             if ($page < 1 || $page > max(ceil($total/$this->perPage), 1))
             {
-                global $objPage;
-                $objPage->noSearch = 1;
-                $objPage->cache = 0;
-
-                // Send a 404 header
-                header('HTTP/1.1 404 Not Found');
-                return;
+				/** @var \PageError404 $objHandler */
+				$objHandler = new $GLOBALS['TL_PTY']['error_404']();
+				$objHandler->generate($objPage->id);
             }
 
             $offset = ($page - 1) * $this->perPage;
             $limit = min($this->perPage + $offset, $total);
 
-			$objPagination = new \Pagination($total, $this->perPage, $GLOBALS['TL_CONFIG']['maxPaginationLinks'], $id);
+			$objPagination = new \Pagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id);
             $this->Template->pagination = $objPagination->generate("\n  ");
         }
 
@@ -456,7 +453,7 @@ class ModuleEventlist extends \EventsExt
         {
             $size = deserialize($this->imgSize);
 
-            if ($size[0] > 0 || $size[1] > 0)
+			if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]))
             {
                 $imgSize = $this->imgSize;
             }
@@ -474,6 +471,7 @@ class ModuleEventlist extends \EventsExt
                 $blnIsLastEvent = true;
             }
 
+			/** @var \FrontendTemplate|object $objTemplate */
             $objTemplate = new \FrontendTemplate($this->cal_template);
             $objTemplate->setData($event);
 
@@ -498,7 +496,7 @@ class ModuleEventlist extends \EventsExt
 			// Show the teaser text of redirect events (see #6315)
 			if (is_bool($event['details']))
 			{
-				$objTemplate->details = $event['teaser'];
+				$objTemplate->hasDetails = false;
 			}
 
 			// Add the template variables
