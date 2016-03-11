@@ -33,7 +33,8 @@
 $GLOBALS['TL_LANG']['tl_calendar']['bg_color']		= array('Background color and opacity','Here you can enter a hexadecimal background color (e.g. ff0000 for red) and an optional opacity in percent (e.g. 75).');
 $GLOBALS['TL_LANG']['tl_calendar']['fg_color']		= array('Foreground color and opacity','Here you can enter a hexadecimal foreground color (e.g. ff0000 for red) and an optional opacity in percent (e.g. 75).');
 $GLOBALS['TL_LANG']['tl_calendar']['isHolidayCal']	= array('Holiday calender', 'Calendar holds holidays only. No events are displayed at these days.');
-$GLOBALS['TL_LANG']['tl_calendar']['allowEvents']	= array('Show Events', 'Defined Events will be displayed if the event option "Show Event always" is active.');
+$GLOBALS['TL_LANG']['tl_calendar']['allowEvents']	= array('Show events', 'Defined events will be displayed if the event option "Show Event always" is active.');
+$GLOBALS['TL_LANG']['tl_calendar']['uniqueEvents']  = array('Unique events', 'Overlapping times are not allowed for active non recurring events.');
 
 /**
  * Legends
