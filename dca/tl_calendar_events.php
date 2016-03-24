@@ -536,7 +536,8 @@ class tl_calendar_events_ext extends \Backend
                     // findCurrentByPid also returns recurring events. therefor we have to check the times
                     if (($intStart > $objEvents->startTime && $intStart < $objEvents->endTime) ||
                         ($intEnd > $objEvents->startTime && $intEnd < $objEvents->endTime) ||
-                        ($intStart < $objEvents->startTime && $intEnd > $objEvents->endTime)
+                        ($intStart < $objEvents->startTime && $intEnd > $objEvents->endTime) ||
+                        ($intStart == $objEvents->startTime && $intEnd == $objEvents->endTime)
                     )
                     {
                         $nonUniqueEvents[] = $objEvents->id;
@@ -546,7 +547,7 @@ class tl_calendar_events_ext extends \Backend
                 if (count($nonUniqueEvents) > 0)
                 {
                     \Message::addError($GLOBALS['TL_LANG']['tl_calendar_events']['nonUniqueEvents'].' ('.implode(',', $nonUniqueEvents).')');
-                    return false;
+                    $this->redirect($this->addToUrl());
                 }
             }
         }
