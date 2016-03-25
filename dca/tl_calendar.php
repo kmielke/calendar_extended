@@ -18,7 +18,7 @@
 $GLOBALS['TL_DCA']['tl_calendar']['palettes']['default'] = str_replace
 (
     '{title_legend},title,jumpTo;',
-    '{title_legend},title,jumpTo;{extended_type_legend},isHolidayCal;{extended_legend},bg_color,fg_color;',
+    '{title_legend},title,jumpTo,uniqueEvents;{extended_type_legend},isHolidayCal;{extended_legend},bg_color,fg_color;',
     $GLOBALS['TL_DCA']['tl_calendar']['palettes']['default']
 );
 
@@ -57,6 +57,16 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['isHolidayCal'] = array
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['allowEvents'] = array
 (
     'label'				=> &$GLOBALS['TL_LANG']['tl_calendar']['allowEvents'],
+    'default'			=> 0,
+    'exclude'			=> true,
+    'inputType'			=> 'checkbox',
+    'eval'				=> array('tl_class'=>'w50'),
+    'sql'               => "char(1) NOT NULL default '0'"
+);
+
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['uniqueEvents'] = array
+(
+    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar']['uniqueEvents'],
     'default'			=> 0,
     'exclude'			=> true,
     'inputType'			=> 'checkbox',
