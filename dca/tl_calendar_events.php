@@ -16,7 +16,11 @@ foreach ($GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback']
     if ($v[0] == 'tl_calendar_events' && $v[1] == 'adjustTime')
     {
         unset($GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][$k]);
-        array_insert($GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'], 0, array(array('tl_calendar_events_ext','adjustTime')));
+        array_insert($GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'], 0,
+            array(
+                array('tl_calendar_events_ext','adjustTime'),
+                array('tl_calendar_events_ext','checkOverlapping')
+            ));
     }
 }
 
@@ -461,8 +465,97 @@ class tl_calendar_events_ext extends \Backend
 
 
     /**
-     * Adjust start end end time of the event based on date, span, startTime and endTime
-     * @param object
+     * @param DataContainer $dc
+     * @return mixed
+     * @throws Exception
+     * @return boolean
+     */
+    public function checkOverlapping(DataContainer $dc)
+    {
+        // Return if there is no active record (override all)
+        if (!$dc->activeRecord)
+        {
+            return false;
+        }
+
+        // Return if there event is recurring
+        if ($dc->activeRecord->recurring || $dc->activeRecord->recurringExt)
+        {
+            return false;
+        }
+
+        // Set start date
+        $intStart = $dc->activeRecord->startDate;
+        $intEnd = $dc->activeRecord->startDate;
+
+        $intStart = strtotime(date('Y-m-d', $intStart) . ' 00:00');
+
+        // Set end date
+        if (strlen($dc->activeRecord->endDate))
+        {
+            if ($dc->activeRecord->endDate > $dc->activeRecord->startDate)
+            {
+                $intEnd = $dc->activeRecord->endDate;
+            }
+            else
+            {
+                $intEnd = $dc->activeRecord->startDate;
+            }
+        }
+        $intEnd = strtotime(date('Y-m-d', $intEnd) . ' 23:59');
+
+        // Add time
+        if ($dc->activeRecord->addTime)
+        {
+            $intStart = strtotime(date('Y-m-d', $intStart) . ' ' . date('H:i:s', $dc->activeRecord->startTime));
+            $intEnd = strtotime(date('Y-m-d', $intEnd) . ' ' . date('H:i:s', $dc->activeRecord->endTime));
+        }
+
+        // Check if we have time overlapping events
+        $uniqueEvents = (\CalendarModel::findById($dc->activeRecord->pid)->uniqueEvents) ? true : false;
+        if ($uniqueEvents)
+        {
+            // array for events
+            $nonUniqueEvents = array();
+
+            // find all events
+            $objEvents = \CalendarEventsModel::findCurrentByPid(
+                (int)$dc->activeRecord->pid,
+                (int)$dc->activeRecord->startTime,
+                (int)$dc->activeRecord->endTime);
+            if ($objEvents !== null)
+            {
+                while ($objEvents->next())
+                {
+                    // do not add the event with the current id
+                    if ($objEvents->id === $dc->activeRecord->id)
+                    {
+                        continue;
+                    }
+
+                    // findCurrentByPid also returns recurring events. therefor we have to check the times
+                    if (($intStart > $objEvents->startTime && $intStart < $objEvents->endTime) ||
+                        ($intEnd > $objEvents->startTime && $intEnd < $objEvents->endTime) ||
+                        ($intStart < $objEvents->startTime && $intEnd > $objEvents->endTime) ||
+                        ($intStart == $objEvents->startTime && $intEnd == $objEvents->endTime)
+                    )
+                    {
+                        $nonUniqueEvents[] = $objEvents->id;
+                    }
+                }
+
+                if (count($nonUniqueEvents) > 0)
+                {
+                    \Message::addError($GLOBALS['TL_LANG']['tl_calendar_events']['nonUniqueEvents'].' ('.implode(',', $nonUniqueEvents).')');
+                    $this->redirect($this->addToUrl());
+                }
+            }
+        }
+    }
+
+
+    /**
+     * @param DataContainer $dc
      */
     public function adjustTime(DataContainer $dc)
     {

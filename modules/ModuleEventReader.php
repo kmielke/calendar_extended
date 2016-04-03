@@ -217,10 +217,6 @@ class ModuleEventReader extends \EventsExt
 		if (\Input::get('times'))
 		{
 			list($intStartTime, $intEndTime) = explode(",", \Input::get('times'));
-			//if ($intStartTime && ($intStartTime == $objEvent->startTime))
-			//{
-			//	$intStartTime = null;
-			//}
 		}
 
 		$strDate = \Date::parse($objPage->dateFormat, $intStartTime);
@@ -333,26 +329,32 @@ class ModuleEventReader extends \EventsExt
 		// get the configured weekdays if any
 		$useWeekdays = ($weekdays = deserialize($objEvent->repeatWeekday)) ? true : false;
 
+		// Set the next date
 		$nextDate = null;
 		if ($objEvent->repeatDates)
 		{
-			$arrNext = deserialize($objEvent->repeatDates);
-			foreach ($arrNext as $k => $nextDate)
+			$nextDate = \Date::parse($objPage->dateFormat, $objEvent->startTime).' '.$strTime;
+			if ($objEvent->startTime < time())
 			{
-				if (strtotime($nextDate) > time())
+				$arrNext = deserialize($objEvent->repeatDates);
+				foreach ($arrNext as $k => $nextDate)
 				{
-					// check if we have the correct weekday
-					if ($useWeekdays && $unit === 'days')
+					if (strtotime($nextDate) > time())
 					{
-						if (!in_array(date('w', $k), $weekdays))
+						// check if we have the correct weekday
+						if ($useWeekdays && $unit === 'days')
 						{
-							continue;
+							if (!in_array(date('w', $k), $weekdays))
+							{
+								continue;
+							}
 						}
+						$nextDate = \Date::parse($objPage->dateFormat, strtotime($nextDate)).' '.$strTime;
+						break;
 					}
-					$nextDate = \Date::parse($objPage->dateFormat, strtotime($nextDate)).' '.$strTime;
-					break;
 				}
 			}
+			$event['nextDate'] = $nextDate;
 		}
 
 		/** @var \FrontendTemplate|object $objTemplate */

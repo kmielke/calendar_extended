@@ -381,21 +381,25 @@ class ModuleEventlist extends \EventsExt
                     $nextDate = null;
                     if ($event['repeatDates'])
                     {
-                        $arrNext = deserialize($event['repeatDates']);
-                        foreach ($arrNext as $k => $nextDate)
+                        $nextDate = \Date::parse($objPage->dateFormat, $event['startTime']).' '.$strTime;
+                        if ($event['startTime'] < time())
                         {
-                            if (strtotime($nextDate) > time())
+                            $arrNext = deserialize($event['repeatDates']);
+                            foreach ($arrNext as $k => $nextDate)
                             {
-                                // check if we have the correct weekday
-                                if ($useWeekdays && $unit === 'days')
+                                if (strtotime($nextDate) > time())
                                 {
-                                    if (!in_array(date('w', $k), $weekdays))
+                                    // check if we have the correct weekday
+                                    if ($useWeekdays && $unit === 'days')
                                     {
-                                        continue;
+                                        if (!in_array(date('w', $k), $weekdays))
+                                        {
+                                            continue;
+                                        }
                                     }
+                                    $nextDate = \Date::parse($objPage->dateFormat, strtotime($nextDate)).' '.$strTime;
+                                    break;
                                 }
-                                $nextDate = \Date::parse($objPage->dateFormat, strtotime($nextDate)).' '.$strTime;
-                                break;
                             }
                         }
                         $event['nextDate'] = $nextDate;

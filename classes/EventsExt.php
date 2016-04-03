@@ -179,10 +179,10 @@ class EventsExt extends \Events
                 if ($store === true)
                 {
                     $eventEnd = $objEvents->endTime;
-                    if ($objEvents->recurring && !$showRecurrences)
-                    {
-                        $eventEnd = $objEvents->repeatEnd;
-                    }
+                    //if ($objEvents->recurring && !$showRecurrences)
+                    //{
+                    //    $eventEnd = $objEvents->repeatEnd;
+                    //}
                     $eventUrl = $strUrl."?day=".date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
                     $this->addEvent($objEvents, $objEvents->startTime, $eventEnd, $eventUrl, $intStart, $intEnd, $id);
 
