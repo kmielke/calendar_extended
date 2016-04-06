@@ -217,10 +217,6 @@ class ModuleEventReader extends \EventsExt
 		if (\Input::get('times'))
 		{
 			list($intStartTime, $intEndTime) = explode(",", \Input::get('times'));
-			//if ($intStartTime && ($intStartTime == $objEvent->startTime))
-			//{
-			//	$intStartTime = null;
-			//}
 		}
 
 		$strDate = \Date::parse($objPage->dateFormat, $intStartTime);
@@ -333,6 +329,7 @@ class ModuleEventReader extends \EventsExt
 		// get the configured weekdays if any
 		$useWeekdays = ($weekdays = deserialize($objEvent->repeatWeekday)) ? true : false;
 
+		// Set the next date
 		$nextDate = null;
 		if ($objEvent->repeatDates)
 		{
@@ -349,10 +346,11 @@ class ModuleEventReader extends \EventsExt
 							continue;
 						}
 					}
-					$nextDate = \Date::parse($objPage->dateFormat, strtotime($nextDate)).' '.$strTime;
+					$nextDate = \Date::parse($objPage->datimFormat, $k);
 					break;
 				}
 			}
+			$event['nextDate'] = $nextDate;
 		}
 
 		/** @var \FrontendTemplate|object $objTemplate */
