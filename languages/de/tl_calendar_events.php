@@ -85,6 +85,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['regform_legend']             = 'Anmel
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['checkRecurring']     = "Es kann nur eine der Optionen für die Wiederholungen aktiv sein.";
 $GLOBALS['TL_LANG']['tl_calendar_events']['checkExceptions']    = "Keine Option für Wiederholungen aktiv.";
+$GLOBALS['TL_LANG']['tl_calendar_events']['nonUniqueEvents']    = "Es gibt eine Zeitüberschneidung mit einem anderen Event.";
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['new_exception']      = "verschieben um";
 $GLOBALS['TL_LANG']['tl_calendar_events']['exception']	        = 'Datum';

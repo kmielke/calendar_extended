@@ -348,8 +348,6 @@ class ModuleEventlist extends \EventsExt
                         $event['fgstyle'] = $this->calConf[$event['pid']]['foreground'];
                     }
 
-                    $strTime = \Date::parse($objPage->timeFormat, $event['startTime']);
-
                     // Set endtime to starttime always...
                     if ((int)$event['ignoreEndTime'] == 1)
                     {
@@ -357,7 +355,7 @@ class ModuleEventlist extends \EventsExt
                         $event['time'] = '';
                         if ($event['addTime'])
                         {
-                            $event['time'] = $strTime;
+                            $event['time'] = \Date::parse($objPage->timeFormat, $event['startTime']);
                         }
                     }
 
@@ -394,7 +392,7 @@ class ModuleEventlist extends \EventsExt
                                         continue;
                                     }
                                 }
-                                $nextDate = \Date::parse($objPage->dateFormat, strtotime($nextDate)).' '.$strTime;
+                                $nextDate = \Date::parse($objPage->datimFormat, $k);
                                 break;
                             }
                         }
