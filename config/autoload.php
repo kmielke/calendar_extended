@@ -3,11 +3,9 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2013 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
- * @package Calendar_extended
- * @link    https://contao.org
- * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 
@@ -22,6 +20,7 @@ ClassLoader::addClasses(array
 
 	// Models
 	'Contao\CalendarEventsModel' => 'system/modules/calendar_extended/models/CalendarEventsModel.php',
+	'Contao\CalendarLeadsModel'  => 'system/modules/calendar_extended/models/CalendarLeadsModel.php',
 
 	// Modules
 	'Contao\ModuleCalendar'      => 'system/modules/calendar_extended/modules/ModuleCalendar.php',

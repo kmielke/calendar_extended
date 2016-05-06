@@ -31,3 +31,4 @@ $GLOBALS['TL_LANG']['MSC']['cal_last']      = 'Dieser Termin wiederholt sich jed
 $GLOBALS['TL_LANG']['MSC']['reginfo']       = 'Kurs kann wie geplant stattfinden. Bitte melden Sie sich an.';
 $GLOBALS['TL_LANG']['MSC']['regmini']       = 'Minimale Teilnehmerzahl ist noch nicht erreicht. Bitte melden Sie sich an.';
 $GLOBALS['TL_LANG']['MSC']['regmaxi']       = 'Maximale Teilnehmerzahl ist erreicht. Ein Anmeldung ist aktuell nicht mehr möglich.';
+$GLOBALS['TL_LANG']['MSC']['regdone']       = 'Anmeldeschluss. Es ist keine weitere Anmeldung mehr möglich.';

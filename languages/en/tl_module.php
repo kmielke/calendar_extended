@@ -47,11 +47,17 @@ $GLOBALS['TL_LANG']['tl_module']['pubTimeRecurrences'] = array('Check time of re
 $GLOBALS['TL_LANG']['tl_module']['displayDuration'] = array('Display duration of events', 'Limit of the display duration of events. Please use "strtotime" Syntax (+7 days, +2 week).');
 $GLOBALS['TL_LANG']['tl_module']['hide_started']    = array('Hide started events', 'Do not display events that are already started.');
 
-$GLOBALS['TL_LANG']['tl_module']['range_date']      = array('Event list format (extended timerange)', 'Default event list format will be ignored if set. Here you can choose the event list date range. Can\'t be used with (extended strtotime)');
 $GLOBALS['TL_LANG']['tl_module']['cal_format_ext']  = array('Event list format (extended strtotime)', 'Default event list format will be ignored if set. Please use "strtotime" Syntax (+7 days, +2 week). +2 days => Current day +2 days. Can\'t be used with (extended timerange)');
-$GLOBALS['TL_LANG']['tl_module']['cal_format_ext']  = array('Anzeigeformat (erweitert)', 'Standard Anzeigeformat wird ignoriert, wenn gesetzt. Bitte "strtotime" Syntax (+7 days, +2 weeks) verwenden. +2 days => aktueller Tag + 2 Tage');
+
+$GLOBALS['TL_LANG']['tl_module']['range_date']      = array('Event list format (extended timerange)', 'Default event list format will be ignored if set. Here you can choose the event list date range. Can\'t be used with (extended strtotime)');
 $GLOBALS['TL_LANG']['tl_module']['range_from']      = array('Date from', 'Start-Date of the event list.');
 $GLOBALS['TL_LANG']['tl_module']['range_to']        = array('Date to', 'End-Date of the event list.');
+
+$GLOBALS['TL_LANG']['tl_module']['cal_times_range'] = array('Timeframe of timetable.', 'Displays the time al label on the left side.');
+$GLOBALS['TL_LANG']['tl_module']['time_range_from'] = array('Time from', 'Starttime for timetalble.');
+$GLOBALS['TL_LANG']['tl_module']['time_range_to']   = array('Time to', 'Endtime for timetable.');
+
+$GLOBALS['TL_LANG']['tl_module']['cellhight']       = array('Row height of events', 'Height of the cell of an event in px per hour. Standard is 1px per minute and thus 60px at an interval of 1 hour.');
 
 /**
  * References

@@ -295,7 +295,7 @@ class ModuleEventlist extends \EventsExt
 
                     // Show Register Info
                     unset($event['reginfo']);
-                    if (class_exists('Efg\Formdata') && $event['useRegistration'])
+                    if (class_exists('leads\leads') && $event['useRegistration'])
                     {
                         if ($event['regperson'])
                         {
@@ -305,18 +305,10 @@ class ModuleEventlist extends \EventsExt
                                 // Anmeldungen ermittlen und anzeigen
                                 $eid = (int)$event['id'];
                                 $fid = (int)$event['regform'];
+                                $regCount = CalendarLeadsModel::regCountByFormEvent($fid, $eid);
 
-                                // SQL bauen
-                                $arrsql[] = 'select count(td.id) as count';
-                                $arrsql[] = 'from tl_form tf, tl_formdata td, tl_formdata_details dd';
-                                $arrsql[] = 'where tf.id = '.$fid.' and td.form = tf.title';
-                                $arrsql[] = 'and dd.pid = td.id and dd.ff_name = "eventid"';
-                                $arrsql[] = 'and dd.value = '.$eid;
-                                $sql = implode(' ', $arrsql);
-                                // und ausführen
-                                $regform = $this->Database->prepare($sql)->execute();
                                 // Werte setzen
-                                $values[0]['curr'] = (int)$regform->count;
+                                $values[0]['curr'] = (int)$regCount;
                                 $values[0]['mini'] = (int)$values[0]['mini'];
                                 $values[0]['maxi'] = (int)$values[0]['maxi'];
                                 $useMaxi = ($values[0]['maxi'] > 0) ? true : false;
@@ -348,8 +340,6 @@ class ModuleEventlist extends \EventsExt
                         $event['fgstyle'] = $this->calConf[$event['pid']]['foreground'];
                     }
 
-                    $strTime = \Date::parse($objPage->timeFormat, $event['startTime']);
-
                     // Set endtime to starttime always...
                     if ((int)$event['ignoreEndTime'] == 1)
                     {
@@ -357,7 +347,7 @@ class ModuleEventlist extends \EventsExt
                         $event['time'] = '';
                         if ($event['addTime'])
                         {
-                            $event['time'] = $strTime;
+                            $event['time'] = \Date::parse($objPage->timeFormat, $event['startTime']);
                         }
                     }
 
@@ -394,7 +384,7 @@ class ModuleEventlist extends \EventsExt
                                         continue;
                                     }
                                 }
-                                $nextDate = \Date::parse($objPage->dateFormat, strtotime($nextDate)).' '.$strTime;
+                                $nextDate = \Date::parse($objPage->datimFormat, $k);
                                 break;
                             }
                         }

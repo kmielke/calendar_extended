@@ -59,6 +59,8 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['mini']               = 'min';
 $GLOBALS['TL_LANG']['tl_calendar_events']['maxi']               = 'max';
 $GLOBALS['TL_LANG']['tl_calendar_events']['curr']               = 'current';
 $GLOBALS['TL_LANG']['tl_calendar_events']['free']               = 'free';
+$GLOBALS['TL_LANG']['tl_calendar_events']['regstartdate']       = array('Deadline register', 'After that date, no more registration is possible.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['regenddate']         = array('Deadline unregister', 'After this date, is not possible to remove a registration for free.');
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['first']		= 'every first';
 $GLOBALS['TL_LANG']['tl_calendar_events']['second']		= 'every second';
@@ -85,6 +87,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['regform_legend']             = 'Regis
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['checkRecurring']     = "Only one option can be active for recurrences.";
 $GLOBALS['TL_LANG']['tl_calendar_events']['checkExceptions']    = "No option for recurrences is active.";
+$GLOBALS['TL_LANG']['tl_calendar_events']['nonUniqueEvents']    = "Time overlapping with another event.";
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['new_exception']  = "move by";
 $GLOBALS['TL_LANG']['tl_calendar_events']['exception']	    = 'Date';

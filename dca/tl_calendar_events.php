@@ -16,7 +16,11 @@ foreach ($GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback']
     if ($v[0] == 'tl_calendar_events' && $v[1] == 'adjustTime')
     {
         unset($GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][$k]);
-        array_insert($GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'], 0, array(array('tl_calendar_events_ext','adjustTime')));
+        array_insert($GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'], 0,
+            array(
+                array('tl_calendar_events_ext','adjustTime'),
+                array('tl_calendar_events_ext','checkOverlapping')
+            ));
     }
 }
 
@@ -27,7 +31,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
     $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default']
 );
 
-if (class_exists('Efg\Formdata'))
+if (class_exists('leads\leads'))
 {
     $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
     (
@@ -78,33 +82,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatWeekday'] = array
     'load_callback'     => array(array('tl_calendar_events_ext', 'getWeekday')),
     'eval'              => array('multiple'=>true, 'tl_class'=>'long'),
     'sql'               => "varchar(128) NOT NULL default ''"
-);
-
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regform'] = array
-(
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['regform'],
-    'exclude'			=> true,
-    'filter'			=> true,
-    'inputType'			=> 'select',
-    'options_callback'  => array('tl_calendar_events_ext', 'listRegForms'),
-    'eval'				=> array('tl_class'=>'w50 m12', 'includeBlankOption'=>true, 'chosen'=>true),
-    'sql'               => "int(10) unsigned NOT NULL default '0'"
-);
-
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regperson'] = array
-(
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['regperson'],
-    'default'           => 0,
-    'exclude'			=> true,
-    'filter'			=> false,
-    'inputType'         => 'multiColumnWizard',
-    'load_callback'     => array(array('tl_calendar_events_ext', 'getmaxperson')),
-    'eval'				=> array
-    (
-        'columnsCallback'   => array('tl_calendar_events_ext', 'setmaxperson'),
-        'buttons'           => array('up' => false, 'down' => false, 'delete' => false, 'copy' => false)
-    ),
-    'sql'               => "text NULL"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatFixedDates'] = array
@@ -211,7 +188,55 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['hideOnWeekend'] = array
 // change the default palettes
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['recurringExt'] = 'repeatEachExt,recurrences,repeatEnd';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['useExceptions'] = 'repeatExceptionsInt,repeatExceptionsPer,repeatExceptions';
-$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['useRegistration'] = 'regform,regperson';
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['useRegistration'] = 'regperson,regform,regstartdate,regenddate';
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regperson'] = array
+(
+    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['regperson'],
+    'default'           => 0,
+    'exclude'			=> true,
+    'filter'			=> false,
+    'inputType'         => 'multiColumnWizard',
+    'load_callback'     => array(array('tl_calendar_events_ext', 'getmaxperson')),
+    'eval'				=> array
+    (
+        'tl_class'          => 'w50',
+        'columnsCallback'   => array('tl_calendar_events_ext', 'setmaxperson'),
+        'buttons'           => array('up' => false, 'down' => false, 'delete' => false, 'copy' => false)
+    ),
+    'sql'               => "text NULL"
+);
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regform'] = array
+(
+    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['regform'],
+    'exclude'			=> true,
+    'filter'			=> true,
+    'inputType'			=> 'select',
+    'options_callback'  => array('tl_calendar_events_ext', 'listRegForms'),
+    'eval'				=> array('tl_class'=>'w50 m12', 'includeBlankOption'=>true, 'chosen'=>true),
+    'sql'               => "int(10) unsigned NOT NULL default '0'"
+);
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regstartdate'] = array
+(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_events']['regstartdate'],
+    'default'                 => time(),
+    'exclude'                 => true,
+    'inputType'               => 'text',
+    'eval'                    => array('rgxp'=>'datim', 'mandatory'=>false, 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
+    'sql'                     => "int(10) unsigned NULL"
+);
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regenddate'] = array
+(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_events']['regenddate'],
+    'default'                 => time(),
+    'exclude'                 => true,
+    'inputType'               => 'text',
+    'eval'                    => array('rgxp'=>'datim', 'mandatory'=>false, 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
+    'sql'                     => "int(10) unsigned NULL"
+);
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['recurringExt'] = array
 (
@@ -461,8 +486,97 @@ class tl_calendar_events_ext extends \Backend
 
 
     /**
-     * Adjust start end end time of the event based on date, span, startTime and endTime
-     * @param object
+     * @param DataContainer $dc
+     * @return mixed
+     * @throws Exception
+     * @return boolean
+     */
+    public function checkOverlapping(DataContainer $dc)
+    {
+        // Return if there is no active record (override all)
+        if (!$dc->activeRecord)
+        {
+            return false;
+        }
+
+        // Return if there event is recurring
+        if ($dc->activeRecord->recurring || $dc->activeRecord->recurringExt)
+        {
+            return false;
+        }
+
+        // Set start date
+        $intStart = $dc->activeRecord->startDate;
+        $intEnd = $dc->activeRecord->startDate;
+
+        $intStart = strtotime(date('d.m.Y', $intStart) . ' 00:00');
+
+        // Set end date
+        if (strlen($dc->activeRecord->endDate))
+        {
+            if ($dc->activeRecord->endDate > $dc->activeRecord->startDate)
+            {
+                $intEnd = $dc->activeRecord->endDate;
+            }
+            else
+            {
+                $intEnd = $dc->activeRecord->startDate;
+            }
+        }
+        $intEnd = strtotime(date('d.m.Y', $intEnd) . ' 23:59');
+
+        // Add time
+        if ($dc->activeRecord->addTime)
+        {
+            $intStart = strtotime(date('d.m.Y', $intStart) . ' ' . date('H:i:s', $dc->activeRecord->startTime));
+            $intEnd = strtotime(date('d.m.Y', $intEnd) . ' ' . date('H:i:s', $dc->activeRecord->endTime));
+        }
+
+        // Check if we have time overlapping events
+        $uniqueEvents = (\CalendarModel::findById($dc->activeRecord->pid)->uniqueEvents) ? true : false;
+        if ($uniqueEvents)
+        {
+            // array for events
+            $nonUniqueEvents = array();
+
+            // find all events
+            $objEvents = \CalendarEventsModel::findCurrentByPid(
+                (int)$dc->activeRecord->pid,
+                (int)$dc->activeRecord->startTime,
+                (int)$dc->activeRecord->endTime);
+            if ($objEvents !== null)
+            {
+                while ($objEvents->next())
+                {
+                    // do not add the event with the current id
+                    if ($objEvents->id === $dc->activeRecord->id)
+                    {
+                        continue;
+                    }
+
+                    // findCurrentByPid also returns recurring events. therefor we have to check the times
+                    if (($intStart > $objEvents->startTime && $intStart < $objEvents->endTime) ||
+                        ($intEnd > $objEvents->startTime && $intEnd < $objEvents->endTime) ||
+                        ($intStart < $objEvents->startTime && $intEnd > $objEvents->endTime) ||
+                        ($intStart == $objEvents->startTime && $intEnd == $objEvents->endTime)
+                    )
+                    {
+                        $nonUniqueEvents[] = $objEvents->id;
+                    }
+                }
+
+                if (count($nonUniqueEvents) > 0)
+                {
+                    \Message::addError($GLOBALS['TL_LANG']['tl_calendar_events']['nonUniqueEvents'].' ('.implode(',', $nonUniqueEvents).')');
+                    $this->redirect($this->addToUrl());
+                }
+            }
+        }
+    }
+
+
+    /**
+     * @param DataContainer $dc
      */
     public function adjustTime(DataContainer $dc)
     {
@@ -497,8 +611,8 @@ class tl_calendar_events_ext extends \Backend
         // Add time
         if ($dc->activeRecord->addTime)
         {
-            $arrSet['startTime'] = strtotime(date('Y-m-d', $arrSet['startTime']) . ' ' . date('H:i:s', $dc->activeRecord->startTime));
-            $arrSet['endTime'] = strtotime(date('Y-m-d', $arrSet['endTime']) . ' ' . date('H:i:s', $dc->activeRecord->endTime));
+            $arrSet['startTime'] = strtotime(date('d.m.Y', $arrSet['startTime']) . ' ' . date('H:i:s', $dc->activeRecord->startTime));
+            $arrSet['endTime'] = strtotime(date('d.m.Y', $arrSet['endTime']) . ' ' . date('H:i:s', $dc->activeRecord->endTime));
         }
 
         // Set endtime to starttime always...
@@ -520,19 +634,29 @@ class tl_calendar_events_ext extends \Backend
         $maxRepeatEnd[] = $arrSet['repeatEnd'];
 
         // Set the repeatEnd date
+        $arrFixDates = array();
         $arrayFixedDates = deserialize($dc->activeRecord->repeatFixedDates) ? deserialize($dc->activeRecord->repeatFixedDates) : null;
         if (!is_null($arrayFixedDates))
         {
             foreach ($arrayFixedDates as $fixedDate)
             {
                 $nextValueDate = (strlen($fixedDate['new_repeat'])) ? strtotime($fixedDate['new_repeat']) : $dc->activeRecord->startTime;
-                if (strlen($fixedDate['new_end']))
+                if (strlen($fixedDate['new_repeat']))
                 {
-                    $nextEndTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", strtotime($fixedDate['new_end'])));
+                    $nextStartTime = strtotime(date("d.m.Y", $nextValueDate).' '.date("H:i:s", strtotime($fixedDate['new_start'])));
                 }
                 else
                 {
-                    $nextEndTime = strtotime(date("Y-m-d", $nextValueDate).' '.date("H:i:s", $dc->activeRecord->endTime));
+                    $nextStartTime = strtotime(date("d.m.Y", $nextValueDate).' '.date("H:i:s", $dc->activeRecord->startTime));
+                }
+                $arrFixDates[$nextStartTime] = date('d.m.Y H:i', $nextStartTime);
+                if (strlen($fixedDate['new_end']))
+                {
+                    $nextEndTime = strtotime(date("d.m.Y", $nextValueDate).' '.date("H:i:s", strtotime($fixedDate['new_end'])));
+                }
+                else
+                {
+                    $nextEndTime = strtotime(date("d.m.Y", $nextValueDate).' '.date("H:i:s", $dc->activeRecord->endTime));
                 }
                 $maxRepeatEnd[] = $nextEndTime;
             }
@@ -541,6 +665,10 @@ class tl_calendar_events_ext extends \Backend
         {
             $arrSet['repeatFixedDates'] = null;
         }
+
+        $arrDates = array();
+        $next = $arrSet['startTime'];
+        $arrDates[$next] = date('d.m.Y H:i', $next);
 
         // changed default recurring
         if ($dc->activeRecord->recurring)
@@ -559,6 +687,7 @@ class tl_calendar_events_ext extends \Backend
 
             //array of the exception dates
             $arrDates = array();
+            $arrDates[$next] = date('d.m.Y H:i', $next);
 
             if ($count == 0)
             {
@@ -634,6 +763,7 @@ class tl_calendar_events_ext extends \Backend
 
             //array of the exception dates
             $arrDates = array();
+            $arrDates[$next] = date('d.m.Y H:i', $next);
 
             if ($count > 0)
             {
@@ -750,8 +880,8 @@ class tl_calendar_events_ext extends \Backend
                             $row['new_end'] = '';
                         }
 
-                        $row['exception'] = strtotime(date('Y-m-d', $searchNext));
-                        $row['exception_date'] = date('Y-m-d', $searchNext);
+                        $row['exception'] = strtotime(date('d.m.Y', $searchNext));
+                        $row['exception_date'] = date('d.m.Y', $searchNext);
                         if (count($exceptionRows) < $maxELCount)
                         {
                             $exceptionRows[$searchNext] = $row;
@@ -801,9 +931,9 @@ class tl_calendar_events_ext extends \Backend
                     {
                         if ($k >= $dateFrom && $k <= $dateTo)
                         {
-                            $k = strtotime(date('Y-m-d', $k));
+                            $k = strtotime(date('d.y.Y', $k));
                             $row['exception'] = $k;
-                            $row['exception_date'] = date('Y-m-d', $k);
+                            $row['exception_date'] = date('d.m.Y', $k);
                             if (count($exceptionRows) < $maxELCount)
                             {
                                 $exceptionRows[$k] = $row;
@@ -826,11 +956,13 @@ class tl_calendar_events_ext extends \Backend
                         continue;
                     }
 
-                    $row['exception'] = strtotime(date('Y-m-d', $row['exception']));
-                    $row['exception_date'] = date('Y-m-d', $row['exception']);
-
+                    $row['exception_date'] = date('d.m.Y', $row['exception']);
                     $row['new_start'] = ($row['new_start']) ? $row['new_start'] : date('H:i', $dc->activeRecord->startTime); #'00:00';
                     $row['new_end'] = ($row['new_end']) ? $row['new_end'] : date('H:i', $dc->activeRecord->endTime); #'23:59';
+
+                    $dateToFind = strtotime(date("d.m.Y", $row['exception']).' '.date("H:i", $dc->activeRecord->startTime));
+                    $dateToSave = strtotime(date("d.m.Y", $row['exception']).' '.$row['new_start']);
+
                     // Set endtime to starttime always...
                     if ($dc->activeRecord->ignoreEndTime)
                     {
@@ -847,9 +979,9 @@ class tl_calendar_events_ext extends \Backend
                         }
 
                         // Find the date and replace it
-                        if (array_key_exists($row['exception'], $arrDates))
+                        if (array_key_exists($dateToFind, $arrDates))
                         {
-                            $arrDates[$row['exception']] = date('d.m.Y H:i', $newDate);
+                            $arrDates[$dateToFind] = date('d.m.Y H:i', $dateToSave);
                         }
                     }
                     if (count($exceptionRows) < $maxELCount)
@@ -871,7 +1003,9 @@ class tl_calendar_events_ext extends \Backend
             $arrSet['repeatEnd'] = max($maxRepeatEnd);
         }
         // Set the array of dates
-        $arrSet['repeatDates'] = $arrDates;
+        $arrAllDates = $arrDates + $arrFixDates;
+        ksort($arrAllDates);
+        $arrSet['repeatDates'] = $arrAllDates;
 
         // Execute the update sql
         $this->Database->prepare("UPDATE tl_calendar_events %s WHERE id=?")->set($arrSet)->execute($dc->id);
@@ -898,16 +1032,9 @@ class tl_calendar_events_ext extends \Backend
 
         $eid = (int)$dc->activeRecord->id;
         $fid = (int)$dc->activeRecord->regform;
+        $regCount = \Contao\CalendarLeadsModel::regCountByFormEvent($fid, $eid);
 
-        $arrsql[] = 'select count(td.id) as count';
-        $arrsql[] = 'from tl_form tf, tl_formdata td, tl_formdata_details dd';
-        $arrsql[] = 'where tf.id = '.$fid.' and td.form = tf.title';
-        $arrsql[] = 'and dd.pid = td.id and dd.ff_name = "eventid"';
-        $arrsql[] = 'and dd.value = '.$eid;
-        $sql = implode(' ', $arrsql);
-
-        $regform = $this->Database->prepare($sql)->execute();
-        $values[0]['curr'] = (int)$regform->count;
+        $values[0]['curr'] = (int)$regCount;
         $values[0]['mini'] = ($values[0]['mini']) ? (int)$values[0]['mini'] : 0;
         $values[0]['maxi'] = ($values[0]['maxi']) ? (int)$values[0]['maxi'] : 0;
         $useMaxi = ($values[0]['maxi'] > 0) ? true : false;

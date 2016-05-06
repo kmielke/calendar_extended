@@ -217,10 +217,6 @@ class ModuleEventReader extends \EventsExt
 		if (\Input::get('times'))
 		{
 			list($intStartTime, $intEndTime) = explode(",", \Input::get('times'));
-			//if ($intStartTime && ($intStartTime == $objEvent->startTime))
-			//{
-			//	$intStartTime = null;
-			//}
 		}
 
 		$strDate = \Date::parse($objPage->dateFormat, $intStartTime);
@@ -333,6 +329,7 @@ class ModuleEventReader extends \EventsExt
 		// get the configured weekdays if any
 		$useWeekdays = ($weekdays = deserialize($objEvent->repeatWeekday)) ? true : false;
 
+		// Set the next date
 		$nextDate = null;
 		if ($objEvent->repeatDates)
 		{
@@ -349,10 +346,11 @@ class ModuleEventReader extends \EventsExt
 							continue;
 						}
 					}
-					$nextDate = \Date::parse($objPage->dateFormat, strtotime($nextDate)).' '.$strTime;
+					$nextDate = \Date::parse($objPage->datimFormat, $k);
 					break;
 				}
 			}
+			$event['nextDate'] = $nextDate;
 		}
 
 		/** @var \FrontendTemplate|object $objTemplate */
@@ -375,61 +373,68 @@ class ModuleEventReader extends \EventsExt
 		$objTemplate->nextDate = $nextDate;
 		$objTemplate->moveReason = ($moveReason) ? $moveReason : null;
 
-		// Formular für Anmeldung, wenn EFG installiert ist...
+		// Formular für Anmeldung, wenn contao-leads installiert ist...
 		$objTemplate->regform = null;
-		if (class_exists('Efg\Formdata') && $objEvent->useRegistration)
+		if (class_exists('leads\leads') && $objEvent->useRegistration)
 		{
             // ... und im Event ein Formular ausgewählt wurde
             if ($objEvent->regform)
             {
-                // Anmeldungen ermittlen und anzeigen
-                $eid = (int)$objEvent->id;
-                $fid = (int)$objEvent->regform;
+				$values = deserialize($objEvent->regperson);
 
-                // SQL bauen
-                $arrsql[] = 'select count(td.id) as count';
-                $arrsql[] = 'from tl_form tf, tl_formdata td, tl_formdata_details dd';
-                $arrsql[] = 'where tf.id = '.$fid.' and td.form = tf.title';
-                $arrsql[] = 'and dd.pid = td.id and dd.ff_name = "eventid"';
-                $arrsql[] = 'and dd.value = '.$eid;
-                $sql = implode(' ', $arrsql);
-                // und ausführen
-                $regform = $this->Database->prepare($sql)->execute();
+				// Anmeldungen ermittlen und anzeigen
+				$eid = (int)$objEvent->id;
+				$fid = (int)$objEvent->regform;
+				$regCount = CalendarLeadsModel::regCountByFormEvent($fid, $eid);
 
-                // Werte setzen
-                $values = deserialize($objEvent->regperson);
-				$values[0]['curr'] = (int)$regform->count;
-                $values[0]['mini'] = (int)$values[0]['mini'];
-                $values[0]['maxi'] = (int)$values[0]['maxi'];
+				// Werte setzen
+				$values[0]['curr'] = (int)$regCount;
+				$values[0]['mini'] = (int)$values[0]['mini'];
+				$values[0]['maxi'] = (int)$values[0]['maxi'];
 
 				$useMaxi = ($values[0]['maxi'] === 0) ? false : true;
 
-                $values[0]['free'] = ($useMaxi) ? $values[0]['maxi'] - $values[0]['curr'] : 0;
-                $values[0]['info'] = $GLOBALS['TL_LANG']['MSC']['reginfo'];
+				$values[0]['free'] = ($useMaxi) ? $values[0]['maxi'] - $values[0]['curr'] : 0;
+				$values[0]['info'] = $GLOBALS['TL_LANG']['MSC']['reginfo'];
 
-				// Formular auf null setzen
-                $objTemplate->regform = null;
-                // Maximale Anzahl noch nicht erreicht. Dann Formluar setzen
-                if (($useMaxi && $values[0]['free'] > 0) || (!$useMaxi && $values[0]['free'] == 0))
-                {
-                    $regform = \Form::getForm($objEvent->regform);
-					// Einsetzen der aktuell Event ID, damit diese mit dem Formular gespeichert wird.
-					$regform = str_replace('value="eventid"', 'value="'.$objEvent->id.'"', $regform);
-					$regform = str_replace('value="eventtitle"', 'value="'.$objEvent->title.'"', $regform);
-					$objTemplate->regform = $regform;
-                }
-
-                // Maximale Anzahl erreicht.
-				if ($useMaxi && $values[0]['free'] == 0)
+				// Prüfen, ob ein Anmeldeschluss gesetzt ist
+				$showForm = true;
+				if ($objEvent->regstartdate)
 				{
-					$values[0]['info'] = $GLOBALS['TL_LANG']['MSC']['regmaxi'];
+					// und ob dieser erreicht ist...
+					$showForm = ($objEvent->regstartdate > time()) ? true : false;
 				}
+				if (!$showForm)
+				{
+					// wenn ja, dann entsprechende Meldung ausgeben
+					$values[0]['info'] = $GLOBALS['TL_LANG']['MSC']['regdone'];
+				}
+				else
+				{
+					// Formular auf null setzen
+					$objTemplate->regform = null;
+					// Maximale Anzahl noch nicht erreicht. Dann Formluar setzen
+					if (($useMaxi && $values[0]['free'] > 0) || (!$useMaxi && $values[0]['free'] == 0))
+					{
+						$regform = \Form::getForm((int)$objEvent->regform);
+						// Einsetzen der aktuell Event ID, damit diese mit dem Formular gespeichert wird.
+						$regform = str_replace('value="eventid"', 'value="'.$objEvent->id.'"', $regform);
+						$regform = str_replace('value="eventtitle"', 'value="'.$objEvent->title.'"', $regform);
+						$objTemplate->regform = $regform;
+					}
 
-                // Info darüber, ob die minimal Anzahl erreicht ist.
-                if ($values[0]['mini'] > 0 && $values[0]['curr'] < $values[0]['mini'])
-                {
-					$values[0]['info'] = $GLOBALS['TL_LANG']['MSC']['regmini'];
-                }
+					// Maximale Anzahl erreicht.
+					if ($useMaxi && $values[0]['free'] == 0)
+					{
+						$values[0]['info'] = $GLOBALS['TL_LANG']['MSC']['regmaxi'];
+					}
+
+					// Info darüber, ob die minimal Anzahl erreicht ist.
+					if ($values[0]['mini'] > 0 && $values[0]['curr'] < $values[0]['mini'])
+					{
+						$values[0]['info'] = $GLOBALS['TL_LANG']['MSC']['regmini'];
+					}
+				}
 
 				// Reg Info's für die Ausgabe
 				$objTemplate->reginfo = $values[0];

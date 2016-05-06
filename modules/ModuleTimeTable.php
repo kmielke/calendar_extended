@@ -345,18 +345,29 @@ class ModuleTimeTable extends \EventsExt
                     }
                 }
             }
-            $arrTimes['start'] = substr($arrTimes['start'],0,2);
-            $arrTimes['stop'] = substr($arrTimes['stop'],0,2);
+            $arrTimes['start'] = substr($arrTimes['start'], 0, 2);
+            $arrTimes['stop'] = substr($arrTimes['stop'], 0, 2);
+
+            $timerange = deserialize($this->cal_times_range)[0];
+            if ($timerange['time_from']) {
+                $arrTimes['start'] = substr($timerange['time_from'], 0, 2);
+            }
+            if ($timerange['time_to']) {
+                $arrTimes['stop'] = substr($timerange['time_to'], 0, 2);
+            }
+
+            $cellhight = ($this->cellhight) ? $this->cellhight : 60;
+
             $arrListTimes = array();
             $counter = 0;
             for ($i = $arrTimes['start']; $i <= $arrTimes['stop']; $i++)
             {
-                $top = 60 * $counter;
+                $top = $cellhight * $counter;
                 $strHour = str_pad($i, 2, '0', STR_PAD_LEFT);
                 $arrListTimes[$strHour]['top'] = $top;
                 $arrListTimes[$strHour]['class'] = (($counter % 2) == 0) ? 'even' : 'odd';
                 $arrListTimes[$strHour]['label'] = "$i:00"; //top:".$top."px; position:relative;
-                $arrListTimes[$strHour]['style'] = "height:60px;top:".$top."px;";
+                $arrListTimes[$strHour]['style'] = "height:".$cellhight."px;top:".$top."px;";
                 $counter++;
             }
         }
@@ -426,7 +437,7 @@ class ModuleTimeTable extends \EventsExt
                             $d1 = date_create(date('H:i', $vv['startTime']));
                             $d2 = date_create(date('H:i', $vv['endTime']));
                             $d0 = date_diff($d1, $d2);
-                            $height = ($d0->format('%h')*60) + $d0->format('%i');
+                            $height = ($d0->format('%h')*$cellhight) + $d0->format('%i');
 
                             $vv['style'] .= 'position:absolute;top:'.$top.'px;height:'.$height.'px;';
                         }

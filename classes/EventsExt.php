@@ -66,8 +66,9 @@ class EventsExt extends \Events
     protected function getAllEventsExt($arrCalendars, $intStart, $intEnd, $arrParam=null)
     {
         # set default values...
-        $arrHolidays=null;
-        $showRecurrences=true;
+        $arrHolidays = null;
+        $showRecurrences = true;
+
 
         if (!is_array($arrCalendars))
         {
@@ -179,10 +180,10 @@ class EventsExt extends \Events
                 if ($store === true)
                 {
                     $eventEnd = $objEvents->endTime;
-                    if ($objEvents->recurring && !$showRecurrences)
-                    {
-                        $eventEnd = $objEvents->repeatEnd;
-                    }
+                    //if ($objEvents->recurring && !$showRecurrences)
+                    //{
+                    //    $eventEnd = $objEvents->repeatEnd;
+                    //}
                     $eventUrl = $strUrl."?day=".date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
                     $this->addEvent($objEvents, $objEvents->startTime, $eventEnd, $eventUrl, $intStart, $intEnd, $id);
 

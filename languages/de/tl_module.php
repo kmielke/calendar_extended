@@ -47,10 +47,17 @@ $GLOBALS['TL_LANG']['tl_module']['pubTimeRecurrences'] = array('Uhrzeit bei Wied
 $GLOBALS['TL_LANG']['tl_module']['displayDuration'] = array('Anzeigedauer der Events', 'Anzeigedauer der Events wird begrenzt. Bitte "strtotime" Syntax (+7 days, +2 weeks) verwenden.');
 $GLOBALS['TL_LANG']['tl_module']['hide_started']    = array('Laufende Events nicht anzeigen', 'Events, die bereits gestartet sind, werden nicht mehr angezeigt.');
 
-$GLOBALS['TL_LANG']['tl_module']['range_date']      = array('Anzeigeformat (erweitert Zeitraum)', 'Standard Anzeigeformat wird ignoriert, wenn gesetzt. Hier können die Events auf ein Start- und End-Datum eingegrenzt werden. Kann nicht mit (erweitert strtotime) verwendet werden.');
 $GLOBALS['TL_LANG']['tl_module']['cal_format_ext']  = array('Anzeigeformat (erweitert strtotime)', 'Standard Anzeigeformat wird ignoriert, wenn gesetzt. Bitte "strtotime" Syntax (+7 days, +2 weeks) verwenden. +2 days => aktueller Tag + 2 Tage. Kann nicht mit (erweitert Zeitraum) verwendet werden.');
+
+$GLOBALS['TL_LANG']['tl_module']['range_date']      = array('Anzeigeformat (erweitert Zeitraum)', 'Standard Anzeigeformat wird ignoriert, wenn gesetzt. Hier können die Events auf ein Start- und End-Datum eingegrenzt werden. Kann nicht mit (erweitert strtotime) verwendet werden.');
 $GLOBALS['TL_LANG']['tl_module']['range_from']      = array('Datum von', 'Start-Datum der Events.');
 $GLOBALS['TL_LANG']['tl_module']['range_to']        = array('Datum bis', 'End-Datum der Events.');
+
+$GLOBALS['TL_LANG']['tl_module']['cal_times_range'] = array('Zeitfenster für den Stundenplan.', 'Zeigt die Zeiten links als Label im Stundeninterval an.');
+$GLOBALS['TL_LANG']['tl_module']['time_range_from'] = array('Zeit von', 'Startzeit für den Stundenplan.');
+$GLOBALS['TL_LANG']['tl_module']['time_range_to']   = array('Zeit bis', 'Endzeit für den Stundenplan.');
+
+$GLOBALS['TL_LANG']['tl_module']['cellhight']       = array('Zellenhöhe eines Events', 'Höhe der Zelle eines Events in px pro Stunde. Standard ist 1px pro Minute und damit 60px bei einem Interval von 1 Stunde.');
 
 /**
  * References

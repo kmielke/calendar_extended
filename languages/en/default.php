@@ -33,3 +33,4 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['regperson']          = array('Number 
 $GLOBALS['TL_LANG']['MSC']['reginfo']       = 'Course starts as planned. Please register.';
 $GLOBALS['TL_LANG']['MSC']['regmini']       = 'Minimum number of participants has not been reached. Please register.';
 $GLOBALS['TL_LANG']['MSC']['regmaxi']       = 'Maximum number of participants has been reached. Registration is no longer possible.';
+$GLOBALS['TL_LANG']['MSC']['regdone']       = 'Deadline. No more registrations possible.';

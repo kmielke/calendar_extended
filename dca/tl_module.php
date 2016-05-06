@@ -29,7 +29,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable'] = $GLOBALS['TL_DCA']['t
 $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable'] = str_replace
 (
     ';{redirect_legend}',
-    ',showDate,hideEmptyDays,use_navigation,linkCurrent,cal_times;{redirect_legend}',
+    ',showDate,hideEmptyDays,use_navigation,linkCurrent,cal_times,cal_times_range,cellhight;{redirect_legend}',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable']
 );
 
@@ -77,7 +77,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['cal_holiday'] = array
 	'exclude'               => true,
 	'inputType'             => 'checkbox',
 	'options_callback'      => array('calendar_Ext', 'getHolidays'),
-	'eval'                  => array('mandatory'=>false, 'multiple'=>true, 'tl_class'=>'w50'),
+	'eval'                  => array('mandatory'=>false, 'multiple'=>true, 'tl_class'=>'long'),
     'sql'                   => "text NULL"
 );
 
@@ -206,6 +206,31 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['cal_times'] = array
     'sql'                   => "char(1) NOT NULL default ''"
 );
 
+// list of exceptions
+$GLOBALS['TL_DCA']['tl_module']['fields']['cal_times_range'] = array
+(
+	'label'				=> &$GLOBALS['TL_LANG']['tl_module']['cal_times_range'],
+	'exclude'			=> true,
+	'inputType'         => 'multiColumnWizard',
+	'eval'				=> array
+	(
+		'tl_class'			=> 'clr w50',
+		'columnsCallback'   => array('calendar_Ext', 'getTimeRange'),
+		'buttons'           => array('up'=>false, 'down'=>false, 'copy'=>false)
+	),
+	'sql'               => "text NULL"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['cellhight'] = array
+(
+	'label'                 => &$GLOBALS['TL_LANG']['tl_module']['cellhight'],
+	'default'				=> 60,
+	'exclude'               => true,
+	'inputType'             => 'text',
+	'eval'                  => array('tl_class'=>'w50'),
+	'sql'                   => "varchar(10) NOT NULL default ''"
+);
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['hide_started'] = array
 (
     'label'                 => &$GLOBALS['TL_LANG']['tl_module']['hide_started'],
@@ -248,6 +273,35 @@ class calendar_Ext extends Backend
 		parent::__construct();
 		$this->import('BackendUser', 'User');
 	}
+
+
+    /**
+     * @param $var
+     */
+    public function getTimeRange($var)
+    {
+        $columnFields = null;
+
+        $columnFields = array
+        (
+            'time_from' => array(
+                'label'     => &$GLOBALS['TL_LANG']['tl_module']['time_range_from'],
+                'exclude'   => true,
+                'default'   => null,
+                'inputType' => 'text',
+                'eval'      => array('rgxp'=>'time', 'doNotCopy'=>true, 'style'=>'width:120px', 'datepicker'=>true, 'tl_class'=>'wizard')
+            ),
+            'time_to'   => array(
+                'label'     => &$GLOBALS['TL_LANG']['tl_module']['time_range_to'],
+                'exclude'   => true,
+                'default'   => null,
+                'inputType' => 'text',
+                'eval'      => array('rgxp'=>'time', 'doNotCopy'=>true, 'style'=>'width:120px', 'datepicker'=>true, 'tl_class'=>'wizard')
+            )
+        );
+
+        return $columnFields;
+    }
 
 
     /**
