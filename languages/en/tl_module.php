@@ -56,12 +56,14 @@ $GLOBALS['TL_LANG']['tl_module']['range_to']        = array('Date to', 'End-Date
 $GLOBALS['TL_LANG']['tl_module']['cal_times_range'] = array('Timeframe of timetable.', 'Displays the time al label on the left side.');
 $GLOBALS['TL_LANG']['tl_module']['time_range_from'] = array('Time from', 'Starttime for timetalble.');
 $GLOBALS['TL_LANG']['tl_module']['time_range_to']   = array('Time to', 'Endtime for timetable.');
-
 $GLOBALS['TL_LANG']['tl_module']['cellhight']       = array('Row height of events', 'Height of the cell of an event in px per hour. Standard is 1px per minute and thus 60px at an interval of 1 hour.');
+$GLOBALS['TL_LANG']['tl_module']['regform']         = array('Notifications', 'Please choose a notifications.');
+$GLOBALS['TL_LANG']['tl_module']['regtype']         = array('Type of module', 'Please choose the type.');
 
 /**
  * References
  */
-$GLOBALS['TL_LANG']['tl_module']['displayDurationError'] = 'Error parsing strtotime value.';
-$GLOBALS['TL_LANG']['tl_module']['displayDurationError2'] = 'Error in strtotime value. Result is current day.';
-$GLOBALS['TL_LANG']['tl_module']['config_ext_legend']   = 'Module configuration (extended)';
+$GLOBALS['TL_LANG']['tl_module']['displayDurationError']    = 'Error parsing strtotime value.';
+$GLOBALS['TL_LANG']['tl_module']['displayDurationError2']   = 'Error in strtotime value. Result is current day.';
+$GLOBALS['TL_LANG']['tl_module']['config_ext_legend']       = 'Module configuration (extended)';
+$GLOBALS['TL_LANG']['tl_module']['registration_legend']     = 'Register / Unregister (notification and type)';

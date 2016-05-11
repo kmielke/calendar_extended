@@ -56,7 +56,7 @@ array_insert($GLOBALS['FE_MOD'], 99, array
     (
         'timetable'	        => 'ModuleTimeTable',
         'yearview'	        => 'ModuleYearView',
-        'er_registration'   => 'ModuleEventRegistration',
+        'evr_registration'  => 'ModuleEventRegistration',
     )
 ));
 

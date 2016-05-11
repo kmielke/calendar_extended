@@ -23,4 +23,4 @@ $GLOBALS['TL_LANG']['MOD'][''] = array('', '');
  */
 $GLOBALS['TL_LANG']['FMD']['timetable']	        = array('Timetable', 'Adds a timetable to the page.');
 $GLOBALS['TL_LANG']['FMD']['yearview']	        = array('Yearview', 'Adds a calendar yearview to the page.');
-$GLOBALS['TL_LANG']['FMD']['er_registration']   = array('Confirmation register/unregister', 'Adds a module to confirm register/unregister to a page.');
+$GLOBALS['TL_LANG']['FMD']['evr_registration']  = array('Confirmation register/unregister', 'Adds a module to confirm register/unregister to a page.');

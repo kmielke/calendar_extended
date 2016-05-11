@@ -58,10 +58,14 @@ $GLOBALS['TL_LANG']['tl_module']['time_range_from'] = array('Zeit von', 'Startze
 $GLOBALS['TL_LANG']['tl_module']['time_range_to']   = array('Zeit bis', 'Endzeit für den Stundenplan.');
 
 $GLOBALS['TL_LANG']['tl_module']['cellhight']       = array('Zellenhöhe eines Events', 'Höhe der Zelle eines Events in px pro Stunde. Standard ist 1px pro Minute und damit 60px bei einem Interval von 1 Stunde.');
+$GLOBALS['TL_LANG']['tl_module']['regform']         = array('Benachrichtigung', 'Wählen Sie eine Benachrichtigung aus.');
+$GLOBALS['TL_LANG']['tl_module']['regtype']         = array('Typ des Modules', 'Wählen Sie einen Typen aus.');
 
 /**
  * References
  */
-$GLOBALS['TL_LANG']['tl_module']['displayDurationError'] = 'strtotime Wert nicht lesbar.';
-$GLOBALS['TL_LANG']['tl_module']['displayDurationError2'] = 'strtotime Wert flasch. Ergibt aktuelles Datum.';
-$GLOBALS['TL_LANG']['tl_module']['config_ext_legend']   = 'Modul-Konfiguration (erweitert)';
+$GLOBALS['TL_LANG']['tl_module']['displayDurationError']    = 'strtotime Wert nicht lesbar.';
+$GLOBALS['TL_LANG']['tl_module']['displayDurationError2']   = 'strtotime Wert flasch. Ergibt aktuelles Datum.';
+$GLOBALS['TL_LANG']['tl_module']['config_ext_legend']       = 'Modul-Konfiguration (erweitert)';
+$GLOBALS['TL_LANG']['tl_module']['registration_legend']     = 'Anmeldung / Abmeldung (Benachrichtigung und Typ)';
+
