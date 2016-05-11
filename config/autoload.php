@@ -15,20 +15,21 @@
 ClassLoader::addClasses(array
 (
 	// Classes
-	'Contao\EventsExt'           => 'system/modules/calendar_extended/classes/EventsExt.php',
-	'Contao\TimePeriodExt'       => 'system/modules/calendar_extended/classes/TimePeriodExt.php',
+	'Contao\EventsExt'               => 'system/modules/calendar_extended/classes/EventsExt.php',
+	'Contao\TimePeriodExt'           => 'system/modules/calendar_extended/classes/TimePeriodExt.php',
 
 	// Models
-	'Contao\CalendarEventsModel' => 'system/modules/calendar_extended/models/CalendarEventsModel.php',
-	'Contao\CalendarLeadsModel'  => 'system/modules/calendar_extended/models/CalendarLeadsModel.php',
+	'Contao\CalendarEventsModel'     => 'system/modules/calendar_extended/models/CalendarEventsModel.php',
+	'Contao\CalendarLeadsModel'      => 'system/modules/calendar_extended/models/CalendarLeadsModel.php',
 
 	// Modules
-	'Contao\ModuleCalendar'      => 'system/modules/calendar_extended/modules/ModuleCalendar.php',
-	'Contao\ModuleEventlist'     => 'system/modules/calendar_extended/modules/ModuleEventlist.php',
-	'Contao\ModuleEventMenu'     => 'system/modules/calendar_extended/modules/ModuleEventMenu.php',
-	'Contao\ModuleEventReader'   => 'system/modules/calendar_extended/modules/ModuleEventReader.php',
-	'Contao\ModuleTimeTable'     => 'system/modules/calendar_extended/modules/ModuleTimeTable.php',
-	'Contao\ModuleYearView'      => 'system/modules/calendar_extended/modules/ModuleYearView.php',
+	'Contao\ModuleCalendar'          => 'system/modules/calendar_extended/modules/ModuleCalendar.php',
+	'Contao\ModuleEventlist'         => 'system/modules/calendar_extended/modules/ModuleEventlist.php',
+	'Contao\ModuleEventMenu'         => 'system/modules/calendar_extended/modules/ModuleEventMenu.php',
+	'Contao\ModuleEventReader'       => 'system/modules/calendar_extended/modules/ModuleEventReader.php',
+	'Contao\ModuleEventRegistration' => 'system/modules/calendar_extended/modules/ModuleEventRegistration.php',
+	'Contao\ModuleTimeTable'         => 'system/modules/calendar_extended/modules/ModuleTimeTable.php',
+	'Contao\ModuleYearView'          => 'system/modules/calendar_extended/modules/ModuleYearView.php',
 ));
 
 
@@ -37,6 +38,8 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
-	'cal_timetable' => 'system/modules/calendar_extended/templates',
-	'cal_yearview'  => 'system/modules/calendar_extended/templates',
+	'cal_timetable'       => 'system/modules/calendar_extended/templates',
+	'cal_yearview'        => 'system/modules/calendar_extended/templates',
+	'er_registration'     => 'system/modules/calendar_extended/templates',
+	'mod_er_registration' => 'system/modules/calendar_extended/templates',
 ));

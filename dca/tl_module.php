@@ -57,10 +57,35 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['eventreader'] = str_replace
     '{config_legend},cal_calendar,cal_holiday',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['eventreader']
 );
+// Palette for registration
+$GLOBALS['TL_DCA']['tl_module']['palettes']['er_registration'] = '{registration_legend},regtype,regform;';
 
 /**
  * Add fields to tl_module
  */
+$GLOBALS['TL_DCA']['tl_module']['fields']['regtype'] = array
+(
+	'label'				=> &$GLOBALS['TL_LANG']['tl_module']['regtype'],
+	'exclude'			=> true,
+	'filter'			=> true,
+	'inputType'			=> 'radio',
+	'options'			=> array(0 => 'Register', 1 => 'Unregister'),
+	'eval'				=> array('mandatory'=>true, 'tl_class'=>'w50', 'chosen'=>true),
+	'sql'               => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['regform'] = array
+(
+	'label'				=> &$GLOBALS['TL_LANG']['tl_module']['regform'],
+	'exclude'			=> true,
+	'filter'			=> true,
+	'inputType'			=> 'select',
+	'options_callback'  => array('calendar_Ext', 'listRegForms'),
+	'eval'				=> array('mandatory'=>true, 'tl_class'=>'w50', 'includeBlankOption'=>true, 'chosen'=>true),
+	'sql'               => "int(10) unsigned NOT NULL default '0'"
+);
+
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['cal_calendar'] = array
 (
 	'label'                 => &$GLOBALS['TL_LANG']['tl_module']['cal_calendar'],
@@ -275,10 +300,38 @@ class calendar_Ext extends Backend
 	}
 
 
-    /**
-     * @param $var
-     */
-    public function getTimeRange($var)
+	/**
+	 * @return array
+	 */
+	public function listRegForms()
+	{
+		if ($this->User->isAdmin)
+		{
+			$objForms = \FormModel::findAll();
+		}
+		else
+		{
+			$objForms = \FormModel::findMultipleByIds($this->User->forms);
+		}
+
+		$return = array();
+
+		if ($objForms !== null)
+		{
+			while ($objForms->next())
+			{
+				$return[$objForms->id] = $objForms->title;
+			}
+		}
+
+		return $return;
+	}
+
+
+	/**
+	 * @return array|null
+	 */
+    public function getTimeRange()
     {
         $columnFields = null;
 
@@ -304,10 +357,10 @@ class calendar_Ext extends Backend
     }
 
 
-    /**
-     * @param $var
-     */
-    public function getRange($var)
+	/**
+	 * @return array|null
+	 */
+    public function getRange()
     {
         $columnFields = null;
 
@@ -333,12 +386,12 @@ class calendar_Ext extends Backend
     }
 
 
-    /**
-     * @param $varValue
-     * @param $dc
-     * @return mixed
-     */
-    public function checkDuration($varValue, $dc)
+	/**
+	 * @param $varValue
+	 * @return mixed
+	 * @throws Exception
+	 */
+    public function checkDuration($varValue)
     {
         if (strlen($varValue) > 0)
         {

@@ -21,5 +21,6 @@ $GLOBALS['TL_LANG']['MOD'][''] = array('', '');
 /**
  * Front end modules
  */
-$GLOBALS['TL_LANG']['FMD']['timetable']	 = array('Stundenplan', 'Fügt der Seite einen Kalender Stundenplan hinzu.');
-$GLOBALS['TL_LANG']['FMD']['yearview']	 = array('Jahresübersicht', 'Fügt der Seite einen Kalender Jahresübersicht hinzu.');
+$GLOBALS['TL_LANG']['FMD']['timetable']	        = array('Stundenplan', 'Fügt der Seite einen Kalender Stundenplan hinzu.');
+$GLOBALS['TL_LANG']['FMD']['yearview']	        = array('Jahresübersicht', 'Fügt der Seite einen Kalender Jahresübersicht hinzu.');
+$GLOBALS['TL_LANG']['FMD']['er_registration']   = array('Bestätigung Anmeldung/Abmeldung', 'Fügt der Seite ein Modul zur Bestätigung einer Anmeldung/Abmeldnug hinzu.');

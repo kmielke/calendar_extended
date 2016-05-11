@@ -1,0 +1,7 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<div><h1>lala</h1></div>
+
+<?php $this->endblock(); ?>

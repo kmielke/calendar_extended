@@ -41,7 +41,7 @@
                         <?php if ($event): ?>
                         <div class="event<?php if ($event['class']): echo $event['class']; endif; ?>" style="overflow:hidden;<?php echo $event['bgstyle']; ?><?php if ($event['style']): echo $event['style']; endif; ?>" title="<?php echo $event['title']; ?>">
                             <div class="event_title <?php echo $event['fgstyle']; ?>">
-                                <?php echo $event['title']; ?><br/>
+                                <a style="<?php echo $event['fgstyle']; ?>" href="<?php echo $event['href']; ?>" title="<?php echo $event['title']; ?> (<?php if ($event['day']): echo $event['day']; ?>, <?php endif; echo $event['date']; if ($event['time']): ?>, <?php echo $event['time']; endif; ?>)"<?php echo $event['target']; ?>><?php echo $event['link']; ?></a>
                             </div>
                             <div class="event_time">
                                 <?php if ($event['time']): ?>
