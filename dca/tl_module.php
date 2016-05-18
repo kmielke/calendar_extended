@@ -71,8 +71,9 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['regtype'] = array
 	'filter'			=> true,
 	'default'			=> 0,
 	'inputType'			=> 'radio',
-	'options'			=> array(0 => 'Register', 1 => 'Unregister'),
-	'eval'				=> array('mandatory'=>true, 'tl_class'=>'w50 m12', 'chosen'=>true),
+	'options'			=> array(1, 0),
+	'reference'			=> &$GLOBALS['TL_LANG']['tl_module']['regtypes'],
+	'eval'				=> array('tl_class'=>'w50 m12', 'chosen'=>true),
 	'sql'               => "char(1) NOT NULL default ''"
 );
 
@@ -82,7 +83,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['regform'] = array
 	'exclude'			=> true,
 	'filter'			=> true,
 	'inputType'			=> 'select',
-	'options_callback'  => array('calendar_Ext', 'listRegForms'),
+	'options_callback'  => array('calendar_Ext', 'listNotifications'),
 	'eval'				=> array('mandatory'=>true, 'tl_class'=>'w50', 'includeBlankOption'=>true, 'chosen'=>true),
 	'sql'               => "int(10) unsigned NOT NULL default '0'"
 );
@@ -305,24 +306,21 @@ class calendar_Ext extends Backend
 	/**
 	 * @return array
 	 */
-	public function listRegForms()
+	public function listNotifications()
 	{
-		if ($this->User->isAdmin)
+		if (!class_exists('leads\leads'))
 		{
-			$objForms = \FormModel::findAll();
-		}
-		else
-		{
-			$objForms = \FormModel::findMultipleByIds($this->User->forms);
+			return null;
 		}
 
 		$return = array();
 
-		if ($objForms !== null)
+		$objNotifications = \NotificationCenter\Model\Notification::findAll();
+		if ($objNotifications !== null)
 		{
-			while ($objForms->next())
+			while ($objNotifications->next())
 			{
-				$return[$objForms->id] = $objForms->title;
+				$return[$objNotifications->id] = $objNotifications->title;
 			}
 		}
 

@@ -2,6 +2,19 @@
 
 <?php $this->block('content'); ?>
 
-<div><h1>lala</h1></div>
+<div><h1><?= $this->type; ?></h1></div>
+
+<?php if ($this->hasError): ?>
+
+    <div><h3>Folgende Fehler sind aufgetreten</h3></div>
+    <?php foreach ($this->msgError as $key => $error): ?>
+        <?php echo $error; ?><br/>
+    <?php endforeach; ?>
+
+<?php else: ?>
+
+    <?= $this->msg; ?>
+
+<?php endif; ?>
 
 <?php $this->endblock(); ?>

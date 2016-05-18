@@ -120,15 +120,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['useExceptions'] = array
     )
 );
 
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['useRegistration'] = array
-(
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['useRegistration'],
-    'exclude'			=> true,
-    'inputType'			=> 'checkbox',
-    'eval'				=> array('submitOnChange'=>true, 'tl_class'=>'long clr'),
-    'sql'               => "char(1) NOT NULL default ''"
-);
-
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['showOnFreeDay'] = array
 (
     'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['showOnFreeDay'],
@@ -188,7 +179,26 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['hideOnWeekend'] = array
 // change the default palettes
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['recurringExt'] = 'repeatEachExt,recurrences,repeatEnd';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['useExceptions'] = 'repeatExceptionsInt,repeatExceptionsPer,repeatExceptions';
-$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['useRegistration'] = 'regperson,regform,regstartdate,regenddate';
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['useRegistration'] = 'regconfirm,regperson,regform,regstartdate,regenddate';
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['useRegistration'] = array
+(
+    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['useRegistration'],
+    'exclude'			=> true,
+    'inputType'			=> 'checkbox',
+    'eval'				=> array('submitOnChange'=>true, 'tl_class'=>'w50'),
+    'sql'               => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regconfirm'] = array
+(
+    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['regconfirm'],
+    'default'           => 0,
+    'exclude'			=> true,
+    'inputType'			=> 'checkbox',
+    'eval'				=> array('tl_class'=>'w50 m12'),
+    'sql'               => "char(1) NOT NULL default ''",
+);
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regperson'] = array
 (
@@ -200,7 +210,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regperson'] = array
     'load_callback'     => array(array('tl_calendar_events_ext', 'getmaxperson')),
     'eval'				=> array
     (
-        'tl_class'          => 'w50',
+        'tl_class'          => 'w50 clr',
         'columnsCallback'   => array('tl_calendar_events_ext', 'setmaxperson'),
         'buttons'           => array('up' => false, 'down' => false, 'delete' => false, 'copy' => false)
     ),
@@ -214,28 +224,28 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regform'] = array
     'filter'			=> true,
     'inputType'			=> 'select',
     'options_callback'  => array('tl_calendar_events_ext', 'listRegForms'),
-    'eval'				=> array('tl_class'=>'w50 m12', 'includeBlankOption'=>true, 'chosen'=>true),
+    'eval'				=> array('mandatory'=>true, 'tl_class'=>'w50 m12', 'includeBlankOption'=>true, 'chosen'=>true),
     'sql'               => "int(10) unsigned NOT NULL default '0'"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regstartdate'] = array
 (
-    'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_events']['regstartdate'],
-    'default'                 => time(),
-    'exclude'                 => true,
-    'inputType'               => 'text',
-    'eval'                    => array('rgxp'=>'datim', 'mandatory'=>false, 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
-    'sql'                     => "int(10) unsigned NULL"
+    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['regstartdate'],
+    'default'           => time(),
+    'exclude'           => true,
+    'inputType'         => 'text',
+    'eval'              => array('rgxp'=>'datim', 'mandatory'=>false, 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
+    'sql'               => "int(10) unsigned NULL"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regenddate'] = array
 (
-    'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_events']['regenddate'],
-    'default'                 => time(),
-    'exclude'                 => true,
-    'inputType'               => 'text',
-    'eval'                    => array('rgxp'=>'datim', 'mandatory'=>false, 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
-    'sql'                     => "int(10) unsigned NULL"
+    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['regenddate'],
+    'default'           => time(),
+    'exclude'           => true,
+    'inputType'         => 'text',
+    'eval'              => array('rgxp'=>'datim', 'mandatory'=>false, 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
+    'sql'               => "int(10) unsigned NULL"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['recurringExt'] = array

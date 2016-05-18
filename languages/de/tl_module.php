@@ -59,7 +59,9 @@ $GLOBALS['TL_LANG']['tl_module']['time_range_to']   = array('Zeit bis', 'Endzeit
 
 $GLOBALS['TL_LANG']['tl_module']['cellhight']       = array('Zellenhöhe eines Events', 'Höhe der Zelle eines Events in px pro Stunde. Standard ist 1px pro Minute und damit 60px bei einem Interval von 1 Stunde.');
 $GLOBALS['TL_LANG']['tl_module']['regform']         = array('Benachrichtigung', 'Wählen Sie eine Benachrichtigung aus.');
-$GLOBALS['TL_LANG']['tl_module']['regtype']         = array('Typ des Modules', 'Wählen Sie einen Typen aus.');
+$GLOBALS['TL_LANG']['tl_module']['regtype']         = array('Art der Bestätigung', 'Wählen Sie die art der Bestätigung aus.');
+$GLOBALS['TL_LANG']['tl_module']['regtypes'][1]     = 'Bestätigung Anmeldung';
+$GLOBALS['TL_LANG']['tl_module']['regtypes'][0]     = 'Bestätigung Abmeldung';
 
 /**
  * References

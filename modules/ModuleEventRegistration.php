@@ -12,6 +12,7 @@
  */
 
 namespace Contao;
+use NotificationCenter\Model\Notification;
 
 
 /**
@@ -58,10 +59,56 @@ class ModuleEventRegistration extends \Module
      */
     protected function compile()
     {
-        die("Modul wird ausgeführt");
+        \System::loadLanguageFile('tl_module');
 
         /** @var \FrontendTemplate|object $objTemplate */
         $objTemplate = new \FrontendTemplate('er_registration');
+
+        $objTemplate->hasError = false;
+        $msgError = array();
+
+        $objTemplate->type = $GLOBALS['TL_LANG']['tl_module']['regtypes'][$this->regtype];
+
+        // Id der Benachrichtigung
+        $ncid = $this->regform;
+
+        // Get the input parameter
+        $lead_id = (\Input::get('lead')) ? \Input::get('lead') : 0;
+        $event_id = (\Input::get('event')) ? \Input::get('event') : 0;
+        $email = (\Input::get('email')) ? \Input::get('email') : 0;
+
+        // Throw Exception if parameter is missing
+        if ($lead_id === 0) {
+            $objTemplate->hasError = true;
+            $msgError[] = 'Parameter lead fehlt...';
+        }
+        if ($event_id === 0) {
+            $objTemplate->hasError = true;
+            $msgError[] = 'Parameter event fehlt...';
+        }
+        if ($email === 0) {
+            $objTemplate->hasError = true;
+            $msgError[] = 'Parameter email fehlt...';
+        }
+
+        // Sind Fehler aufgetreten, dann die Meldungen zuweisen...
+        if ($objTemplate->hasError) {
+            $objTemplate->msgError = $msgError;
+
+        // Sind keine aufgetreten, dann weiter
+        } else {
+            // $event = \CalendarEventsModel::findById($event_id);
+//            $lead = \CalendarLeadsModel::updateByLeadEventMail((int)$lead_id, (int)$event_id, $email, (int)$this->regtype);
+//            $objTemplate->msg = $lead;
+        }
+
+        // Jetzt noch die notification_center mais raus
+        $objNotification = \NotificationCenter\Model\Notification::findByPk($ncid);
+        $arrTokens['recipient_email'] = $email;
+        $arrTokens['domain'] = \Idna::decode(\Environment::get('host'));
+        if (null !== $objNotification) {
+            $objNotification->send($arrTokens);
+        }
 
         $this->Template->event_registration = $objTemplate->parse();
     }

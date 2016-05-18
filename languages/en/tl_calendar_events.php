@@ -52,6 +52,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['location_link']      = array('Link to
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_contact']   = array('Contact', 'Name of a contact.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['location_mail']      = array('E-Mail', 'E-Mail address of the contact.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['useRegistration']    = array('Registration', 'Activate registration for this Event.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['regconfirm']         = array('Register / Unregister with confirmation', 'You need to create a page with a module "Confirmation register/unregister".');
 $GLOBALS['TL_LANG']['tl_calendar_events']['regform']            = array('Registerform', 'The selected form will be inserted into the modified event template.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['regperson']          = array('Number of participants', 'Count of min and max participants, registrations and free places.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['repeatWeekday']      = array('Weekday', 'Select the weekday if event is recurring daily. No selection means all.');

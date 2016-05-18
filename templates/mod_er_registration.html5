@@ -1,7 +1,5 @@
 <?php $this->extend('block_unsearchable'); ?>
 
 <?php $this->block('content'); ?>
-
-    <?= $this->event_registration ?>
-
+<?= $this->event_registration ?>
 <?php $this->endblock(); ?>

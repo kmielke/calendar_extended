@@ -58,7 +58,9 @@ $GLOBALS['TL_LANG']['tl_module']['time_range_from'] = array('Time from', 'Startt
 $GLOBALS['TL_LANG']['tl_module']['time_range_to']   = array('Time to', 'Endtime for timetable.');
 $GLOBALS['TL_LANG']['tl_module']['cellhight']       = array('Row height of events', 'Height of the cell of an event in px per hour. Standard is 1px per minute and thus 60px at an interval of 1 hour.');
 $GLOBALS['TL_LANG']['tl_module']['regform']         = array('Notifications', 'Please choose a notifications.');
-$GLOBALS['TL_LANG']['tl_module']['regtype']         = array('Type of module', 'Please choose the type.');
+$GLOBALS['TL_LANG']['tl_module']['regtype']         = array('Kind of confirmation', 'Please choose the kind of the confirmation.');
+$GLOBALS['TL_LANG']['tl_module']['regtypes'][1]     = 'Confirm register';
+$GLOBALS['TL_LANG']['tl_module']['regtypes'][0]     = 'Confirm unregister';
 
 /**
  * References

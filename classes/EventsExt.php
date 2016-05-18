@@ -296,15 +296,17 @@ class EventsExt extends \Events
                             unset($objEvents->moveReason);
 
                             // date to search for
+                            $findDate = $objEvents->startTime;
                             $s = strtotime(date("d.m.Y", $objEvents->startTime));
-                            $searchDate = mktime(0, 0, 0, date('m', $s), date('d', $s), date('Y', $s));
+                            // $searchDate = mktime(0, 0, 0, date('m', $s), date('d', $s), date('Y', $s));
 
                             // store old date values for later reset
                             $oldDate = array();
 
-                            if (is_array($arrEventSkipInfo[$objEvents->id][$searchDate]))
+                            if (is_array($arrEventSkipInfo[$objEvents->id][$findDate]))
                             {
-                                $r = $searchDate;
+                                // $r = $searchDate;
+                                $r = $findDate;
                                 $action = $arrEventSkipInfo[$objEvents->id][$r]['action'];
                                 $cssClass = $arrEventSkipInfo[$objEvents->id][$r]['cssclass'];
                                 $objEvents->cssClass .= ($cssClass) ? $cssClass.' ' : '';

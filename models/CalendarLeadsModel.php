@@ -52,4 +52,96 @@ class CalendarLeadsModel extends \Model
 
 		return $count;
 	}
+
+
+	/**
+	 * @param $lid int leadid
+	 * @param $eid int eventid
+	 * @param $mail string email
+	 *
+	 * @return int
+	 */
+	public static function findPidByLeadEventMail($lid, $eid, $mail)
+	{
+		// SQL bauen
+		$arrsql[] = 'select ld1.pid';
+		$arrsql[] = 'from '.static::$strTableMaster.' lm';
+		$arrsql[] = 'left join '.static::$strTableDetail.' ld1 on lm.id = ld1.pid';
+		$arrsql[] = 'left join '.static::$strTableDetail.' ld2 on ld2.pid = ld1.pid';
+		$arrsql[] = 'where lm.form_id = ? and ld1.value = ?';
+		$arrsql[] = 'and ld2.name = "email" and ld2.value = ?';
+    	$arrsql[] = 'order by pid desc limit 1';
+		$sql = implode(' ', $arrsql);
+
+		// und ausführen
+		$objResult = \Database::getInstance()->prepare($sql)->execute($lid, $eid, $mail);
+		if (!$objResult || $objResult->numRows === 0)
+		{
+			return false;
+		}
+		return $objResult->pid;
+	}
+
+
+//	/**
+//	 * @param $pid
+//	 *
+//	 * @return \Database\Result|object
+//	 */
+//	public static function findByPid($pid)
+//	{
+//		// SQL bauen
+//		$sql = 'select * from tl_lead_data where pid = ?';
+//
+//		// und ausführen
+//		$objResult = \Database::getInstance()->prepare($sql)->execute($pid);
+//
+//		return $objResult;
+//	}
+
+	/**
+	 * @param $lid int leadid
+	 * @param $eid int eventid
+	 * @param $mail string email
+	 * @param $published int published
+	 *
+	 * @return bool
+	 */
+	public static function updateByLeadEventMail($lid, $eid, $mail, $published)
+	{
+		$pid = self::findPidByLeadEventMail($lid, $eid, $mail);
+		if (!$pid)
+		{
+			return false;
+		}
+
+		$result = self::updateByPidField($pid, 'published', $published);
+		if (!$result)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * @param $pid int pid
+	 * @param $field string fieldname
+	 * @param $value mixed value
+	 *
+	 * @return bool
+	 */
+	public static function updateByPidField($pid, $field, $value)
+	{
+		$update_ok = false;
+
+		// SQL bauen
+		$sql = 'update '.static::$strTableDetail.' set '.$field.' = ? where pid = ?';
+
+		// und ausführen
+		$objResult = \Database::getInstance()->prepare($sql)->execute($pid, $value);
+
+		return $update_ok;
+	}
 }

@@ -413,13 +413,19 @@ class ModuleEventReader extends \EventsExt
 				{
 					// Formular auf null setzen
 					$objTemplate->regform = null;
+
 					// Maximale Anzahl noch nicht erreicht. Dann Formluar setzen
 					if (($useMaxi && $values[0]['free'] > 0) || (!$useMaxi && $values[0]['free'] == 0))
 					{
 						$regform = \Form::getForm((int)$objEvent->regform);
+
+						// Wenn bestätigt werden soll, dann published auf 0, sonst direkt auf 1
+						$published = ($objEvent->regconfirm) ? 0 : 1;
+
 						// Einsetzen der aktuell Event ID, damit diese mit dem Formular gespeichert wird.
 						$regform = str_replace('value="eventid"', 'value="'.$objEvent->id.'"', $regform);
 						$regform = str_replace('value="eventtitle"', 'value="'.$objEvent->title.'"', $regform);
+						$regform = str_replace('value="published"', 'value="'.$published.'"', $regform);
 						$objTemplate->regform = $regform;
 					}
 
