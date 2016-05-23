@@ -27,18 +27,18 @@ namespace Contao;
 class EventsExt extends \Events
 {
 
-	/**
-	 * Template
-	 * @var string
-	 */
-	protected $strTemplate = '';
+    /**
+     * Template
+     * @var string
+     */
+    protected $strTemplate = '';
 
 
-	/**
-	 * Generate the module
-	 */
-	protected function compile()
-	{
+    /**
+     * Generate the module
+     */
+    protected function compile()
+    {
         parent::compile;
     }
 
@@ -63,29 +63,24 @@ class EventsExt extends \Events
      * @param integer
      * @return array
      */
-    protected function getAllEventsExt($arrCalendars, $intStart, $intEnd, $arrParam=null)
+    protected function getAllEventsExt($arrCalendars, $intStart, $intEnd, $arrParam = null)
     {
         # set default values...
         $arrHolidays = null;
         $showRecurrences = true;
 
 
-        if (!is_array($arrCalendars))
-        {
+        if (!is_array($arrCalendars)) {
             return array();
         }
 
         $this->arrEvents = array();
 
-        if ($arrParam !== null)
-        {
-            if (count($arrParam) > 1)
-            {
+        if ($arrParam !== null) {
+            if (count($arrParam) > 1) {
                 $arrHolidays = $arrParam[0];
                 $showRecurrences = $arrParam[1];
-            }
-            else
-            {
+            } else {
                 $arrHolidays = $arrParam[0];
             }
         }
@@ -93,29 +88,25 @@ class EventsExt extends \Events
         // Used to collect exception list data for events
         $arrEventSkipInfo = array();
 
-        foreach ($arrCalendars as $id)
-        {
+        foreach ($arrCalendars as $id) {
             $strUrl = $this->strUrl;
             $objCalendar = \CalendarModel::findByPk($id);
 
             // Get the current "jumpTo" page
-            if ($objCalendar !== null && $objCalendar->jumpTo && ($objTarget = $objCalendar->getRelated('jumpTo')) !== null)
-            {
-				/** @var \PageModel $objTarget */
-				$strUrl = $objTarget->getFrontendUrl((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/events/%s');
+            if ($objCalendar !== null && $objCalendar->jumpTo && ($objTarget = $objCalendar->getRelated('jumpTo')) !== null) {
+                /** @var \PageModel $objTarget */
+                $strUrl = $objTarget->getFrontendUrl((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/events/%s');
             }
 
             // Get the events of the current period
             $objEvents = \CalendarEventsModel::findCurrentByPid($id, $intStart, $intEnd);
 
-            if ($objEvents === null)
-            {
+            if ($objEvents === null) {
                 continue;
             }
 
-            while ($objEvents->next())
-            {
-                $eventRecurrences = (int)$objEvents->recurrences+1;
+            while ($objEvents->next()) {
+                $eventRecurrences = (int)$objEvents->recurrences + 1;
 
                 $initStartTime = $objEvents->startTime;
                 $initEndTime = $objEvents->endTime;
@@ -123,26 +114,19 @@ class EventsExt extends \Events
                 $objEvents->pos_idx = 1;
                 $objEvents->pos_cnt = 1;
 
-                if ($objEvents->recurring || $objEvents->recurringExt)
-                {
-                    if ($objEvents->recurrences == 0)
-                    {
+                if ($objEvents->recurring || $objEvents->recurringExt) {
+                    if ($objEvents->recurrences == 0) {
                         $objEvents->pos_cnt = 0;
-                    }
-                    else
-                    {
+                    } else {
                         $objEvents->pos_cnt = (int)$eventRecurrences;
                     }
                 }
 
                 // Count irregular recurrences
                 $arrayFixedDates = deserialize($objEvents->repeatFixedDates) ? deserialize($objEvents->repeatFixedDates) : null;
-                if (!is_null($arrayFixedDates))
-                {
-                    foreach ($arrayFixedDates as $fixedDate)
-                    {
-                        if ($fixedDate['new_repeat'])
-                        {
+                if (!is_null($arrayFixedDates)) {
+                    foreach ($arrayFixedDates as $fixedDate) {
+                        if ($fixedDate['new_repeat']) {
                             $objEvents->pos_cnt++;
                         }
                     }
@@ -151,22 +135,18 @@ class EventsExt extends \Events
                 // Check if we have to store the event if it's on weekend
                 $weekday = (int)date('w', $objEvents->startTime);
                 $store = true;
-                if ($objEvents->hideOnWeekend)
-                {
-                    if ($weekday === 0 || $weekday === 6)
-                    {
+                if ($objEvents->hideOnWeekend) {
+                    if ($weekday === 0 || $weekday === 6) {
                         $store = false;
                     }
                 }
 
                 // check the repeat values
-                if ($objEvents->recurring)
-                {
-                    $arrRepeat = deserialize($objEvents->repeatEach)?deserialize($objEvents->repeatEach):null;
+                if ($objEvents->recurring) {
+                    $arrRepeat = deserialize($objEvents->repeatEach) ? deserialize($objEvents->repeatEach) : null;
                 }
-                if ($objEvents->recurringExt)
-                {
-                    $arrRepeat = deserialize($objEvents->repeatEachExt)?deserialize($objEvents->repeatEachExt):null;
+                if ($objEvents->recurringExt) {
+                    $arrRepeat = deserialize($objEvents->repeatEachExt) ? deserialize($objEvents->repeatEachExt) : null;
                 }
 
                 // we need a counter for the recurrences if noSpan is set
@@ -177,19 +157,17 @@ class EventsExt extends \Events
                 $dateNextEnd = date('Ymd', $objEvents->endTime);
 
                 // store the entry if everything is fine...
-                if ($store === true)
-                {
+                if ($store === true) {
                     $eventEnd = $objEvents->endTime;
                     //if ($objEvents->recurring && !$showRecurrences)
                     //{
                     //    $eventEnd = $objEvents->repeatEnd;
                     //}
-                    $eventUrl = $strUrl."?day=".date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
+                    $eventUrl = $strUrl . "?day=" . date("Ymd", $objEvents->startTime) . "&amp;times=" . $objEvents->startTime . "," . $objEvents->endTime;
                     $this->addEvent($objEvents, $objEvents->startTime, $eventEnd, $eventUrl, $intStart, $intEnd, $id);
 
                     // increase $cntRecurrences if event is in scope
-                    if ($dateNextStart >= $dateBegin && $dateNextEnd <= $dateEnd)
-                    {
+                    if ($dateNextStart >= $dateBegin && $dateNextEnd <= $dateEnd) {
                         $cntRecurrences++;
                     }
                 }
@@ -208,16 +186,14 @@ class EventsExt extends \Events
                  * Here we manage the recurrences. We take the repeat option and set the new values
                  * if showRecurrences is false we do not need to go thru all recurring events...
                  */
-                if ((($objEvents->recurring && $objEvents->repeatEach) || ($objEvents->recurringExt && $objEvents->repeatEachExt)) && $showRecurrences)
-                {
-                    if (is_null($arrRepeat))
-                    {
+                if ((($objEvents->recurring && $objEvents->repeatEach) || ($objEvents->recurringExt && $objEvents->repeatEachExt)) && $showRecurrences) {
+                    if (is_null($arrRepeat)) {
                         continue;
                     }
 
                     // list of months we need
-                    $arrMonth = array(1=>'january', 2=>'february', 3=>'march', 4=>'april', 5=>'may', 6=>'jun',
-                        7=>'july', 8=>'august', 9=>'september', 10=>'october', 11=>'november', 12=>'december',
+                    $arrMonth = array(1 => 'january', 2 => 'february', 3 => 'march', 4 => 'april', 5 => 'may', 6 => 'jun',
+                        7 => 'july', 8 => 'august', 9 => 'september', 10 => 'october', 11 => 'november', 12 => 'december',
                     );
 
                     $count = 0;
@@ -227,8 +203,7 @@ class EventsExt extends \Events
                     $eventEndTime = \Date::parse($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->endTime);
 
                     // now we have to take care about the exception dates to skip
-                    if ($objEvents->useExceptions)
-                    {
+                    if ($objEvents->useExceptions) {
                         $arrEventSkipInfo[$objEvents->id] = deserialize($objEvents->exceptionList);
                     }
 
@@ -237,38 +212,30 @@ class EventsExt extends \Events
 
                     // time of the next event
                     $nextTime = $objEvents->endTime;
-                    while ($nextTime < $intEnd)
-                    {
+                    while ($nextTime < $intEnd) {
                         $objEvents->pos_idx++;
-                        if ($objEvents->recurrences == 0)
-                        {
+                        if ($objEvents->recurrences == 0) {
                             $objEvents->pos_cnt = 0;
-                        }
-                        else
-                        {
+                        } else {
                             $objEvents->pos_cnt = (int)$eventRecurrences;
                         }
 
-                        if ($objEvents->recurrences > 0 && $count++ >= $objEvents->recurrences)
-                        {
+                        if ($objEvents->recurrences > 0 && $count++ >= $objEvents->recurrences) {
                             break;
                         }
 
                         $arg = $arrRepeat['value'];
                         $unit = $arrRepeat['unit'];
 
-                        if ($objEvents->recurring)
-                        {
+                        if ($objEvents->recurring) {
                             // this is the contao default
                             $strtotime = '+ ' . $arg . ' ' . $unit;
                             $objEvents->startTime = strtotime($strtotime, $objEvents->startTime);
                             $objEvents->endTime = strtotime($strtotime, $objEvents->endTime);
-                        }
-                        else
-                        {
+                        } else {
                             // extended version.
-                            $intyear	= date('Y', $objEvents->startTime);
-                            $intmonth	= date('n', $objEvents->startTime) + 1;
+                            $intyear = date('Y', $objEvents->startTime);
+                            $intmonth = date('n', $objEvents->startTime) + 1;
 
                             $year = ($intmonth == 13) ? ($intyear + 1) : $intyear;
                             $month = ($intmonth == 13) ? 1 : $intmonth;
@@ -280,17 +247,14 @@ class EventsExt extends \Events
                         $nextTime = $objEvents->endTime;
 
                         // check if we have the correct weekday
-                        if ($useWeekdays && $unit === 'days')
-                        {
-                            if (!in_array(date('w', $nextTime), $weekdays))
-                            {
+                        if ($useWeekdays && $unit === 'days') {
+                            if (!in_array(date('w', $nextTime), $weekdays)) {
                                 continue;
                             }
                         }
 
                         // check if there is any exception
-                        if (is_array($arrEventSkipInfo[$objEvents->id]))
-                        {
+                        if (is_array($arrEventSkipInfo[$objEvents->id])) {
                             // modify the css class of the exceptions
                             $objEvents->cssClass = $masterCSSClass;
                             unset($objEvents->moveReason);
@@ -303,21 +267,17 @@ class EventsExt extends \Events
                             // store old date values for later reset
                             $oldDate = array();
 
-                            if (is_array($arrEventSkipInfo[$objEvents->id][$findDate]))
-                            {
+                            if (is_array($arrEventSkipInfo[$objEvents->id][$findDate])) {
                                 // $r = $searchDate;
                                 $r = $findDate;
                                 $action = $arrEventSkipInfo[$objEvents->id][$r]['action'];
                                 $cssClass = $arrEventSkipInfo[$objEvents->id][$r]['cssclass'];
-                                $objEvents->cssClass .= ($cssClass) ? $cssClass.' ' : '';
+                                $objEvents->cssClass .= ($cssClass) ? $cssClass . ' ' : '';
 
-                                if ($action == "hide")
-                                {
+                                if ($action == "hide") {
                                     //continue the while since we don't want to show the event
                                     continue;
-                                }
-                                else if ($action == "move")
-                                {
+                                } else if ($action == "move") {
                                     //just add the css class to the event
                                     $objEvents->cssClass .= "moved";
 
@@ -335,8 +295,7 @@ class EventsExt extends \Events
                                     $objEvents->moveReason = $arrEventSkipInfo[$objEvents->id][$r]['reason'];
 
                                     // check if we have to change the time of the event
-                                    if ($arrEventSkipInfo[$objEvents->id][$r]['new_start'])
-                                    {
+                                    if ($arrEventSkipInfo[$objEvents->id][$r]['new_start']) {
                                         $objEvents->oldStartTime = \Date::parse($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->startTime);
                                         $objEvents->oldEndTime = \Date::parse($GLOBALS['TL_CONFIG']['timeFormat'], $objEvents->endTime);
 
@@ -349,9 +308,7 @@ class EventsExt extends \Events
                                         //set the new values
                                         $objEvents->startTime = strtotime($newDate, strtotime($newStart));
                                         $objEvents->endTime = strtotime($newDate, strtotime($newEnd));
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         $objEvents->startTime = strtotime($newDate, $objEvents->startTime);
                                         $objEvents->endTime = strtotime($newDate, $objEvents->endTime);
                                     }
@@ -360,11 +317,9 @@ class EventsExt extends \Events
                         }
 
                         // Skip events outside the scope
-                        if ($objEvents->endTime < $intStart || $objEvents->startTime > $intEnd)
-                        {
+                        if ($objEvents->endTime < $intStart || $objEvents->startTime > $intEnd) {
                             // in case of a move we have to reset the original date
-                            if ($oldDate)
-                            {
+                            if ($oldDate) {
                                 $objEvents->startTime = $oldDate['startTime'];
                                 $objEvents->endTime = $oldDate['endTime'];
                             }
@@ -381,8 +336,7 @@ class EventsExt extends \Events
                         $dateNextEnd = date('Ymd', $objEvents->endTime);
 
                         // stop if we have on event and showOnlyNext is true
-                        if ($this->showOnlyNext && $cntRecurrences > 0)
-                        {
+                        if ($this->showOnlyNext && $cntRecurrences > 0) {
                             break;
                         }
 
@@ -390,16 +344,13 @@ class EventsExt extends \Events
 
                         $weekday = date('w', $objEvents->startTime);
                         $store = true;
-                        if ($objEvents->hideOnWeekend)
-                        {
-                            if ($weekday == 0 || $weekday == 6)
-                            {
+                        if ($objEvents->hideOnWeekend) {
+                            if ($weekday == 0 || $weekday == 6) {
                                 $store = false;
                             }
                         }
-                        if ($store === true)
-                        {
-                            $eventUrl = $strUrl."?day=".date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
+                        if ($store === true) {
+                            $eventUrl = $strUrl . "?day=" . date("Ymd", $objEvents->startTime) . "&amp;times=" . $objEvents->startTime . "," . $objEvents->endTime;
                             $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
                         }
 
@@ -410,15 +361,13 @@ class EventsExt extends \Events
                         $objEvents->oldEndTime = null;
 
                         // in case of a move we have to reset the original date
-                        if ($oldDate)
-                        {
+                        if ($oldDate) {
                             $objEvents->startTime = $oldDate['startTime'];
                             $objEvents->endTime = $oldDate['endTime'];
                         }
 
                         // increase $cntRecurrences if event is in scope
-                        if ($dateNextStart >= $dateBegin && $dateNextEnd <= $dateEnd)
-                        {
+                        if ($dateNextStart >= $dateBegin && $dateNextEnd <= $dateEnd) {
                             $cntRecurrences++;
                         }
                     }
@@ -430,33 +379,28 @@ class EventsExt extends \Events
                  *
                  * this is a complete different case
                  */
-                if (!is_null($arrayFixedDates) && $showRecurrences)
-                {
-                    foreach ($arrayFixedDates as $fixedDate)
-                    {
-                        if ($fixedDate['new_repeat'])
-                        {
+                if (!is_null($arrayFixedDates) && $showRecurrences) {
+                    foreach ($arrayFixedDates as $fixedDate) {
+                        if ($fixedDate['new_repeat']) {
                             // check if we have to stop because of showOnlyNext
-                            if ($this->showOnlyNext && $cntRecurrences > 0)
-                            {
+                            if ($this->showOnlyNext && $cntRecurrences > 0) {
                                 break;
                             }
 
                             // new start time
                             $strNewDate = $fixedDate['new_repeat'];
                             $strNewTime = (strlen($fixedDate['new_start']) ? $fixedDate['new_start'] : $orgDateStart->time);
-                            $newDateStart = new \Date(trim($strNewDate.' '.$strNewTime), \Date::getNumericDatimFormat());
+                            $newDateStart = new \Date(trim($strNewDate . ' ' . $strNewTime), \Date::getNumericDatimFormat());
 
                             $objEvents->startTime = $newDateStart->timestamp;
                             $dateNextStart = date('Ymd', $objEvents->startTime);
 
                             // new end time
                             $strNewTime = (strlen($fixedDate['new_end']) ? $fixedDate['new_end'] : $orgDateEnd->time);
-                            $newDateEnd = new \Date(trim($strNewDate.' '.$strNewTime), \Date::getNumericDatimFormat());
+                            $newDateEnd = new \Date(trim($strNewDate . ' ' . $strNewTime), \Date::getNumericDatimFormat());
 
                             // Use the multi-day span of the event
-                            if ($orgDateSpan > 0)
-                            {
+                            if ($orgDateSpan > 0) {
                                 $newDateEnd = new \Date(strtotime('+' . $orgDateSpan . ' days', $newDateEnd->timestamp), \Date::getNumericDatimFormat());
                             }
 
@@ -470,7 +414,7 @@ class EventsExt extends \Events
                             $objEvents->pos_idx++;
 
                             // add the irregular event to the array
-                            $eventUrl = $strUrl."?day=".date("Ymd", $objEvents->startTime)."&amp;times=".$objEvents->startTime.",".$objEvents->endTime;
+                            $eventUrl = $strUrl . "?day=" . date("Ymd", $objEvents->startTime) . "&amp;times=" . $objEvents->startTime . "," . $objEvents->endTime;
                             $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
 
                             // Restore the original values
@@ -478,8 +422,7 @@ class EventsExt extends \Events
                             $objEvents->endTime = $orgDateEnd->timestamp;
 
                             // increase $cntRecurrences if event is in scope
-                            if ($dateNextStart >= $dateBegin && $dateNextEnd <= $dateEnd)
-                            {
+                            if ($dateNextStart >= $dateBegin && $dateNextEnd <= $dateEnd) {
                                 $cntRecurrences++;
                             }
                         }
@@ -493,11 +436,9 @@ class EventsExt extends \Events
             }
         }
 
-        if ($arrHolidays != null)
-        {
+        if ($arrHolidays != null) {
             // run thru all holiday calendars
-            foreach ($arrHolidays as $id)
-            {
+            foreach ($arrHolidays as $id) {
                 $strUrl = $this->strUrl;
 
                 $objAE = $this->Database->prepare("SELECT allowEvents FROM tl_calendar WHERE id = ?")
@@ -508,24 +449,20 @@ class EventsExt extends \Events
                 $objCalendar = \CalendarModel::findByPk($id);
 
                 // Get the current "jumpTo" page
-                if ($objCalendar !== null && $objCalendar->jumpTo && ($objTarget = $objCalendar->getRelated('jumpTo')) !== null)
-                {
-                    $strUrl = $this->generateFrontendUrl($objTarget->row(), ($GLOBALS['TL_CONFIG']['useAutoItem'] ?  '/%s' : '/events/%s'));
+                if ($objCalendar !== null && $objCalendar->jumpTo && ($objTarget = $objCalendar->getRelated('jumpTo')) !== null) {
+                    $strUrl = $this->generateFrontendUrl($objTarget->row(), ($GLOBALS['TL_CONFIG']['useAutoItem'] ? '/%s' : '/events/%s'));
                 }
 
                 // Get the events of the current period
                 $objEvents = \CalendarEventsModel::findCurrentByPid($id, $intStart, $intEnd);
 
-                if ($objEvents === null)
-                {
+                if ($objEvents === null) {
                     continue;
                 }
 
-                while ($objEvents->next())
-                {
+                while ($objEvents->next()) {
                     // at last we add the free multi-day / holiday or what ever kind of event
-                    if (!$this->show_holiday)
-                    {
+                    if (!$this->show_holiday) {
                         $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
                     }
 
@@ -539,27 +476,19 @@ class EventsExt extends \Events
                     $intDate = $objEvents->startTime;
                     $key = date('Ymd', $intDate);
                     // check all events if the calendar allows events on free days
-                    if ($this->arrEvents[$key])
-                    {
-                        foreach ($this->arrEvents[$key] as $k1 => $events)
-                        {
-                            foreach ($events as $k2 => $event)
-                            {
+                    if ($this->arrEvents[$key]) {
+                        foreach ($this->arrEvents[$key] as $k1 => $events) {
+                            foreach ($events as $k2 => $event) {
                                 // do not remove events from any holiday calendar
                                 $isHolidayEvent = array_search($event['pid'], $arrHolidays);
 
                                 // unset the event if showOnFreeDay is not set
-                                if ($allowEvents === false)
-                                {
-                                    if ($isHolidayEvent === false)
-                                    {
+                                if ($allowEvents === false) {
+                                    if ($isHolidayEvent === false) {
                                         unset($this->arrEvents[$key][$k1][$k2]);
                                     }
-                                }
-                                else
-                                {
-                                    if ($isHolidayEvent === false && !$event['showOnFreeDay'] == 1)
-                                    {
+                                } else {
+                                    if ($isHolidayEvent === false && !$event['showOnFreeDay'] == 1) {
                                         unset($this->arrEvents[$key][$k1][$k2]);
                                     }
                                 }
@@ -568,32 +497,23 @@ class EventsExt extends \Events
                     }
 
                     // unset all the other days of the multi-day event
-                    for ($i=1; $i<=$span && $intDate<=$intEnd; $i++)
-                    {
+                    for ($i = 1; $i <= $span && $intDate <= $intEnd; $i++) {
                         $intDate = strtotime('+ 1 day', $intDate);
                         $key = date('Ymd', $intDate);
                         // check all events if the calendar allows events on free days
-                        if ($this->arrEvents[$key])
-                        {
-                            foreach ($this->arrEvents[$key] as $k1 => $events)
-                            {
-                                foreach ($events as $k2 => $event)
-                                {
+                        if ($this->arrEvents[$key]) {
+                            foreach ($this->arrEvents[$key] as $k1 => $events) {
+                                foreach ($events as $k2 => $event) {
                                     // do not remove events from any holiday calendar
                                     $isHolidayEvent = array_search($event['pid'], $arrHolidays);
 
                                     // unset the event if showOnFreeDay is not set
-                                    if ($allowEvents === false)
-                                    {
-                                        if ($isHolidayEvent === false)
-                                        {
+                                    if ($allowEvents === false) {
+                                        if ($isHolidayEvent === false) {
                                             unset($this->arrEvents[$key][$k1][$k2]);
                                         }
-                                    }
-                                    else
-                                    {
-                                        if ($isHolidayEvent === false && !$event['showOnFreeDay'] == 1)
-                                        {
+                                    } else {
+                                        if ($isHolidayEvent === false && !$event['showOnFreeDay'] == 1) {
                                             unset($this->arrEvents[$key][$k1][$k2]);
                                         }
                                     }
@@ -606,16 +526,13 @@ class EventsExt extends \Events
         }
 
         // Sort the array
-        foreach (array_keys($this->arrEvents) as $key)
-        {
+        foreach (array_keys($this->arrEvents) as $key) {
             ksort($this->arrEvents[$key]);
         }
 
         // HOOK: modify the result set
-        if (isset($GLOBALS['TL_HOOKS']['getAllEvents']) && is_array($GLOBALS['TL_HOOKS']['getAllEvents']))
-        {
-            foreach ($GLOBALS['TL_HOOKS']['getAllEvents'] as $callback)
-            {
+        if (isset($GLOBALS['TL_HOOKS']['getAllEvents']) && is_array($GLOBALS['TL_HOOKS']['getAllEvents'])) {
+            foreach ($GLOBALS['TL_HOOKS']['getAllEvents'] as $callback) {
                 $this->import($callback[0]);
                 $this->arrEvents = $this->$callback[0]->$callback[1]($this->arrEvents, $arrCalendars, $intStart, $intEnd, $this);
             }

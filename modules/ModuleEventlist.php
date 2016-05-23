@@ -23,7 +23,7 @@ class ModuleEventlist extends \EventsExt
 
     /**
      * Current date object
-	 * @var \Date
+     * @var \Date
      */
     protected $Date;
     protected $calConf = array();
@@ -37,17 +37,16 @@ class ModuleEventlist extends \EventsExt
 
     /**
      * Display a wildcard in the back end
-	 *
+     *
      * @return string
      */
     public function generate()
     {
-        if (TL_MODE == 'BE')
-        {
-			/** @var \BackendTemplate|object $objTemplate */
+        if (TL_MODE == 'BE') {
+            /** @var \BackendTemplate|object $objTemplate */
             $objTemplate = new \BackendTemplate('be_wildcard');
 
-			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['eventlist'][0]) . ' ###';
+            $objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['eventlist'][0]) . ' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;
@@ -60,51 +59,42 @@ class ModuleEventlist extends \EventsExt
         $this->cal_holiday = $this->sortOutProtected(deserialize($this->cal_holiday, true));
 
         // Return if there are no calendars
-        if (!is_array($this->cal_calendar) || empty($this->cal_calendar))
-        {
+        if (!is_array($this->cal_calendar) || empty($this->cal_calendar)) {
             return '';
         }
 
-		// Get the background and foreground colors of the calendars
-		foreach (array_merge($this->cal_calendar, $this->cal_holiday) as $cal)
-		{
-			$objBG = $this->Database->prepare("select title, bg_color, fg_color from tl_calendar where id = ?")
-				->limit(1)->execute($cal);
+        // Get the background and foreground colors of the calendars
+        foreach (array_merge($this->cal_calendar, $this->cal_holiday) as $cal) {
+            $objBG = $this->Database->prepare("select title, bg_color, fg_color from tl_calendar where id = ?")
+                ->limit(1)->execute($cal);
 
-			$this->calConf[$cal]['calendar'] = $objBG->title;
+            $this->calConf[$cal]['calendar'] = $objBG->title;
 
-			if ($objBG->bg_color)
-			{
-				list($cssColor, $cssOpacity) = deserialize($objBG->bg_color);
+            if ($objBG->bg_color) {
+                list($cssColor, $cssOpacity) = deserialize($objBG->bg_color);
 
-				if (!empty($cssColor))
-				{
-					$this->calConf[$cal]['background'] .= 'background-color:#'.$cssColor.';';
-				}
-				if (!empty($cssOpacity))
-				{
-					$this->calConf[$cal]['background'] .= 'opacity:'.($cssOpacity/100).';';
-				}
-			}
+                if (!empty($cssColor)) {
+                    $this->calConf[$cal]['background'] .= 'background-color:#' . $cssColor . ';';
+                }
+                if (!empty($cssOpacity)) {
+                    $this->calConf[$cal]['background'] .= 'opacity:' . ($cssOpacity / 100) . ';';
+                }
+            }
 
-			if ($objBG->fg_color)
-			{
-				list($cssColor, $cssOpacity) = deserialize($objBG->fg_color);
+            if ($objBG->fg_color) {
+                list($cssColor, $cssOpacity) = deserialize($objBG->fg_color);
 
-				if (!empty($cssColor))
-				{
-					$this->calConf[$cal]['foreground'] .= 'color:#'.$cssColor.';';
-				}
-				if (!empty($cssOpacity))
-				{
-					$this->calConf[$cal]['foreground'] .= 'opacity:'.($cssOpacity/100).';';
-				}
-			}
-		}
+                if (!empty($cssColor)) {
+                    $this->calConf[$cal]['foreground'] .= 'color:#' . $cssColor . ';';
+                }
+                if (!empty($cssOpacity)) {
+                    $this->calConf[$cal]['foreground'] .= 'opacity:' . ($cssOpacity / 100) . ';';
+                }
+            }
+        }
 
         // Show the event reader if an item has been selected
-		if ($this->cal_readerModule > 0  && (isset($_GET['events']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
-        {
+        if ($this->cal_readerModule > 0 && (isset($_GET['events']) || (\Config::get('useAutoItem') && isset($_GET['auto_item'])))) {
             return $this->getFrontendModule($this->cal_readerModule, $this->strColumn);
         }
 
@@ -117,29 +107,27 @@ class ModuleEventlist extends \EventsExt
      */
     protected function compile()
     {
-		/** @var \PageModel $objPage */
+        /** @var \PageModel $objPage */
         global $objPage;
         $blnClearInput = false;
 
-		$intYear = \Input::get('year');
-		$intMonth = \Input::get('month');
-		$intDay = \Input::get('day');
+        $intYear = \Input::get('year');
+        $intMonth = \Input::get('month');
+        $intDay = \Input::get('day');
 
         // Jump to the current period
-        if (!isset($_GET['year']) && !isset($_GET['month']) && !isset($_GET['day']))
-        {
-            switch ($this->cal_format)
-            {
+        if (!isset($_GET['year']) && !isset($_GET['month']) && !isset($_GET['day'])) {
+            switch ($this->cal_format) {
                 case 'cal_year':
-					$intYear = date('Y');
+                    $intYear = date('Y');
                     break;
 
                 case 'cal_month':
-					$intMonth = date('Ym');
+                    $intMonth = date('Ym');
                     break;
 
                 case 'cal_day':
-					$intDay = date('Ymd');
+                    $intDay = date('Ymd');
                     break;
             }
 
@@ -148,60 +136,47 @@ class ModuleEventlist extends \EventsExt
 
         $blnDynamicFormat = (!$this->cal_ignoreDynamic && in_array($this->cal_format, array('cal_day', 'cal_month', 'cal_year')));
 
-		// Create the date object
-		try
-		{
-            if ($blnDynamicFormat && $intYear)
-            {
+        // Create the date object
+        try {
+            if ($blnDynamicFormat && $intYear) {
                 $this->Date = new \Date($intYear, 'Y');
                 $this->cal_format = 'cal_year';
                 $this->headline .= ' ' . date('Y', $this->Date->tstamp);
-            }
-            elseif ($blnDynamicFormat && $intMonth)
-            {
+            } elseif ($blnDynamicFormat && $intMonth) {
                 $this->Date = new \Date($intMonth, 'Ym');
                 $this->cal_format = 'cal_month';
                 $this->headline .= ' ' . \Date::parse('F Y', $this->Date->tstamp);
-            }
-            elseif ($blnDynamicFormat && $intDay)
-            {
+            } elseif ($blnDynamicFormat && $intDay) {
                 $this->Date = new \Date($intDay, 'Ymd');
                 $this->cal_format = 'cal_day';
                 $this->headline .= ' ' . \Date::parse($objPage->dateFormat, $this->Date->tstamp);
-            }
-            else
-            {
+            } else {
                 $this->Date = new \Date();
             }
-		}
-		catch (\OutOfBoundsException $e)
-		{
-			/** @var \PageError404 $objHandler */
-			$objHandler = new $GLOBALS['TL_PTY']['error_404']();
-			$objHandler->generate($objPage->id);
-		}
+        } catch (\OutOfBoundsException $e) {
+            /** @var \PageError404 $objHandler */
+            $objHandler = new $GLOBALS['TL_PTY']['error_404']();
+            $objHandler->generate($objPage->id);
+        }
 
         list($strBegin, $strEnd, $strEmpty) = $this->getDatesFromFormat($this->Date, $this->cal_format);
 
         // we will overwrite $strBegin, $strEnd if cal_format_ext is set
-        if ($this->cal_format_ext != '')
-        {
+        if ($this->cal_format_ext != '') {
             //$strBegin = strtotime($arrRange[0]['date_from']);
-            $strEnd = strtotime($this->cal_format_ext, strtotime(\Date::parse('d.m.Y', $strBegin).' 23:59'));
+            $strEnd = strtotime($this->cal_format_ext, strtotime(\Date::parse('d.m.Y', $strBegin) . ' 23:59'));
         }
 
         // we will overwrite $strBegin, $strEnd if range_date is set
         $arrRange = deserialize($this->range_date);
-        if (is_array($arrRange) && $arrRange[0]['date_from'])
-        {
+        if (is_array($arrRange) && $arrRange[0]['date_from']) {
             $startRange = strtotime($arrRange[0]['date_from']);
             $endRange = strtotime($arrRange[0]['date_to']);
 
-            if ($startRange && $endRange)
-            {
-                if (checkdate(date('m',$startRange),date('d',$startRange),date('Y',$startRange)) &&
-                    checkdate(date('m',$endRange),date('d',$endRange),date('Y',$endRange)))
-                {
+            if ($startRange && $endRange) {
+                if (checkdate(date('m', $startRange), date('d', $startRange), date('Y', $startRange)) &&
+                    checkdate(date('m', $endRange), date('d', $endRange), date('Y', $endRange))
+                ) {
                     $strBegin = strtotime($arrRange[0]['date_from']);
                     $strEnd = strtotime($arrRange[0]['date_to']);
                 }
@@ -219,8 +194,7 @@ class ModuleEventlist extends \EventsExt
         $sort($arrAllEvents);
 
         // Sort the events
-        foreach (array_keys($arrAllEvents) as $key)
-        {
+        foreach (array_keys($arrAllEvents) as $key) {
             $sort($arrAllEvents[$key]);
         }
 
@@ -231,25 +205,18 @@ class ModuleEventlist extends \EventsExt
         // Step 1: get the current time
         $currTime = \Date::floorToMinute();
         // Remove events outside the scope
-        foreach ($arrAllEvents as $key=>$days)
-        {
-            if ($showRecurrences == true)
-            {
-                if ($key < $dateBegin || $key > $dateEnd)
-                {
+        foreach ($arrAllEvents as $key => $days) {
+            if ($showRecurrences == true) {
+                if ($key < $dateBegin || $key > $dateEnd) {
                     continue;
                 }
             }
 
-            foreach ($days as $day=>$events)
-            {
-                foreach ($events as $event)
-                {
+            foreach ($days as $day => $events) {
+                foreach ($events as $event) {
                     // Filter events if list shows past events and the event is still current
-                    if (strpos($this->cal_format, 'past_') !== false)
-                    {
-                        if (($event['endTime'] >= time()) || ($event['repeatEnd'] >= time()))
-                        {
+                    if (strpos($this->cal_format, 'past_') !== false) {
+                        if (($event['endTime'] >= time()) || ($event['repeatEnd'] >= time())) {
                             continue;
                         }
                     }
@@ -262,46 +229,38 @@ class ModuleEventlist extends \EventsExt
                     unset($objEV);
 
                     if ($event['show'])
-                    // Remove events outside time scope
-                    if ($this->pubTimeRecurrences && ($eventStart && $eventStop))
-                    {
-                        // Step 2: get show from/until times
-                        $startTimeShow = strtotime(date('dmY').' '.date('Hi', $eventStart));
-                        $endTimeShow = strtotime(date('dmY').' '.date('Hi', $eventStop));
+                        // Remove events outside time scope
+                        if ($this->pubTimeRecurrences && ($eventStart && $eventStop)) {
+                            // Step 2: get show from/until times
+                            $startTimeShow = strtotime(date('dmY') . ' ' . date('Hi', $eventStart));
+                            $endTimeShow = strtotime(date('dmY') . ' ' . date('Hi', $eventStop));
 
-                        // Compare the times...
-                        if ($currTime < $startTimeShow || $currTime > $endTimeShow)
-                        {
-                            continue;
+                            // Compare the times...
+                            if ($currTime < $startTimeShow || $currTime > $endTimeShow) {
+                                continue;
+                            }
                         }
-                    }
 
                     // We take the "show from" time or the "event start" time to check the display duration limit
                     $displayStart = ($event['start']) ? $event['start'] : $event['startTime'];
-                    if (strlen($this->displayDuration) > 0)
-                    {
+                    if (strlen($this->displayDuration) > 0) {
                         $displayStop = strtotime($this->displayDuration, $displayStart);
-                        if ($displayStop < $currTime)
-                        {
+                        if ($displayStop < $currTime) {
                             continue;
                         }
                     }
 
                     // Hide Events that are already started
-                    if ($this->hide_started && $event['startTime'] < $currTime)
-                    {
+                    if ($this->hide_started && $event['startTime'] < $currTime) {
                         continue;
                     }
 
                     // Show Register Info
                     unset($event['reginfo']);
-                    if (class_exists('leads\leads') && $event['useRegistration'])
-                    {
-                        if ($event['regperson'])
-                        {
+                    if (class_exists('leads\leads') && $event['useRegistration']) {
+                        if ($event['regperson']) {
                             $values = deserialize($event['regperson']);
-                            if (is_array($values))
-                            {
+                            if (is_array($values)) {
                                 // Anmeldungen ermittlen und anzeigen
                                 $eid = (int)$event['id'];
                                 $fid = (int)$event['regform'];
@@ -326,40 +285,34 @@ class ModuleEventlist extends \EventsExt
                     }
 
                     $event['firstDay'] = $GLOBALS['TL_LANG']['DAYS'][date('w', $day)];
-					$event['firstDate'] = \Date::parse($objPage->dateFormat, $day);
+                    $event['firstDate'] = \Date::parse($objPage->dateFormat, $day);
                     $event['datetime'] = date('Y-m-d', $day);
 
                     $event['calendar_title'] = $this->calConf[$event['pid']]['calendar'];
 
-                    if ($this->calConf[$event['pid']]['background'])
-                    {
+                    if ($this->calConf[$event['pid']]['background']) {
                         $event['bgstyle'] = $this->calConf[$event['pid']]['background'];
                     }
-                    if ($this->calConf[$event['pid']]['foreground'])
-                    {
+                    if ($this->calConf[$event['pid']]['foreground']) {
                         $event['fgstyle'] = $this->calConf[$event['pid']]['foreground'];
                     }
 
                     // Set endtime to starttime always...
-                    if ((int)$event['ignoreEndTime'] == 1)
-                    {
+                    if ((int)$event['ignoreEndTime'] == 1) {
                         $event['endTime'] = '';
                         $event['time'] = '';
-                        if ($event['addTime'])
-                        {
+                        if ($event['addTime']) {
                             $event['time'] = \Date::parse($objPage->timeFormat, $event['startTime']);
                         }
                     }
 
                     // check the repeat values
                     $unit = '';
-                    if ($event['recurring'])
-                    {
+                    if ($event['recurring']) {
                         $arrRepeat = deserialize($event['repeatEach']) ? deserialize($event['repeatEach']) : null;
                         $unit = $arrRepeat['unit'];
                     }
-                    if ($event['recurringExt'])
-                    {
+                    if ($event['recurringExt']) {
                         $arrRepeat = deserialize($event['repeatEachExt']) ? deserialize($event['repeatEachExt']) : null;
                         $unit = $arrRepeat['unit'];
                     }
@@ -369,18 +322,13 @@ class ModuleEventlist extends \EventsExt
 
                     // Set the next date
                     $nextDate = null;
-                    if ($event['repeatDates'])
-                    {
+                    if ($event['repeatDates']) {
                         $arrNext = deserialize($event['repeatDates']);
-                        foreach ($arrNext as $k => $nextDate)
-                        {
-                            if (strtotime($nextDate) > time())
-                            {
+                        foreach ($arrNext as $k => $nextDate) {
+                            if (strtotime($nextDate) > time()) {
                                 // check if we have the correct weekday
-                                if ($useWeekdays && $unit === 'days')
-                                {
-                                    if (!in_array(date('w', $k), $weekdays))
-                                    {
+                                if ($useWeekdays && $unit === 'days') {
+                                    if (!in_array(date('w', $k), $weekdays)) {
                                         continue;
                                     }
                                 }
@@ -403,30 +351,27 @@ class ModuleEventlist extends \EventsExt
         $offset = 0;
 
         // Overall limit
-        if ($this->cal_limit > 0)
-        {
+        if ($this->cal_limit > 0) {
             $total = min($this->cal_limit, $total);
             $limit = $total;
         }
 
         // Pagination
-        if ($this->perPage > 0)
-        {
+        if ($this->perPage > 0) {
             $id = 'page_e' . $this->id;
-			$page = (\Input::get($id) !== null) ? \Input::get($id) : 1;
+            $page = (\Input::get($id) !== null) ? \Input::get($id) : 1;
 
             // Do not index or cache the page if the page number is outside the range
-            if ($page < 1 || $page > max(ceil($total/$this->perPage), 1))
-            {
-				/** @var \PageError404 $objHandler */
-				$objHandler = new $GLOBALS['TL_PTY']['error_404']();
-				$objHandler->generate($objPage->id);
+            if ($page < 1 || $page > max(ceil($total / $this->perPage), 1)) {
+                /** @var \PageError404 $objHandler */
+                $objHandler = new $GLOBALS['TL_PTY']['error_404']();
+                $objHandler->generate($objPage->id);
             }
 
             $offset = ($page - 1) * $this->perPage;
             $limit = min($this->perPage + $offset, $total);
 
-			$objPagination = new \Pagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id);
+            $objPagination = new \Pagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id);
             $this->Template->pagination = $objPagination->generate("\n  ");
         }
 
@@ -439,72 +384,62 @@ class ModuleEventlist extends \EventsExt
         $imgSize = false;
 
         // Override the default image size
-        if ($this->imgSize != '')
-        {
+        if ($this->imgSize != '') {
             $size = deserialize($this->imgSize);
 
-			if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]))
-            {
+            if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
                 $imgSize = $this->imgSize;
             }
         }
 
         // Parse events
-        for ($i=$offset; $i<$limit; $i++)
-        {
+        for ($i = $offset; $i < $limit; $i++) {
             $event = $arrEvents[$i];
             $blnIsLastEvent = false;
 
             // Last event on the current day
-            if (($i+1) == $limit || !isset($arrEvents[($i+1)]['firstDate']) || $event['firstDate'] != $arrEvents[($i+1)]['firstDate'])
-            {
+            if (($i + 1) == $limit || !isset($arrEvents[($i + 1)]['firstDate']) || $event['firstDate'] != $arrEvents[($i + 1)]['firstDate']) {
                 $blnIsLastEvent = true;
             }
 
-			/** @var \FrontendTemplate|object $objTemplate */
+            /** @var \FrontendTemplate|object $objTemplate */
             $objTemplate = new \FrontendTemplate($this->cal_template);
             $objTemplate->setData($event);
 
             // Month header
-            if ($strMonth != $event['month'])
-            {
+            if ($strMonth != $event['month']) {
                 $objTemplate->newMonth = true;
                 $strMonth = $event['month'];
             }
 
             // Day header
-            if ($strDate != $event['firstDate'])
-            {
+            if ($strDate != $event['firstDate']) {
                 $headerCount = 0;
                 $objTemplate->header = true;
-                $objTemplate->classHeader = ((($dayCount % 2) == 0) ? ' even' : ' odd') . (($dayCount == 0) ? ' first' : '') . (($event['firstDate'] == $arrEvents[($limit-1)]['firstDate']) ? ' last' : '');
+                $objTemplate->classHeader = ((($dayCount % 2) == 0) ? ' even' : ' odd') . (($dayCount == 0) ? ' first' : '') . (($event['firstDate'] == $arrEvents[($limit - 1)]['firstDate']) ? ' last' : '');
                 $strDate = $event['firstDate'];
 
                 ++$dayCount;
             }
 
-			// Show the teaser text of redirect events (see #6315)
-			if (is_bool($event['details']))
-			{
-				$objTemplate->hasDetails = false;
-			}
+            // Show the teaser text of redirect events (see #6315)
+            if (is_bool($event['details'])) {
+                $objTemplate->hasDetails = false;
+            }
 
-			// Add the template variables
+            // Add the template variables
             $objTemplate->classList = $event['class'] . ((($headerCount % 2) == 0) ? ' even' : ' odd') . (($headerCount == 0) ? ' first' : '') . ($blnIsLastEvent ? ' last' : '') . ' cal_' . $event['parent'];
             $objTemplate->classUpcoming = $event['class'] . ((($eventCount % 2) == 0) ? ' even' : ' odd') . (($eventCount == 0) ? ' first' : '') . ((($offset + $eventCount + 1) >= $limit) ? ' last' : '') . ' cal_' . $event['parent'];
             $objTemplate->readMore = specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $event['title']));
             $objTemplate->more = $GLOBALS['TL_LANG']['MSC']['more'];
-			$objTemplate->locationLabel = $GLOBALS['TL_LANG']['MSC']['location'];
+            $objTemplate->locationLabel = $GLOBALS['TL_LANG']['MSC']['location'];
 
             // Short view
-            if ($this->cal_noSpan)
-            {
+            if ($this->cal_noSpan) {
                 $objTemplate->day = $event['day'];
                 $objTemplate->date = $event['date'];
                 $objTemplate->span = ($event['time'] == '' && $event['day'] == '') ? $event['date'] : '';
-            }
-            else
-            {
+            } else {
                 $objTemplate->day = $event['firstDay'];
                 $objTemplate->date = $event['firstDate'];
                 $objTemplate->span = '';
@@ -513,21 +448,15 @@ class ModuleEventlist extends \EventsExt
             $objTemplate->addImage = false;
 
             // Add an image
-            if ($event['addImage'] && $event['singleSRC'] != '')
-            {
+            if ($event['addImage'] && $event['singleSRC'] != '') {
                 $objModel = \FilesModel::findByUuid($event['singleSRC']);
 
-                if ($objModel === null)
-                {
-                    if (!\Validator::isUuid($event['singleSRC']))
-                    {
-                        $objTemplate->text = '<p class="error">'.$GLOBALS['TL_LANG']['ERR']['version2format'].'</p>';
+                if ($objModel === null) {
+                    if (!\Validator::isUuid($event['singleSRC'])) {
+                        $objTemplate->text = '<p class="error">' . $GLOBALS['TL_LANG']['ERR']['version2format'] . '</p>';
                     }
-                }
-                elseif (is_file(TL_ROOT . '/' . $objModel->path))
-                {
-                    if ($imgSize)
-                    {
+                } elseif (is_file(TL_ROOT . '/' . $objModel->path)) {
+                    if ($imgSize) {
                         $event['size'] = $imgSize;
                     }
 
@@ -540,8 +469,7 @@ class ModuleEventlist extends \EventsExt
             $objTemplate->enclosure = array();
 
             // Add enclosure
-            if ($event['addEnclosure'])
-            {
+            if ($event['addEnclosure']) {
                 $this->addEnclosuresToTemplate($objTemplate, $event);
             }
 
@@ -552,8 +480,7 @@ class ModuleEventlist extends \EventsExt
         }
 
         // No events found
-        if ($strEvents == '')
-        {
+        if ($strEvents == '') {
             $strEvents = "\n" . '<div class="empty">' . $strEmpty . '</div>' . "\n";
         }
 
@@ -563,8 +490,7 @@ class ModuleEventlist extends \EventsExt
         $this->Template->events = $strEvents;
 
         // Clear the $_GET array (see #2445)
-        if ($blnClearInput)
-        {
+        if ($blnClearInput) {
             \Input::setGet('year', null);
             \Input::setGet('month', null);
             \Input::setGet('day', null);

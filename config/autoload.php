@@ -38,8 +38,8 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
-	'cal_timetable'       => 'system/modules/calendar_extended/templates',
-	'cal_yearview'        => 'system/modules/calendar_extended/templates',
-	'er_registration'     => 'system/modules/calendar_extended/templates',
-	'mod_er_registration' => 'system/modules/calendar_extended/templates',
+	'cal_timetable'        => 'system/modules/calendar_extended/templates',
+	'cal_yearview'         => 'system/modules/calendar_extended/templates',
+	'evr_registration'     => 'system/modules/calendar_extended/templates',
+	'mod_evr_registration' => 'system/modules/calendar_extended/templates',
 ));

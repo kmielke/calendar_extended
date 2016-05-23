@@ -1,14 +1,14 @@
-<?php 
+<?php
 
 /**
  * Contao Open Source CMS
- * 
+ *
  * Copyright (C) 2005-2012 Leo Feyer
- * 
- * @package   Contao 
- * @author    Kester Mielke 
- * @license   LGPL 
- * @copyright Kester Mielke 2010-2013 
+ *
+ * @package   Contao
+ * @author    Kester Mielke
+ * @license   LGPL
+ * @copyright Kester Mielke 2010-2013
  */
 
 
@@ -18,10 +18,10 @@
 namespace Contao;
 
 /**
- * Class TimePeriodExt 
+ * Class TimePeriodExt
  *
- * @copyright  Kester Mielke 2010-2013 
- * @author     Kester Mielke 
+ * @copyright  Kester Mielke 2010-2013
+ * @author     Kester Mielke
  * @package    Devtools
  */
 class TimePeriodExt extends \Widget
@@ -59,8 +59,7 @@ class TimePeriodExt extends \Widget
      */
     public function __set($strKey, $varValue)
     {
-        switch ($strKey)
-        {
+        switch ($strKey) {
             case 'value':
                 $this->varValue = deserialize($varValue);
                 break;
@@ -93,10 +92,8 @@ class TimePeriodExt extends \Widget
      */
     protected function validator($varInput)
     {
-        foreach ($varInput as $k=>$v)
-        {
-            if ($k != 'unit')
-            {
+        foreach ($varInput as $k => $v) {
+            if ($k != 'unit') {
                 $varInput[$k] = parent::validator($v);
             }
         }
@@ -115,25 +112,22 @@ class TimePeriodExt extends \Widget
         $arrUnits = array();
 
         //$arrValues[] = '<option value="">-</option>';
-        foreach ($this->arrValues as $arrValue)
-        {
+        foreach ($this->arrValues as $arrValue) {
             $arrValues[] = sprintf('<option value="%s"%s>%s</option>',
                 specialchars($arrValue['value']),
-                ((is_array($this->varValue) && in_array($arrValue['value'] , $this->varValue)) ? ' selected="selected"' : ''),
+                ((is_array($this->varValue) && in_array($arrValue['value'], $this->varValue)) ? ' selected="selected"' : ''),
                 $arrValue['label']);
         }
 
-        foreach ($this->arrUnits as $arrUnit)
-        {
+        foreach ($this->arrUnits as $arrUnit) {
             $arrUnits[] = sprintf('<option value="%s"%s>%s</option>',
                 specialchars($arrUnit['value']),
-                ((is_array($this->varValue) && in_array($arrUnit['value'] , $this->varValue)) ? ' selected="selected"' : ''),
+                ((is_array($this->varValue) && in_array($arrUnit['value'], $this->varValue)) ? ' selected="selected"' : ''),
                 $arrUnit['label']);
         }
 
-        if (!is_array($this->varValue))
-        {
-            $this->varValue = array('value'=>$this->varValue);
+        if (!is_array($this->varValue)) {
+            $this->varValue = array('value' => $this->varValue);
         }
 
         return sprintf('<select name="%s[value]" class="tl_select_interval" onfocus="Backend.getScrollOffset();">%s</select> <select name="%s[unit]" class="tl_select_interval" onfocus="Backend.getScrollOffset();">%s</select>%s',

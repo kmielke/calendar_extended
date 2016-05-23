@@ -1,25 +1,23 @@
-<?php 
+<?php
 
 /**
  * Contao Open Source CMS
- * 
+ *
  * Copyright (C) 2005-2012 Leo Feyer
- * 
- * @package   Contao 
- * @author    Kester Mielke 
- * @license   LGPL 
- * @copyright Kester Mielke 2010-2013 
+ *
+ * @package   Contao
+ * @author    Kester Mielke
+ * @license   LGPL
+ * @copyright Kester Mielke 2010-2013
  */
 
-foreach ($GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'] as $k => $v)
-{
-    if ($v[0] == 'tl_calendar_events' && $v[1] == 'adjustTime')
-    {
+foreach ($GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'] as $k => $v) {
+    if ($v[0] == 'tl_calendar_events' && $v[1] == 'adjustTime') {
         unset($GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][$k]);
         array_insert($GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'], 0,
             array(
-                array('tl_calendar_events_ext','adjustTime'),
-                array('tl_calendar_events_ext','checkOverlapping')
+                array('tl_calendar_events_ext', 'adjustTime'),
+                array('tl_calendar_events_ext', 'checkOverlapping')
             ));
     }
 }
@@ -31,17 +29,14 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
     $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default']
 );
 
-if (class_exists('leads\leads'))
-{
+if (class_exists('leads\leads')) {
     $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
     (
         '{recurring_legend},recurring;',
         '{location_legend},location_name,location_str,location_plz,location_ort;{contact_legend},location_link,location_contact,location_mail;{regform_legend},useRegistration;{recurring_legend},recurring;{recurring_legend_ext},recurringExt;{repeatFixedDates_legend},repeatFixedDates;{exception_legend},useExceptions;',
         $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default']
     );
-}
-else
-{
+} else {
     $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace
     (
         '{recurring_legend},recurring;',
@@ -73,48 +68,48 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addTime'] = str_replace
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatWeekday'] = array
 (
-    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatWeekday'],
-    'exclude'			=> true,
-    'filter'			=> true,
-    'inputType'			=> 'checkbox',
-    'options'			=> array(1, 2, 3, 4, 5, 6, 0),
-    'reference'			=> &$GLOBALS['TL_LANG']['DAYS'],
-    'load_callback'     => array(array('tl_calendar_events_ext', 'getWeekday')),
-    'eval'              => array('multiple'=>true, 'tl_class'=>'long'),
-    'sql'               => "varchar(128) NOT NULL default ''"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatWeekday'],
+    'exclude' => true,
+    'filter' => true,
+    'inputType' => 'checkbox',
+    'options' => array(1, 2, 3, 4, 5, 6, 0),
+    'reference' => &$GLOBALS['TL_LANG']['DAYS'],
+    'load_callback' => array(array('tl_calendar_events_ext', 'getWeekday')),
+    'eval' => array('multiple' => true, 'tl_class' => 'long'),
+    'sql' => "varchar(128) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatFixedDates'] = array
 (
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatFixedDates'],
-    'exclude'			=> true,
-    'inputType'         => 'multiColumnWizard',
-    'eval'				=> array
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatFixedDates'],
+    'exclude' => true,
+    'inputType' => 'multiColumnWizard',
+    'eval' => array
     (
-        'columnsCallback'   => array('tl_calendar_events_ext', 'listFixedDates'),
-        'buttons'           => array('up' => false, 'down' => false)
+        'columnsCallback' => array('tl_calendar_events_ext', 'listFixedDates'),
+        'buttons' => array('up' => false, 'down' => false)
     ),
-    'sql'               => "blob NULL"
+    'sql' => "blob NULL"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['ignoreEndTime'] = array
 (
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['ignoreEndTime'],
-    'default'           => 0,
-    'exclude'			=> true,
-    'inputType'			=> 'checkbox',
-    'eval'				=> array('tl_class'=>'long clr'),
-    'sql'               => "char(1) NOT NULL default ''"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['ignoreEndTime'],
+    'default' => 0,
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'long clr'),
+    'sql' => "char(1) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['useExceptions'] = array
 (
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['useExceptions'],
-    'exclude'			=> true,
-    'inputType'			=> 'checkbox',
-    'eval'				=> array('submitOnChange'=>true, 'tl_class'=>'long clr'),
-    'sql'               => "char(1) NOT NULL default ''",
-    'save_callback'     => array
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['useExceptions'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('submitOnChange' => true, 'tl_class' => 'long clr'),
+    'sql' => "char(1) NOT NULL default ''",
+    'save_callback' => array
     (
         array('tl_calendar_events_ext', 'checkExceptions')
     )
@@ -122,33 +117,33 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['useExceptions'] = array
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['showOnFreeDay'] = array
 (
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['showOnFreeDay'],
-    'exclude'			=> true,
-    'filter'			=> false,
-    'inputType'			=> 'checkbox',
-    'sql'               => "char(1) NOT NULL default ''"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['showOnFreeDay'],
+    'exclude' => true,
+    'filter' => false,
+    'inputType' => 'checkbox',
+    'sql' => "char(1) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['weekday'] = array
 (
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['weekday'],
-    'exclude'			=> true,
-    'filter'			=> true,
-    'inputType'			=> 'select',
-    'options'			=> array(0, 1, 2, 3, 4, 5, 6),
-    'reference'			=> &$GLOBALS['TL_LANG']['DAYS'],
-    'sql'               => "char(1) NOT NULL default ''"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['weekday'],
+    'exclude' => true,
+    'filter' => true,
+    'inputType' => 'select',
+    'options' => array(0, 1, 2, 3, 4, 5, 6),
+    'reference' => &$GLOBALS['TL_LANG']['DAYS'],
+    'sql' => "char(1) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['recurring'] = array
 (
-    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['recurring'],
-    'exclude'           => true,
-    'filter'            => true,
-    'inputType'         => 'checkbox',
-    'eval'              => array('submitOnChange'=>true, 'tl_class'=>'w50'),
-    'sql'               => "char(1) NOT NULL default ''",
-    'save_callback'     => array
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['recurring'],
+    'exclude' => true,
+    'filter' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('submitOnChange' => true, 'tl_class' => 'w50'),
+    'sql' => "char(1) NOT NULL default ''",
+    'save_callback' => array
     (
         array('tl_calendar_events_ext', 'checkRecurring')
     )
@@ -156,24 +151,24 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['recurring'] = array
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatEach'] = array
 (
-    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatEach'],
-    'default'           => 1,
-    'exclude'           => true,
-    'inputType'         => 'timePeriod',
-    'options'           => array('days', 'weeks', 'months', 'years'),
-    'reference'         => &$GLOBALS['TL_LANG']['tl_calendar_events'],
-    'eval'              => array('mandatory'=>true, 'rgxp'=>'natural', 'minval'=>1, 'tl_class'=>'w50'),
-    'sql'               => "varchar(64) NOT NULL default ''"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatEach'],
+    'default' => 1,
+    'exclude' => true,
+    'inputType' => 'timePeriod',
+    'options' => array('days', 'weeks', 'months', 'years'),
+    'reference' => &$GLOBALS['TL_LANG']['tl_calendar_events'],
+    'eval' => array('mandatory' => true, 'rgxp' => 'natural', 'minval' => 1, 'tl_class' => 'w50'),
+    'sql' => "varchar(64) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['hideOnWeekend'] = array
 (
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['hideOnWeekend'],
-    'exclude'			=> true,
-    'filter'			=> false,
-    'inputType'			=> 'checkbox',
-    'eval'				=> array('tl_class'=>'w50'),
-    'sql'               => "char(1) NOT NULL default ''"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['hideOnWeekend'],
+    'exclude' => true,
+    'filter' => false,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'w50'),
+    'sql' => "char(1) NOT NULL default ''"
 );
 
 // change the default palettes
@@ -183,237 +178,237 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['useRegistration'] = 're
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['useRegistration'] = array
 (
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['useRegistration'],
-    'exclude'			=> true,
-    'inputType'			=> 'checkbox',
-    'eval'				=> array('submitOnChange'=>true, 'tl_class'=>'w50'),
-    'sql'               => "char(1) NOT NULL default ''"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['useRegistration'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('submitOnChange' => true, 'tl_class' => 'w50'),
+    'sql' => "char(1) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regconfirm'] = array
 (
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['regconfirm'],
-    'default'           => 0,
-    'exclude'			=> true,
-    'inputType'			=> 'checkbox',
-    'eval'				=> array('tl_class'=>'w50 m12'),
-    'sql'               => "char(1) NOT NULL default ''",
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['regconfirm'],
+    'default' => 0,
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'w50 m12'),
+    'sql' => "char(1) NOT NULL default ''",
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regperson'] = array
 (
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['regperson'],
-    'default'           => 0,
-    'exclude'			=> true,
-    'filter'			=> false,
-    'inputType'         => 'multiColumnWizard',
-    'load_callback'     => array(array('tl_calendar_events_ext', 'getmaxperson')),
-    'eval'				=> array
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['regperson'],
+    'default' => 0,
+    'exclude' => true,
+    'filter' => false,
+    'inputType' => 'multiColumnWizard',
+    'load_callback' => array(array('tl_calendar_events_ext', 'getmaxperson')),
+    'eval' => array
     (
-        'tl_class'          => 'w50 clr',
-        'columnsCallback'   => array('tl_calendar_events_ext', 'setmaxperson'),
-        'buttons'           => array('up' => false, 'down' => false, 'delete' => false, 'copy' => false)
+        'tl_class' => 'w50 clr',
+        'columnsCallback' => array('tl_calendar_events_ext', 'setmaxperson'),
+        'buttons' => array('up' => false, 'down' => false, 'delete' => false, 'copy' => false)
     ),
-    'sql'               => "text NULL"
+    'sql' => "text NULL"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regform'] = array
 (
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['regform'],
-    'exclude'			=> true,
-    'filter'			=> true,
-    'inputType'			=> 'select',
-    'options_callback'  => array('tl_calendar_events_ext', 'listRegForms'),
-    'eval'				=> array('mandatory'=>true, 'tl_class'=>'w50 m12', 'includeBlankOption'=>true, 'chosen'=>true),
-    'sql'               => "int(10) unsigned NOT NULL default '0'"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['regform'],
+    'exclude' => true,
+    'filter' => true,
+    'inputType' => 'select',
+    'options_callback' => array('tl_calendar_events_ext', 'listRegForms'),
+    'eval' => array('mandatory' => true, 'tl_class' => 'w50 m12', 'includeBlankOption' => true, 'chosen' => true),
+    'sql' => "int(10) unsigned NOT NULL default '0'"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regstartdate'] = array
 (
-    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['regstartdate'],
-    'default'           => time(),
-    'exclude'           => true,
-    'inputType'         => 'text',
-    'eval'              => array('rgxp'=>'datim', 'mandatory'=>false, 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
-    'sql'               => "int(10) unsigned NULL"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['regstartdate'],
+    'default' => time(),
+    'exclude' => true,
+    'inputType' => 'text',
+    'eval' => array('rgxp' => 'datim', 'mandatory' => false, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+    'sql' => "int(10) unsigned NULL"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regenddate'] = array
 (
-    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['regenddate'],
-    'default'           => time(),
-    'exclude'           => true,
-    'inputType'         => 'text',
-    'eval'              => array('rgxp'=>'datim', 'mandatory'=>false, 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
-    'sql'               => "int(10) unsigned NULL"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['regenddate'],
+    'default' => time(),
+    'exclude' => true,
+    'inputType' => 'text',
+    'eval' => array('rgxp' => 'datim', 'mandatory' => false, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+    'sql' => "int(10) unsigned NULL"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['recurringExt'] = array
 (
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['recurringExt'],
-    'exclude'			=> true,
-    'inputType'			=> 'checkbox',
-    'eval'				=> array('submitOnChange'=>true, 'tl_class'=>'long clr'),
-    'sql'               => "char(1) NOT NULL default ''",
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['recurringExt'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('submitOnChange' => true, 'tl_class' => 'long clr'),
+    'sql' => "char(1) NOT NULL default ''",
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['location_name'] = array
 (
-    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_name'],
-    'exclude'           => true,
-    'search'            => true,
-    'inputType'         => 'text',
-    'eval'              => array('maxlength'=>255, 'tl_class'=>'w50'),
-    'sql'               => "varchar(255) NOT NULL default ''"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_name'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'text',
+    'eval' => array('maxlength' => 255, 'tl_class' => 'w50'),
+    'sql' => "varchar(255) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['location_str'] = array
 (
-    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_str'],
-    'exclude'           => true,
-    'search'            => true,
-    'inputType'         => 'text',
-    'eval'              => array('maxlength'=>255, 'tl_class'=>'w50'),
-    'sql'               => "varchar(255) NOT NULL default ''"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_str'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'text',
+    'eval' => array('maxlength' => 255, 'tl_class' => 'w50'),
+    'sql' => "varchar(255) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['location_plz'] = array
 (
-    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_plz'],
-    'exclude'           => true,
-    'search'            => true,
-    'inputType'         => 'text',
-    'eval'              => array('rgxp'=>'digit', 'maxlength'=>10, 'tl_class'=>'w50'),
-    'sql'               => "varchar(10) NOT NULL default ''"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_plz'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'text',
+    'eval' => array('rgxp' => 'digit', 'maxlength' => 10, 'tl_class' => 'w50'),
+    'sql' => "varchar(10) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['location_ort'] = array
 (
-    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_ort'],
-    'exclude'           => true,
-    'search'            => true,
-    'inputType'         => 'text',
-    'eval'              => array('maxlength'=>255, 'tl_class'=>'w50'),
-    'sql'               => "varchar(255) NOT NULL default ''"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_ort'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'text',
+    'eval' => array('maxlength' => 255, 'tl_class' => 'w50'),
+    'sql' => "varchar(255) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['location_link'] = array
 (
-    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_link'],
-    'exclude'           => true,
-    'search'            => true,
-    'inputType'         => 'text',
-    'eval'              => array('rgxp'=>'url', 'maxlength'=>255, 'tl_class'=>'long'),
-    'sql'               => "varchar(255) NOT NULL default ''"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_link'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'text',
+    'eval' => array('rgxp' => 'url', 'maxlength' => 255, 'tl_class' => 'long'),
+    'sql' => "varchar(255) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['location_contact'] = array
 (
-    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_contact'],
-    'exclude'           => true,
-    'search'            => true,
-    'inputType'         => 'text',
-    'eval'              => array('maxlength'=>255, 'tl_class'=>'w50'),
-    'sql'               => "varchar(255) NOT NULL default ''"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_contact'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'text',
+    'eval' => array('maxlength' => 255, 'tl_class' => 'w50'),
+    'sql' => "varchar(255) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['location_mail'] = array
 (
-    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_mail'],
-    'exclude'           => true,
-    'search'            => true,
-    'inputType'         => 'text',
-    'eval'              => array('rgxp'=>'email', 'maxlength'=>255, 'decodeEntities'=>true, 'tl_class'=>'w50'),
-    'sql'               => "varchar(255) NOT NULL default ''"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['location_mail'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'text',
+    'eval' => array('rgxp' => 'email', 'maxlength' => 255, 'decodeEntities' => true, 'tl_class' => 'w50'),
+    'sql' => "varchar(255) NOT NULL default ''"
 );
 
 // new repeat options for events
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatEachExt'] = array
 (
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatEachExt'],
-    'exclude'			=> true,
-    'inputType'			=> 'timePeriodExt',
-    'options'			=> array
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatEachExt'],
+    'exclude' => true,
+    'inputType' => 'timePeriodExt',
+    'options' => array
     (
         array('first', 'second', 'third', 'fourth', 'fifth', 'last'),
         array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')
     ),
-    'reference'         => &$GLOBALS['TL_LANG']['tl_calendar_events'],
-    'eval'				=> array('mandatory'=>true, 'tl_class'=>'w50'),
-    'default'           => &$GLOBALS['TL_CONFIG']['tl_calendar_events']['weekdays'][date('w', time())],
-    'sql'               => "text NULL"
+    'reference' => &$GLOBALS['TL_LANG']['tl_calendar_events'],
+    'eval' => array('mandatory' => true, 'tl_class' => 'w50'),
+    'default' => &$GLOBALS['TL_CONFIG']['tl_calendar_events']['weekdays'][date('w', time())],
+    'sql' => "text NULL"
 );
 
 // added submitOnChange to recurrences
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['recurrences'] = array
 (
-    'label'             => &$GLOBALS['TL_LANG']['tl_calendar_events']['recurrences'],
-    'exclude'           => true,
-    'inputType'         => 'text',
-    'eval'				=> array('mandatory'=>true, 'rgxp'=>'digit', 'submitOnChange'=>true, 'tl_class'=>'w50'),
-    'sql'               => "smallint(5) unsigned NOT NULL default '0'"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['recurrences'],
+    'exclude' => true,
+    'inputType' => 'text',
+    'eval' => array('mandatory' => true, 'rgxp' => 'digit', 'submitOnChange' => true, 'tl_class' => 'w50'),
+    'sql' => "smallint(5) unsigned NOT NULL default '0'"
 );
 
 // list of exceptions
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatExceptions'] = array
 (
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions'],
-    'exclude'			=> true,
-    'inputType'         => 'multiColumnWizard',
-    'eval'				=> array
-        (
-            'columnsCallback'   => array('tl_calendar_events_ext', 'listMultiExceptions'),
-            'buttons'           => array('up' => false, 'down' => false)
-        ),
-    'sql'               => "text NULL"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptions'],
+    'exclude' => true,
+    'inputType' => 'multiColumnWizard',
+    'eval' => array
+    (
+        'columnsCallback' => array('tl_calendar_events_ext', 'listMultiExceptions'),
+        'buttons' => array('up' => false, 'down' => false)
+    ),
+    'sql' => "text NULL"
 );
 
 // list of exceptions
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatExceptionsInt'] = array
 (
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsInt'],
-    'exclude'			=> true,
-    'inputType'         => 'multiColumnWizard',
-    'eval'				=> array
-        (
-            'columnsCallback'   => array('tl_calendar_events_ext', 'listMultiExceptions'),
-            'buttons'           => array('up' => false, 'down' => false)
-        ),
-    'sql'               => "text NULL"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsInt'],
+    'exclude' => true,
+    'inputType' => 'multiColumnWizard',
+    'eval' => array
+    (
+        'columnsCallback' => array('tl_calendar_events_ext', 'listMultiExceptions'),
+        'buttons' => array('up' => false, 'down' => false)
+    ),
+    'sql' => "text NULL"
 );
 
 // list of exceptions
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatExceptionsPer'] = array
 (
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsPer'],
-    'exclude'			=> true,
-    'inputType'         => 'multiColumnWizard',
-    'eval'				=> array
-        (
-            'columnsCallback'   => array('tl_calendar_events_ext', 'listMultiExceptions'),
-            'buttons'           => array('up' => false, 'down' => false)
-        ),
-    'sql'               => "text NULL"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatExceptionsPer'],
+    'exclude' => true,
+    'inputType' => 'multiColumnWizard',
+    'eval' => array
+    (
+        'columnsCallback' => array('tl_calendar_events_ext', 'listMultiExceptions'),
+        'buttons' => array('up' => false, 'down' => false)
+    ),
+    'sql' => "text NULL"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatDates'] = array
 (
-    'sql'               => "text NULL"
+    'sql' => "text NULL"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['exceptionList'] = array
 (
-    'sql'               => "text NULL"
+    'sql' => "text NULL"
 );
 
 // display the end of the recurrences (read only)
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatEnd'] = array
 (
-    'label'				=> &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatEnd'],
-    'exclude'			=> true,
-    'inputType'			=> 'text',
-    'eval'				=> array('readonly'=>true, 'rgxp'=>'date', 'tl_class'=>'clr'),
-    'sql'               => "int(10) unsigned NOT NULL default '0'"
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['repeatEnd'],
+    'exclude' => true,
+    'inputType' => 'text',
+    'eval' => array('readonly' => true, 'rgxp' => 'date', 'tl_class' => 'clr'),
+    'sql' => "int(10) unsigned NOT NULL default '0'"
 );
 
 
@@ -445,8 +440,7 @@ class tl_calendar_events_ext extends \Backend
      */
     public function getWeekday($varValue, \DataContainer $dc)
     {
-        if ($varValue === '')
-        {
+        if ($varValue === '') {
             return 9;
         }
         return $varValue;
@@ -462,10 +456,8 @@ class tl_calendar_events_ext extends \Backend
      */
     public function checkRecurring($varValue, DataContainer $dc)
     {
-        if ($varValue)
-        {
-            if ($dc->activeRecord->recurring && $dc->activeRecord->recurringExt)
-            {
+        if ($varValue) {
+            if ($dc->activeRecord->recurring && $dc->activeRecord->recurringExt) {
                 throw new Exception($GLOBALS['TL_LANG']['tl_calendar_events']['checkRecurring']);
             }
         }
@@ -483,10 +475,8 @@ class tl_calendar_events_ext extends \Backend
      */
     public function checkExceptions($varValue, DataContainer $dc)
     {
-        if ($varValue)
-        {
-            if (!$dc->activeRecord->recurring && !$dc->activeRecord->recurringExt)
-            {
+        if ($varValue) {
+            if (!$dc->activeRecord->recurring && !$dc->activeRecord->recurringExt) {
                 throw new Exception($GLOBALS['TL_LANG']['tl_calendar_events']['checkExceptions']);
             }
         }
@@ -504,14 +494,12 @@ class tl_calendar_events_ext extends \Backend
     public function checkOverlapping(DataContainer $dc)
     {
         // Return if there is no active record (override all)
-        if (!$dc->activeRecord)
-        {
+        if (!$dc->activeRecord) {
             return false;
         }
 
         // Return if there event is recurring
-        if ($dc->activeRecord->recurring || $dc->activeRecord->recurringExt)
-        {
+        if ($dc->activeRecord->recurring || $dc->activeRecord->recurringExt) {
             return false;
         }
 
@@ -522,30 +510,24 @@ class tl_calendar_events_ext extends \Backend
         $intStart = strtotime(date('d.m.Y', $intStart) . ' 00:00');
 
         // Set end date
-        if (strlen($dc->activeRecord->endDate))
-        {
-            if ($dc->activeRecord->endDate > $dc->activeRecord->startDate)
-            {
+        if (strlen($dc->activeRecord->endDate)) {
+            if ($dc->activeRecord->endDate > $dc->activeRecord->startDate) {
                 $intEnd = $dc->activeRecord->endDate;
-            }
-            else
-            {
+            } else {
                 $intEnd = $dc->activeRecord->startDate;
             }
         }
         $intEnd = strtotime(date('d.m.Y', $intEnd) . ' 23:59');
 
         // Add time
-        if ($dc->activeRecord->addTime)
-        {
+        if ($dc->activeRecord->addTime) {
             $intStart = strtotime(date('d.m.Y', $intStart) . ' ' . date('H:i:s', $dc->activeRecord->startTime));
             $intEnd = strtotime(date('d.m.Y', $intEnd) . ' ' . date('H:i:s', $dc->activeRecord->endTime));
         }
 
         // Check if we have time overlapping events
         $uniqueEvents = (\CalendarModel::findById($dc->activeRecord->pid)->uniqueEvents) ? true : false;
-        if ($uniqueEvents)
-        {
+        if ($uniqueEvents) {
             // array for events
             $nonUniqueEvents = array();
 
@@ -554,13 +536,10 @@ class tl_calendar_events_ext extends \Backend
                 (int)$dc->activeRecord->pid,
                 (int)$dc->activeRecord->startTime,
                 (int)$dc->activeRecord->endTime);
-            if ($objEvents !== null)
-            {
-                while ($objEvents->next())
-                {
+            if ($objEvents !== null) {
+                while ($objEvents->next()) {
                     // do not add the event with the current id
-                    if ($objEvents->id === $dc->activeRecord->id)
-                    {
+                    if ($objEvents->id === $dc->activeRecord->id) {
                         continue;
                     }
 
@@ -569,15 +548,13 @@ class tl_calendar_events_ext extends \Backend
                         ($intEnd > $objEvents->startTime && $intEnd < $objEvents->endTime) ||
                         ($intStart < $objEvents->startTime && $intEnd > $objEvents->endTime) ||
                         ($intStart == $objEvents->startTime && $intEnd == $objEvents->endTime)
-                    )
-                    {
+                    ) {
                         $nonUniqueEvents[] = $objEvents->id;
                     }
                 }
 
-                if (count($nonUniqueEvents) > 0)
-                {
-                    \Message::addError($GLOBALS['TL_LANG']['tl_calendar_events']['nonUniqueEvents'].' ('.implode(',', $nonUniqueEvents).')');
+                if (count($nonUniqueEvents) > 0) {
+                    \Message::addError($GLOBALS['TL_LANG']['tl_calendar_events']['nonUniqueEvents'] . ' (' . implode(',', $nonUniqueEvents) . ')');
                     $this->redirect($this->addToUrl());
                 }
             }
@@ -591,8 +568,7 @@ class tl_calendar_events_ext extends \Backend
     public function adjustTime(DataContainer $dc)
     {
         // Return if there is no active record (override all)
-        if (!$dc->activeRecord)
-        {
+        if (!$dc->activeRecord) {
             return;
         }
 
@@ -604,36 +580,27 @@ class tl_calendar_events_ext extends \Backend
         $arrSet['endTime'] = $dc->activeRecord->startDate;
 
         // Set end date
-        if (strlen($dc->activeRecord->endDate))
-        {
-            if ($dc->activeRecord->endDate > $dc->activeRecord->startDate)
-            {
+        if (strlen($dc->activeRecord->endDate)) {
+            if ($dc->activeRecord->endDate > $dc->activeRecord->startDate) {
                 $arrSet['endDate'] = $dc->activeRecord->endDate;
                 $arrSet['endTime'] = $dc->activeRecord->endDate;
-            }
-            else
-            {
+            } else {
                 $arrSet['endDate'] = $dc->activeRecord->startDate;
                 $arrSet['endTime'] = $dc->activeRecord->startDate;
             }
         }
 
         // Add time
-        if ($dc->activeRecord->addTime)
-        {
+        if ($dc->activeRecord->addTime) {
             $arrSet['startTime'] = strtotime(date('d.m.Y', $arrSet['startTime']) . ' ' . date('H:i:s', $dc->activeRecord->startTime));
             $arrSet['endTime'] = strtotime(date('d.m.Y', $arrSet['endTime']) . ' ' . date('H:i:s', $dc->activeRecord->endTime));
         }
 
         // Set endtime to starttime always...
-        if ($dc->activeRecord->ignoreEndTime)
-        {
+        if ($dc->activeRecord->ignoreEndTime) {
             $arrSet['endTime'] = $arrSet['startTime'];
-        }
-
-        // Adjust end time of "all day" events
-        elseif ((strlen($dc->activeRecord->endDate) && $arrSet['endDate'] == $arrSet['endTime']) || $arrSet['startTime'] == $arrSet['endTime'])
-        {
+        } // Adjust end time of "all day" events
+        elseif ((strlen($dc->activeRecord->endDate) && $arrSet['endDate'] == $arrSet['endTime']) || $arrSet['startTime'] == $arrSet['endTime']) {
             $arrSet['endTime'] = (strtotime('+ 1 day', $arrSet['endTime']) - 1);
         }
 
@@ -646,33 +613,23 @@ class tl_calendar_events_ext extends \Backend
         // Set the repeatEnd date
         $arrFixDates = array();
         $arrayFixedDates = deserialize($dc->activeRecord->repeatFixedDates) ? deserialize($dc->activeRecord->repeatFixedDates) : null;
-        if (!is_null($arrayFixedDates))
-        {
-            foreach ($arrayFixedDates as $fixedDate)
-            {
+        if (!is_null($arrayFixedDates)) {
+            foreach ($arrayFixedDates as $fixedDate) {
                 $nextValueDate = (strlen($fixedDate['new_repeat'])) ? strtotime($fixedDate['new_repeat']) : $dc->activeRecord->startTime;
-                if (strlen($fixedDate['new_repeat']))
-                {
-                    $nextStartTime = strtotime(date("d.m.Y", $nextValueDate).' '.date("H:i:s", strtotime($fixedDate['new_start'])));
-                }
-                else
-                {
-                    $nextStartTime = strtotime(date("d.m.Y", $nextValueDate).' '.date("H:i:s", $dc->activeRecord->startTime));
+                if (strlen($fixedDate['new_repeat'])) {
+                    $nextStartTime = strtotime(date("d.m.Y", $nextValueDate) . ' ' . date("H:i:s", strtotime($fixedDate['new_start'])));
+                } else {
+                    $nextStartTime = strtotime(date("d.m.Y", $nextValueDate) . ' ' . date("H:i:s", $dc->activeRecord->startTime));
                 }
                 $arrFixDates[$nextStartTime] = date('d.m.Y H:i', $nextStartTime);
-                if (strlen($fixedDate['new_end']))
-                {
-                    $nextEndTime = strtotime(date("d.m.Y", $nextValueDate).' '.date("H:i:s", strtotime($fixedDate['new_end'])));
-                }
-                else
-                {
-                    $nextEndTime = strtotime(date("d.m.Y", $nextValueDate).' '.date("H:i:s", $dc->activeRecord->endTime));
+                if (strlen($fixedDate['new_end'])) {
+                    $nextEndTime = strtotime(date("d.m.Y", $nextValueDate) . ' ' . date("H:i:s", strtotime($fixedDate['new_end'])));
+                } else {
+                    $nextEndTime = strtotime(date("d.m.Y", $nextValueDate) . ' ' . date("H:i:s", $dc->activeRecord->endTime));
                 }
                 $maxRepeatEnd[] = $nextEndTime;
             }
-        }
-        else
-        {
+        } else {
             $arrSet['repeatFixedDates'] = null;
         }
 
@@ -681,8 +638,7 @@ class tl_calendar_events_ext extends \Backend
         $arrDates[$next] = date('d.m.Y H:i', $next);
 
         // changed default recurring
-        if ($dc->activeRecord->recurring)
-        {
+        if ($dc->activeRecord->recurring) {
             $arrRange = deserialize($dc->activeRecord->repeatEach);
 
             $arg = $arrRange['value'] * $dc->activeRecord->recurrences;
@@ -699,21 +655,18 @@ class tl_calendar_events_ext extends \Backend
             $arrDates = array();
             $arrDates[$next] = date('d.m.Y H:i', $next);
 
-            if ($count == 0)
-            {
+            if ($count == 0) {
                 $arrSet['repeatEnd'] = 2145913200;
             }
 
             // last date of the recurrences
             $end = $arrSet['repeatEnd'];
 
-            while ($next <= $end)
-            {
+            while ($next <= $end) {
                 $timetoadd = '+ ' . $arrRange['value'] . ' ' . $unit;
 
                 // Check if we are at the end
-                if (!strtotime($timetoadd, $next))
-                {
+                if (!strtotime($timetoadd, $next)) {
                     break;
                 }
 
@@ -722,27 +675,22 @@ class tl_calendar_events_ext extends \Backend
                 $weekday = date('w', $next);
 
                 //check if we are at the end
-                if ($next >= $end)
-                {
+                if ($next >= $end) {
                     break;
                 }
 
                 $store = true;
-                if ($dc->activeRecord->hideOnWeekend)
-                {
-                    if ($weekday == 0 || $weekday == 6)
-                    {
+                if ($dc->activeRecord->hideOnWeekend) {
+                    if ($weekday == 0 || $weekday == 6) {
                         $store = false;
                     }
                 }
-                if ($store === true)
-                {
+                if ($store === true) {
                     $arrDates[$next] = date('d.m.Y H:i', $next);
                 }
 
                 //check if have the configured max value
-                if (count($arrDates) == $maxCount && $unit == "days")
-                {
+                if (count($arrDates) == $maxCount && $unit == "days") {
                     break;
                 }
             }
@@ -750,13 +698,12 @@ class tl_calendar_events_ext extends \Backend
         }
 
         //list of months we need
-        $arrMonth = array(1=>'january', 2=>'february', 3=>'march', 4=>'april', 5=>'may', 6=>'june',
-            7=>'july', 8=>'august', 9=>'september', 10=>'october', 11=>'november', 12=>'december',
+        $arrMonth = array(1 => 'january', 2 => 'february', 3 => 'march', 4 => 'april', 5 => 'may', 6 => 'june',
+            7 => 'july', 8 => 'august', 9 => 'september', 10 => 'october', 11 => 'november', 12 => 'december',
         );
 
         //extended version recurring
-        if ($dc->activeRecord->recurringExt)
-        {
+        if ($dc->activeRecord->recurringExt) {
             $arrRange = deserialize($dc->activeRecord->repeatEachExt);
 
             $arg = $arrRange['value'];
@@ -775,20 +722,16 @@ class tl_calendar_events_ext extends \Backend
             $arrDates = array();
             $arrDates[$next] = date('d.m.Y H:i', $next);
 
-            if ($count > 0)
-            {
-                for ($i = 0; $i < $count; $i++)
-                {
+            if ($count > 0) {
+                for ($i = 0; $i < $count; $i++) {
                     $month++;
-                    if (($month % 13) == 0)
-                    {
+                    if (($month % 13) == 0) {
                         $month = 1;
                         $year += 1;
                     }
 
                     $timetoadd = $arg . ' ' . $unit . ' of ' . $arrMonth[$month] . ' ' . $year;
-                    if (!strtotime($timetoadd, $next))
-                    {
+                    if (!strtotime($timetoadd, $next)) {
                         break;
                     }
 
@@ -797,19 +740,15 @@ class tl_calendar_events_ext extends \Backend
                     $arrDates[$next] = date('d.m.Y H:i', $next);
                 }
                 $arrSet['repeatEnd'] = $next;
-            }
-            else
-            {
+            } else {
                 // 2038.01.01
                 $arrSet['repeatEnd'] = 2145913200;
                 $end = $arrSet['repeatEnd'];
 
-                while ($next <= $end)
-                {
+                while ($next <= $end) {
                     $timetoadd = $arg . ' ' . $unit . ' of ' . $arrMonth[$month] . ' ' . $year;
 
-                    if (!strtotime($timetoadd, $next))
-                    {
+                    if (!strtotime($timetoadd, $next)) {
                         break;
                     }
 
@@ -819,8 +758,7 @@ class tl_calendar_events_ext extends \Backend
                     $arrDates[$next] = date('d.m.Y H:i', $next);
 
                     $month++;
-                    if (($month % 13) == 0)
-                    {
+                    if (($month % 13) == 0) {
                         $month = 1;
                         $year += 1;
                     }
@@ -831,20 +769,17 @@ class tl_calendar_events_ext extends \Backend
         unset($next);
 
         // the last repeatEnd Date
-        if (count($maxRepeatEnd) > 1)
-        {
+        if (count($maxRepeatEnd) > 1) {
             $arrSet['repeatEnd'] = max($maxRepeatEnd);
         }
         $currentEndDate = $arrSet['repeatEnd'];
 
-        if ($dc->activeRecord->useExceptions)
-        {
+        if ($dc->activeRecord->useExceptions) {
             // this will be he list of the exception
             $exceptionRows = array();
 
             // ... then we check them by interval...
-            if ($dc->activeRecord->repeatExceptionsInt)
-            {
+            if ($dc->activeRecord->repeatExceptionsInt) {
                 // weekday
                 $unit = $GLOBALS['TL_CONFIG']['tl_calendar_events']['weekdays'][$dc->activeRecord->weekday];
 
@@ -852,10 +787,8 @@ class tl_calendar_events_ext extends \Backend
                 $rows = deserialize($dc->activeRecord->repeatExceptionsInt);
 
                 // run thru all dates
-                foreach ($rows as $row)
-                {
-                    if (!$row['exception'])
-                    {
+                foreach ($rows as $row) {
+                    if (!$row['exception']) {
                         continue;
                     }
 
@@ -866,16 +799,13 @@ class tl_calendar_events_ext extends \Backend
                     $searchEnd = $arrSet['repeatEnd'];
                     $month = (int)date('n', $searchNext);
                     $year = (int)date('Y', $searchNext);
-                    while ($searchNext <= $searchEnd)
-                    {
-                        $strDateToFind = $arg.' '.$unit.' of '.$arrMonth[$month].' '.$year;
+                    while ($searchNext <= $searchEnd) {
+                        $strDateToFind = $arg . ' ' . $unit . ' of ' . $arrMonth[$month] . ' ' . $year;
                         $searchNext = strtotime($strDateToFind);
 
-                        if ($searchNext < $arrSet['startTime'])
-                        {
+                        if ($searchNext < $arrSet['startTime']) {
                             $month++;
-                            if (($month % 13) == 0)
-                            {
+                            if (($month % 13) == 0) {
                                 $month = 1;
                                 $year += 1;
                             }
@@ -885,21 +815,18 @@ class tl_calendar_events_ext extends \Backend
                         $row['new_start'] = ($row['new_start']) ? $row['new_start'] : date('H:i', $dc->activeRecord->startTime); #'00:00';
                         $row['new_end'] = ($row['new_end']) ? $row['new_end'] : date('H:i', $dc->activeRecord->endTime); #'23:59';
                         // Set endtime to starttime always...
-                        if ($dc->activeRecord->ignoreEndTime)
-                        {
+                        if ($dc->activeRecord->ignoreEndTime) {
                             $row['new_end'] = '';
                         }
 
                         $row['exception'] = strtotime(date('d.m.Y', $searchNext));
                         $row['exception_date'] = date('d.m.Y', $searchNext);
-                        if (count($exceptionRows) < $maxELCount)
-                        {
+                        if (count($exceptionRows) < $maxELCount) {
                             $exceptionRows[$searchNext] = $row;
                         }
 
                         $month++;
-                        if (($month % 13) == 0)
-                        {
+                        if (($month % 13) == 0) {
                             $month = 1;
                             $year += 1;
                         }
@@ -908,8 +835,7 @@ class tl_calendar_events_ext extends \Backend
             }
 
             // ... and last but not least by range
-            if ($dc->activeRecord->repeatExceptionsPer)
-            {
+            if ($dc->activeRecord->repeatExceptionsPer) {
                 // exception rules
                 $rows = deserialize($dc->activeRecord->repeatExceptionsPer);
 
@@ -917,35 +843,29 @@ class tl_calendar_events_ext extends \Backend
                 $repeatDates = deserialize($dc->activeRecord->repeatDates);
 
                 // run thru all dates
-                foreach ($rows as $row)
-                {
-                    if (!$row['exception'])
-                    {
+                foreach ($rows as $row) {
+                    if (!$row['exception']) {
                         continue;
                     }
 
                     $row['new_start'] = ($row['new_start']) ? $row['new_start'] : date('H:i', $dc->activeRecord->startTime); #'00:00';
                     $row['new_end'] = ($row['new_end']) ? $row['new_end'] : date('H:i', $dc->activeRecord->endTime); #'23:59';
                     // Set endtime to starttime always...
-                    if ($dc->activeRecord->ignoreEndTime)
-                    {
+                    if ($dc->activeRecord->ignoreEndTime) {
                         $row['new_end'] = '';
                     }
 
                     // now we have to find all dates matching the exception rules...
-                    $dateFrom = strtotime($row['exception'].' '.$row['new_start']);
-                    $dateTo = strtotime($row['exceptionTo'].' '.$row['new_end']);
+                    $dateFrom = strtotime($row['exception'] . ' ' . $row['new_start']);
+                    $dateTo = strtotime($row['exceptionTo'] . ' ' . $row['new_end']);
                     unset($row['exceptionTo']);
 
-                    foreach ($repeatDates as $k => $repeatDate)
-                    {
-                        if ($k >= $dateFrom && $k <= $dateTo)
-                        {
+                    foreach ($repeatDates as $k => $repeatDate) {
+                        if ($k >= $dateFrom && $k <= $dateTo) {
                             $k = strtotime(date('d.y.Y', $k));
                             $row['exception'] = $k;
                             $row['exception_date'] = date('d.m.Y', $k);
-                            if (count($exceptionRows) < $maxELCount)
-                            {
+                            if (count($exceptionRows) < $maxELCount) {
                                 $exceptionRows[$k] = $row;
                             }
                         }
@@ -954,15 +874,12 @@ class tl_calendar_events_ext extends \Backend
             }
 
             // first we check the exceptions by date...
-            if ($dc->activeRecord->repeatExceptions)
-            {
+            if ($dc->activeRecord->repeatExceptions) {
                 $rows = deserialize($dc->activeRecord->repeatExceptions);
                 // set repeatEnd
                 // my be we have an exception move that is later then the repeatEnd
-                foreach ($rows as $row)
-                {
-                    if (!$row['exception'])
-                    {
+                foreach ($rows as $row) {
+                    if (!$row['exception']) {
                         continue;
                     }
 
@@ -970,46 +887,39 @@ class tl_calendar_events_ext extends \Backend
                     $row['new_start'] = ($row['new_start']) ? $row['new_start'] : date('H:i', $dc->activeRecord->startTime); #'00:00';
                     $row['new_end'] = ($row['new_end']) ? $row['new_end'] : date('H:i', $dc->activeRecord->endTime); #'23:59';
 
-                    $dateToFind = strtotime(date("d.m.Y", $row['exception']).' '.date("H:i", $dc->activeRecord->startTime));
-                    $dateToSave = strtotime(date("d.m.Y", $row['exception']).' '.$row['new_start']);
+                    $dateToFind = strtotime(date("d.m.Y", $row['exception']) . ' ' . date("H:i", $dc->activeRecord->startTime));
+                    $dateToSave = strtotime(date("d.m.Y", $row['exception']) . ' ' . $row['new_start']);
 
                     // Set endtime to starttime always...
-                    if ($dc->activeRecord->ignoreEndTime)
-                    {
+                    if ($dc->activeRecord->ignoreEndTime) {
                         $row['new_end'] = '';
                     }
 
-                    if ($row['action'] == 'move')
-                    {
+                    if ($row['action'] == 'move') {
                         $newDate = strtotime($row['new_exception'], $row['exception']);
-                        if ($newDate > $currentEndDate)
-                        {
+                        if ($newDate > $currentEndDate) {
                             $arrSet['repeatEnd'] = $newDate;
                             $maxRepeatEnd[] = $arrSet['repeatEnd'];
                         }
 
                         // Find the date and replace it
-                        if (array_key_exists($dateToFind, $arrDates))
-                        {
+                        if (array_key_exists($dateToFind, $arrDates)) {
                             $arrDates[$dateToFind] = date('d.m.Y H:i', $dateToSave);
                         }
                     }
-                    if (count($exceptionRows) < $maxELCount)
-                    {
+                    if (count($exceptionRows) < $maxELCount) {
                         $exceptionRows[$row['exception']] = $row;
                     }
                 }
             }
 
-            if (count($exceptionRows) > 1)
-            {
+            if (count($exceptionRows) > 1) {
                 ksort($exceptionRows);
             }
             $arrSet['exceptionList'] = (count($exceptionRows) > 0) ? serialize($exceptionRows) : null;
         }
 
-        if (count($maxRepeatEnd) > 1)
-        {
+        if (count($maxRepeatEnd) > 1) {
             $arrSet['repeatEnd'] = max($maxRepeatEnd);
         }
         // Set the array of dates
@@ -1030,8 +940,7 @@ class tl_calendar_events_ext extends \Backend
     public function getmaxperson($var, $dc)
     {
         $values = deserialize($var);
-        if (!is_array($values))
-        {
+        if (!is_array($values)) {
             $values = array();
             $values[0]['mini'] = 0;
             $values[0]['maxi'] = 0;
@@ -1066,32 +975,32 @@ class tl_calendar_events_ext extends \Backend
         (
             'mini' => array
             (
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['mini'],
-                'default'   => '0',
-                'exclude'   => true,
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['mini'],
+                'default' => '0',
+                'exclude' => true,
                 'inputType' => 'text',
-                'eval'      => array('style'=>'width:60px')
+                'eval' => array('style' => 'width:60px')
             ),
             'maxi' => array
             (
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['maxi'],
-                'exclude'   => true,
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['maxi'],
+                'exclude' => true,
                 'inputType' => 'text',
-                'eval'      => array('style'=>'width:60px')
+                'eval' => array('style' => 'width:60px')
             ),
             'curr' => array
             (
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['curr'],
-                'exclude'   => true,
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['curr'],
+                'exclude' => true,
                 'inputType' => 'text',
-                'eval'      => array('style'=>'width:60px', 'disabled'=>'true')
+                'eval' => array('style' => 'width:60px', 'disabled' => 'true')
             ),
             'free' => array
             (
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['free'],
-                'exclude'   => true,
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['free'],
+                'exclude' => true,
                 'inputType' => 'text',
-                'eval'      => array('style'=>'width:60px', 'disabled'=>'true')
+                'eval' => array('style' => 'width:60px', 'disabled' => 'true')
             )
         );
 
@@ -1115,18 +1024,13 @@ class tl_calendar_events_ext extends \Backend
         $arrSource3 = array();
         $arrSource4 = array();
 
-        if (\Input::get('id'))
-        {
-            if ($var1->activeRecord->repeatDates)
-            {
+        if (\Input::get('id')) {
+            if ($var1->activeRecord->repeatDates) {
                 $arrDates = deserialize($var1->activeRecord->repeatDates);
-                if (is_array($arrDates))
-                {
-                    if ($var1->id == "repeatExceptions")
-                    {
+                if (is_array($arrDates)) {
+                    if ($var1->id == "repeatExceptions") {
                         // fill array for option date
-                        foreach ($arrDates as $k => $arrDate)
-                        {
+                        foreach ($arrDates as $k => $arrDate) {
                             $date = \Date::parse($GLOBALS['TL_CONFIG']['dateFormat'], $k);
                             $arrSource1[$k] = $date;
                         }
@@ -1143,9 +1047,8 @@ class tl_calendar_events_ext extends \Backend
             $start = $moveDays * -1;
             $end = $moveDays * 2;
 
-            for ($i = 0; $i <= $end; $i++)
-            {
-                $arrSource3[$start. ' days'] = $start . ' ' . $GLOBALS['TL_LANG']['tl_calendar_events']['days'];
+            for ($i = 0; $i <= $end; $i++) {
+                $arrSource3[$start . ' days'] = $start . ' ' . $GLOBALS['TL_LANG']['tl_calendar_events']['days'];
                 $start++;
             }
 
@@ -1154,8 +1057,7 @@ class tl_calendar_events_ext extends \Backend
             // fill array for option new time
             $start = strtotime($start);
             $end = strtotime($end);
-            while ($start <= $end)
-            {
+            while ($start <= $end) {
                 $newTime = \Date::parse($GLOBALS['TL_CONFIG']['timeFormat'], $start);
                 $arrSource4[$newTime] = $newTime;
                 $start = strtotime('+ ' . $interval . ' minutes', $start);
@@ -1166,106 +1068,99 @@ class tl_calendar_events_ext extends \Backend
         (
             'new_start' => array
             (
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_start'],
-                'exclude'   => true,
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_start'],
+                'exclude' => true,
                 'inputType' => 'select',
-                'options'   => $arrSource4,
-                'eval'      => array('style'=>'width:60px', 'includeBlankOption'=>true)
+                'options' => $arrSource4,
+                'eval' => array('style' => 'width:60px', 'includeBlankOption' => true)
             ),
             'new_end' => array
             (
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_end'],
-                'exclude'   => true,
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_end'],
+                'exclude' => true,
                 'inputType' => 'select',
-                'options'   => $arrSource4,
-                'eval'      => array('style'=>'width:60px', 'includeBlankOption'=>true)
+                'options' => $arrSource4,
+                'eval' => array('style' => 'width:60px', 'includeBlankOption' => true)
             ),
             'action' => array
             (
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['action'],
-                'exclude'   => true,
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['action'],
+                'exclude' => true,
                 'inputType' => 'select',
-                'options'   => $arrSource2,
-                'eval'      => array('style'=>'width:80px', 'includeBlankOption'=>true)
+                'options' => $arrSource2,
+                'eval' => array('style' => 'width:80px', 'includeBlankOption' => true)
             ),
             'new_exception' => array
             (
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_exception'],
-                'exclude'   => true,
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_exception'],
+                'exclude' => true,
                 'inputType' => 'select',
-                'options'   => $arrSource3,
-                'eval'      => array('style'=>'width:80px', 'includeBlankOption'=>true)
+                'options' => $arrSource3,
+                'eval' => array('style' => 'width:80px', 'includeBlankOption' => true)
             ),
             'cssclass' => array
             (
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['cssclass'],
-                'exclude'   => true,
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['cssclass'],
+                'exclude' => true,
                 'inputType' => 'text',
-                'eval'      => array('style'=>'width:50px')
+                'eval' => array('style' => 'width:50px')
             ),
             'reason' => array
             (
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['reason'],
-                'exclude'   => true,
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['reason'],
+                'exclude' => true,
                 'inputType' => 'text',
-                'eval'      => array('style'=>'width:150px')
+                'eval' => array('style' => 'width:150px')
             )
         );
 
         // normal exceptions by date
-        if ($var1->id == "repeatExceptions")
-        {
+        if ($var1->id == "repeatExceptions") {
             $firstField = array(
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['exception'],
-                'exclude'   => true,
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['exception'],
+                'exclude' => true,
                 'inputType' => 'select',
-                'options'   => $arrSource1,
-                'eval'      => array('style'=>'width:120px', 'includeBlankOption'=>true)
+                'options' => $arrSource1,
+                'eval' => array('style' => 'width:120px', 'includeBlankOption' => true)
             );
-        }
-
-       // exceptions by interval
-        elseif ($var1->id == "repeatExceptionsInt")
-        {
+        } // exceptions by interval
+        elseif ($var1->id == "repeatExceptionsInt") {
             $firstField = array(
-                'label'     => $GLOBALS['TL_LANG']['tl_calendar_events']['exceptionInt'].$GLOBALS['TL_LANG']['DAYS'][$var1->activeRecord->weekday],
-                'exclude'   => true,
+                'label' => $GLOBALS['TL_LANG']['tl_calendar_events']['exceptionInt'] . $GLOBALS['TL_LANG']['DAYS'][$var1->activeRecord->weekday],
+                'exclude' => true,
                 'inputType' => 'select',
-                'options'   => array('first', 'second', 'third', 'fourth', 'fifth', 'last'),
+                'options' => array('first', 'second', 'third', 'fourth', 'fifth', 'last'),
                 'reference' => &$GLOBALS['TL_LANG']['tl_calendar_events'],
-                'eval'      => array('style'=>'width:120px', 'includeBlankOption'=>true)
+                'eval' => array('style' => 'width:120px', 'includeBlankOption' => true)
             );
-        }
-
-        // exceptions by time period
-        elseif ($var1->id == "repeatExceptionsPer")
-        {
+        } // exceptions by time period
+        elseif ($var1->id == "repeatExceptionsPer") {
             $firstField = array(
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['exceptionFr'],
-                'exclude'   => true,
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['exceptionFr'],
+                'exclude' => true,
                 'inputType' => 'text',
-                'eval'      => array('rgxp'=>'date', 'doNotCopy'=>true, 'style'=>'width:60px', 'datepicker'=>true, 'tl_class'=>'wizard')
+                'eval' => array('rgxp' => 'date', 'doNotCopy' => true, 'style' => 'width:60px', 'datepicker' => true, 'tl_class' => 'wizard')
             );
             $secondField = array(
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['exceptionTo'],
-                'exclude'   => true,
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['exceptionTo'],
+                'exclude' => true,
                 'inputType' => 'text',
-                'eval'      => array('rgxp'=>'date', 'doNotCopy'=>true, 'style'=>'width:60px', 'datepicker'=>true, 'tl_class'=>'wizard')
+                'eval' => array('rgxp' => 'date', 'doNotCopy' => true, 'style' => 'width:60px', 'datepicker' => true, 'tl_class' => 'wizard')
             );
             $columnFields['reason'] = array
             (
-                    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['reason'],
-                    'exclude'   => true,
-                    'inputType' => 'text',
-                    'eval'      => array('style'=>'width:80px')
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['reason'],
+                'exclude' => true,
+                'inputType' => 'text',
+                'eval' => array('style' => 'width:80px')
             );
 
             // add the field to the columnFields array
-            array_insert($columnFields, 0, array("exceptionTo"=> $secondField));
+            array_insert($columnFields, 0, array("exceptionTo" => $secondField));
         }
 
         // add the field to the columnFields array
-        array_insert($columnFields, 0, array("exception"=> $firstField));
+        array_insert($columnFields, 0, array("exception" => $firstField));
 
         return $columnFields;
     }
@@ -1280,31 +1175,31 @@ class tl_calendar_events_ext extends \Backend
         $columnFields = array
         (
             'new_repeat' => array(
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['exception'],
-                'exclude'   => true,
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['exception'],
+                'exclude' => true,
                 'inputType' => 'text',
-                'eval'      => array('rgxp'=>'date', 'datepicker'=>true, 'doNotCopy'=>true, 'style'=>'width:100px', 'tl_class'=>'wizard')
+                'eval' => array('rgxp' => 'date', 'datepicker' => true, 'doNotCopy' => true, 'style' => 'width:100px', 'tl_class' => 'wizard')
             ),
             'new_start' => array
             (
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_start'],
-                'exclude'   => true,
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_start'],
+                'exclude' => true,
                 'inputType' => 'text',
-                'eval'      => array('rgxp'=>'time', 'datepicker'=>true, 'doNotCopy'=>true, 'style'=>'width:40px')
+                'eval' => array('rgxp' => 'time', 'datepicker' => true, 'doNotCopy' => true, 'style' => 'width:40px')
             ),
             'new_end' => array
             (
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_end'],
-                'exclude'   => true,
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['new_end'],
+                'exclude' => true,
                 'inputType' => 'text',
-                'eval'      => array('rgxp'=>'time', 'datepicker'=>true, 'doNotCopy'=>true, 'style'=>'width:40px')
+                'eval' => array('rgxp' => 'time', 'datepicker' => true, 'doNotCopy' => true, 'style' => 'width:40px')
             ),
             'reason' => array
             (
-                'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['reason'],
-                'exclude'   => true,
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['reason'],
+                'exclude' => true,
                 'inputType' => 'text',
-                'eval'      => array('doNotCopy'=>true, 'style'=>'width:350px')
+                'eval' => array('doNotCopy' => true, 'style' => 'width:350px')
             )
         );
 
@@ -1317,21 +1212,16 @@ class tl_calendar_events_ext extends \Backend
      */
     public function listRegForms($a)
     {
-        if ($this->User->isAdmin)
-        {
+        if ($this->User->isAdmin) {
             $objForms = \FormModel::findAll();
-        }
-        else
-        {
+        } else {
             $objForms = \FormModel::findMultipleByIds($this->User->forms);
         }
 
         $return = array();
 
-        if ($objForms !== null)
-        {
-            while ($objForms->next())
-            {
+        if ($objForms !== null) {
+            while ($objForms->next()) {
                 $return[$objForms->id] = $objForms->title;
             }
         }
