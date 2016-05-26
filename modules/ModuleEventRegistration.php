@@ -66,38 +66,48 @@ class ModuleEventRegistration extends \Module
 
         $objTemplate->hasError = false;
         $msgError = array();
+        $reg_type = (int)$this->regtype;
 
-        $objTemplate->type = $GLOBALS['TL_LANG']['tl_module']['regtypes'][$this->regtype];
+        $objTemplate->type = $GLOBALS['TL_LANG']['tl_module']['regtypes'][$reg_type];
 
         // Id der Benachrichtigung
         $ncid = $this->nc_notification;
 
         // Get the input parameter
-        $lead_id = (\Input::get('lead')) ? \Input::get('lead') : 0;
-        $event_id = (\Input::get('event')) ? \Input::get('event') : 0;
-        $email = (\Input::get('email')) ? \Input::get('email') : 0;
+        $lead_id = (\Input::get('lead')) ? \Input::get('lead') : false;
+        $event_id = (\Input::get('event')) ? \Input::get('event') : false;
+        $email = (\Input::get('email')) ? \Input::get('email') : false;
 
-        // Throw Exception if parameter is missing
-        if ($lead_id === 0) {
+        // Fehler anzeigen, wenn parameter fehlen
+        if (!$lead_id || !$event_id || !$email ) {
             $objTemplate->hasError = true;
-            $msgError[] = 'Parameter lead fehlt...';
-        }
-        if ($event_id === 0) {
-            $objTemplate->hasError = true;
-            $msgError[] = 'Parameter event fehlt...';
-        }
-        if ($email === 0) {
-            $objTemplate->hasError = true;
-            $msgError[] = 'Parameter email fehlt...';
+            $msgError[] = 'Fehler Parameter...';
         }
 
-        // Sind Fehler aufgetreten, dann die Meldungen zuweisen...
-        if ($objTemplate->hasError) {
-            $objTemplate->msgError = $msgError;
-
-            // Sind keine aufgetreten, dann weiter
+        // Event auf Existens prüfen
+        $objEvent = \CalendarEventsModel::findById($event_id);
+        if (!$objEvent) {
+            $objTemplate->hasError = true;
+            $msgError[] = 'Event nicht gefunden...';
         } else {
+            // ist das Event da, sollte es published sein
+            if (!$objEvent->published) {
+                $objTemplate->hasError = true;
+                $msgError[] = 'Event inaktiv. Kantakt...';
+            }
 
+            // ist der Abmeldeschluss erreicht?
+            if ($reg_type === 0 && $objEvent->regenddate > 0 && $objEvent->regenddate < time()) {
+                $objTemplate->hasError = true;
+                $msgError[] = 'Event Abmeldeschluss. Kantakt...';
+            }
+        }
+
+        if ($objTemplate->hasError) {
+            // Sind Fehler aufgetreten, dann die Meldungen zuweisen...
+            $objTemplate->msgError = $msgError;
+        } else {
+            // Sind keine aufgetreten, dann weiter
             global $objPage;
 
             // Jetzt noch die notification_center mais raus
@@ -120,6 +130,7 @@ class ModuleEventRegistration extends \Module
                         }
                         $arrTokens['raw_data'] = implode('<br>', $arrRawData);
                         unset($arrRawData);
+                        $arrTokens['recipient_published'] = $reg_type;
                         $arrTokens['recipients'] = array($email, $objPage->adminEmail);
                         $arrTokens['page_title'] = $objPage->pageTitle;
                         $arrTokens['admin_email'] = $objPage->adminEmail;

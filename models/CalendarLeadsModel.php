@@ -136,9 +136,9 @@ class CalendarLeadsModel extends \Model
     public static function updateByPid($pid, $value)
     {
         // SQL bauen
-        $sql = 'update ' . static::$strTableDetail . ' set value = ? where pid = ? and name = "published"';
+        $sql = 'update ' . static::$strTableDetail . ' set value = ?, label = ? where pid = ? and name = "published"';
         // und ausführen
-        $objResult = \Database::getInstance()->prepare($sql)->execute((int)$value, (int)$pid);
+        $objResult = \Database::getInstance()->prepare($sql)->execute((int)$value, (int)$value, (int)$pid);
 
         return (bool)$objResult;
     }
