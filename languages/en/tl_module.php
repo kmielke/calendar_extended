@@ -69,3 +69,9 @@ $GLOBALS['TL_LANG']['tl_module']['displayDurationError']    = 'Error parsing str
 $GLOBALS['TL_LANG']['tl_module']['displayDurationError2']   = 'Error in strtotime value. Result is current day.';
 $GLOBALS['TL_LANG']['tl_module']['config_ext_legend']       = 'Module configuration (extended)';
 $GLOBALS['TL_LANG']['tl_module']['registration_legend']     = 'Register / Unregister (notification and type)';
+
+$GLOBALS['TL_LANG']['tl_module']['regerror']['param']       = 'There was an error with the parameters.';
+$GLOBALS['TL_LANG']['tl_module']['regerror']['noevt']       = 'The event is no longer present.';
+$GLOBALS['TL_LANG']['tl_module']['regerror']['daevt']       = 'The event is currently not active.';
+$GLOBALS['TL_LANG']['tl_module']['regerror']['dline']       = 'The registration deadline is reached. A cancellation is no longer possible in this way.';
+$GLOBALS['TL_LANG']['tl_module']['regerror']['admin']       = 'Please contact the administrator.';

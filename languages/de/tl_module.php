@@ -71,3 +71,9 @@ $GLOBALS['TL_LANG']['tl_module']['displayDurationError2']   = 'strtotime Wert fl
 $GLOBALS['TL_LANG']['tl_module']['config_ext_legend']       = 'Modul-Konfiguration (erweitert)';
 $GLOBALS['TL_LANG']['tl_module']['registration_legend']     = 'Anmeldung / Abmeldung (Benachrichtigung und Typ)';
 
+$GLOBALS['TL_LANG']['tl_module']['regerror']['param']       = 'Es ist ein Fehler mit den Parametern aufgetreten.';
+$GLOBALS['TL_LANG']['tl_module']['regerror']['noevt']       = 'Das Event ist nicht mehr vorhanden.';
+$GLOBALS['TL_LANG']['tl_module']['regerror']['daevt']       = 'Das Event ist zurzeit nicht aktiv.';
+$GLOBALS['TL_LANG']['tl_module']['regerror']['dline']       = 'Der Abmeldeschluss ist erreicht. Eine Abmeldung ist auf diesem Weg nicht mehr möglich.';
+$GLOBALS['TL_LANG']['tl_module']['regerror']['admin']       = 'Bitte kontaktieren Sie den Administrator.';
+

@@ -81,25 +81,25 @@ class ModuleEventRegistration extends \Module
         // Fehler anzeigen, wenn parameter fehlen
         if (!$lead_id || !$event_id || !$email ) {
             $objTemplate->hasError = true;
-            $msgError[] = 'Fehler Parameter...';
+            $msgError[] = $GLOBALS['TL_LANG']['tl_module']['regerror']['param'];
         }
 
         // Event auf Existens prüfen
         $objEvent = \CalendarEventsModel::findById($event_id);
         if (!$objEvent) {
             $objTemplate->hasError = true;
-            $msgError[] = 'Event nicht gefunden...';
+            $msgError[] = $GLOBALS['TL_LANG']['tl_module']['regerror']['noevt'];
         } else {
             // ist das Event da, sollte es published sein
             if (!$objEvent->published) {
                 $objTemplate->hasError = true;
-                $msgError[] = 'Event inaktiv. Kantakt...';
+                $msgError[] = $GLOBALS['TL_LANG']['tl_module']['regerror']['daevt'];
             }
 
             // ist der Abmeldeschluss erreicht?
             if ($reg_type === 0 && $objEvent->regenddate > 0 && $objEvent->regenddate < time()) {
                 $objTemplate->hasError = true;
-                $msgError[] = 'Event Abmeldeschluss. Kantakt...';
+                $msgError[] = $GLOBALS['TL_LANG']['tl_module']['regerror']['dline'];
             }
         }
 
