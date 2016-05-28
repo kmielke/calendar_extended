@@ -69,7 +69,6 @@ class EventsExt extends \Events
         $arrHolidays = null;
         $showRecurrences = true;
 
-
         if (!is_array($arrCalendars)) {
             return array();
         }
