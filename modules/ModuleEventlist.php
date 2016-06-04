@@ -63,6 +63,17 @@ class ModuleEventlist extends \EventsExt
             return '';
         }
 
+        // Calendar filter
+        if (\Input::get('cal')) {
+            // Create array of cal_id's to filter
+            $cals1 = explode(',', \Input::get('cal'));
+            // Check if the cal_id's are valid for this module
+            $cals2 = array_intersect($cals1, $this->cal_calendar);
+            if ($cals2) {
+                $this->cal_calendar = array_intersect($cals2, $this->cal_calendar);
+            }
+        }
+
         // Get the background and foreground colors of the calendars
         foreach (array_merge($this->cal_calendar, $this->cal_holiday) as $cal) {
             $objBG = $this->Database->prepare("select title, bg_color, fg_color from tl_calendar where id = ?")

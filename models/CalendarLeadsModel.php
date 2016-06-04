@@ -40,10 +40,11 @@ class CalendarLeadsModel extends \Model
         // SQL bauen
         $arrsql[] = 'select sum(ld3.value) as count';
         $arrsql[] = 'from ' . static::$strTableMaster . ' lm';
-        $arrsql[] = 'left join ' . static::$strTableDetail . ' ld1 on lm.id = ld1.pid';
+        $arrsql[] = 'left join ' . static::$strTableDetail . ' ld1 on ld1.pid = lm.id';
         $arrsql[] = 'left join ' . static::$strTableDetail . ' ld2 on ld2.pid = ld1.pid';
         $arrsql[] = 'left join ' . static::$strTableDetail . ' ld3 on ld3.pid = ld2.pid';
-        $arrsql[] = 'where lm.form_id = ? and ld1.value = ?';
+        $arrsql[] = 'where lm.form_id = ?';
+        $arrsql[] = 'and ld1.name = "eventid" and ld1.value = ?';
         $arrsql[] = 'and ld2.name = "published" and ld2.value = 1';
         $arrsql[] = 'and ld3.name = "count";';
         $sql = implode(' ', $arrsql);
