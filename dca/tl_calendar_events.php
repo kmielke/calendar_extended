@@ -615,19 +615,21 @@ class tl_calendar_events_ext extends \Backend
         $arrayFixedDates = deserialize($dc->activeRecord->repeatFixedDates) ? deserialize($dc->activeRecord->repeatFixedDates) : null;
         if (!is_null($arrayFixedDates)) {
             foreach ($arrayFixedDates as $fixedDate) {
-                $nextValueDate = (strlen($fixedDate['new_repeat'])) ? strtotime($fixedDate['new_repeat']) : $dc->activeRecord->startTime;
-                if (strlen($fixedDate['new_repeat'])) {
-                    $nextStartTime = strtotime(date("d.m.Y", $nextValueDate) . ' ' . date("H:i:s", strtotime($fixedDate['new_start'])));
-                } else {
-                    $nextStartTime = strtotime(date("d.m.Y", $nextValueDate) . ' ' . date("H:i:s", $dc->activeRecord->startTime));
+                // Check if we have a date
+                if (!strlen($fixedDate['new_repeat'])) {
+                    continue;
                 }
-                $arrFixDates[$nextStartTime] = date('d.m.Y H:i', $nextStartTime);
-                if (strlen($fixedDate['new_end'])) {
-                    $nextEndTime = strtotime(date("d.m.Y", $nextValueDate) . ' ' . date("H:i:s", strtotime($fixedDate['new_end'])));
-                } else {
-                    $nextEndTime = strtotime(date("d.m.Y", $nextValueDate) . ' ' . date("H:i:s", $dc->activeRecord->endTime));
-                }
-                $maxRepeatEnd[] = $nextEndTime;
+                $new_fix_date = strtotime($fixedDate['new_repeat']);
+
+                // Check if we have a new start time
+                $new_fix_start_time = strlen($fixedDate['new_start']) ? $fixedDate['new_start'] : date('H:i', $arrSet['startTime']);
+                $new_fix_end_time = strlen($fixedDate['new_end']) ? $fixedDate['new_end'] : date('H:i', $arrSet['endTime']);
+
+                $new_fix_start_date = strtotime(date("d.m.Y", $new_fix_date) . ' ' . date("H:i", strtotime($new_fix_start_time)));
+                $new_fix_end_date = strtotime(date("d.m.Y", $new_fix_date) . ' ' . date("H:i", strtotime($new_fix_end_time)));
+
+                $arrFixDates[$new_fix_start_date] = date('d.m.Y H:i', $new_fix_start_date);
+                $maxRepeatEnd[] = $new_fix_end_date;
             }
         } else {
             $arrSet['repeatFixedDates'] = null;
@@ -736,7 +738,7 @@ class tl_calendar_events_ext extends \Backend
                     }
 
                     $strtotime = strtotime($timetoadd, $next);
-                    $next = $strtotime;
+                    $next = strtotime(date("d.m.Y", $strtotime) . ' ' . date("H:i", $arrSet['startTime']));
                     $arrDates[$next] = date('d.m.Y H:i', $next);
                 }
                 $arrSet['repeatEnd'] = $next;
@@ -753,8 +755,7 @@ class tl_calendar_events_ext extends \Backend
                     }
 
                     $strtotime = strtotime($timetoadd, $next);
-                    $next = $strtotime;
-
+                    $next = strtotime(date("d.m.Y", $strtotime) . ' ' . date("H:i", $arrSet['startTime']));
                     $arrDates[$next] = date('d.m.Y H:i', $next);
 
                     $month++;
@@ -775,7 +776,7 @@ class tl_calendar_events_ext extends \Backend
         $currentEndDate = $arrSet['repeatEnd'];
 
         if ($dc->activeRecord->useExceptions) {
-            // this will be he list of the exception
+            // list of the exception
             $exceptionRows = array();
 
             // ... then we check them by interval...
@@ -801,8 +802,8 @@ class tl_calendar_events_ext extends \Backend
                     $year = (int)date('Y', $searchNext);
                     while ($searchNext <= $searchEnd) {
                         $strDateToFind = $arg . ' ' . $unit . ' of ' . $arrMonth[$month] . ' ' . $year;
-                        $searchNext = strtotime($strDateToFind);
-
+                        $strDateToFind = strtotime($strDateToFind);
+                        $searchNext = strtotime(date("d.m.Y", $strDateToFind) . ' ' . date('H:i', $arrSet['startTime']));
                         if ($searchNext < $arrSet['startTime']) {
                             $month++;
                             if (($month % 13) == 0) {
@@ -819,8 +820,8 @@ class tl_calendar_events_ext extends \Backend
                             $row['new_end'] = '';
                         }
 
-                        $row['exception'] = strtotime(date('d.m.Y', $searchNext));
-                        $row['exception_date'] = date('d.m.Y', $searchNext);
+                        $row['exception'] = $searchNext;
+                        $row['exception_date'] = date('d.m.Y H:i', $searchNext);
                         if (count($exceptionRows) < $maxELCount) {
                             $exceptionRows[$searchNext] = $row;
                         }
@@ -862,9 +863,8 @@ class tl_calendar_events_ext extends \Backend
 
                     foreach ($repeatDates as $k => $repeatDate) {
                         if ($k >= $dateFrom && $k <= $dateTo) {
-                            $k = strtotime(date('d.y.Y', $k));
                             $row['exception'] = $k;
-                            $row['exception_date'] = date('d.m.Y', $k);
+                            $row['exception_date'] = date('d.m.Y H:i', $k);
                             if (count($exceptionRows) < $maxELCount) {
                                 $exceptionRows[$k] = $row;
                             }
@@ -883,9 +883,9 @@ class tl_calendar_events_ext extends \Backend
                         continue;
                     }
 
-                    $row['exception_date'] = date('d.m.Y', $row['exception']);
                     $row['new_start'] = ($row['new_start']) ? $row['new_start'] : date('H:i', $dc->activeRecord->startTime); #'00:00';
                     $row['new_end'] = ($row['new_end']) ? $row['new_end'] : date('H:i', $dc->activeRecord->endTime); #'23:59';
+                    $row['exception_date'] = date('d.m.Y H:i', $row['exception']);
 
                     $dateToFind = strtotime(date("d.m.Y", $row['exception']) . ' ' . date("H:i", $dc->activeRecord->startTime));
                     $dateToSave = strtotime(date("d.m.Y", $row['exception']) . ' ' . $row['new_start']);
