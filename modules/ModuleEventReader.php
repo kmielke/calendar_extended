@@ -304,6 +304,10 @@ class ModuleEventReader extends \EventsExt
             $event['nextDate'] = $nextDate;
         }
 
+        if ($objEvent->allRecurrences) {
+            $objEvent->allRecurrences = deserialize($objEvent->allRecurrences);
+        }
+
         /** @var \FrontendTemplate|object $objTemplate */
         $objTemplate = new \FrontendTemplate($this->cal_template);
         $objTemplate->setData($objEvent->row());

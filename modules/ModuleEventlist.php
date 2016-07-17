@@ -239,7 +239,7 @@ class ModuleEventlist extends \EventsExt
                     $eventStop = ($objEV->stop) ? $objEV->stop : false;
                     unset($objEV);
 
-                    if ($event['show'])
+                    if ($event['show']) {
                         // Remove events outside time scope
                         if ($this->pubTimeRecurrences && ($eventStart && $eventStop)) {
                             // Step 2: get show from/until times
@@ -251,6 +251,7 @@ class ModuleEventlist extends \EventsExt
                                 continue;
                             }
                         }
+                    }
 
                     // We take the "show from" time or the "event start" time to check the display duration limit
                     $displayStart = ($event['start']) ? $event['start'] : $event['startTime'];

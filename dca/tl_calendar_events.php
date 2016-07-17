@@ -396,6 +396,11 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatDates'] = array
     'sql' => "text NULL"
 );
 
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['allRecurrences'] = array
+(
+    'sql' => "text NULL"
+);
+
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['exceptionList'] = array
 (
     'sql' => "text NULL"
@@ -610,6 +615,9 @@ class tl_calendar_events_ext extends \Backend
         $maxRepeatEnd = array();
         $maxRepeatEnd[] = $arrSet['repeatEnd'];
 
+        // Array of all recurrences
+        $arrAllRecurrences =  array();
+
         // Set the repeatEnd date
         $arrFixDates = array();
         $arrayFixedDates = deserialize($dc->activeRecord->repeatFixedDates) ? deserialize($dc->activeRecord->repeatFixedDates) : null;
@@ -629,15 +637,17 @@ class tl_calendar_events_ext extends \Backend
                 $new_fix_end_date = strtotime(date("d.m.Y", $new_fix_date) . ' ' . date("H:i", strtotime($new_fix_end_time)));
 
                 $arrFixDates[$new_fix_start_date] = date('d.m.Y H:i', $new_fix_start_date);
+                $arrAllRecurrences[$new_fix_start_date] = array(
+                    'int_start' => $new_fix_start_date,
+                    'int_end' => $new_fix_end_date,
+                    'str_start' => \Date::parse($GLOBALS['TL_CONFIG']['datimFormat'], $new_fix_start_date),
+                    'str_end' => \Date::parse($GLOBALS['TL_CONFIG']['datimFormat'], $new_fix_end_date)
+                );
                 $maxRepeatEnd[] = $new_fix_end_date;
             }
         } else {
             $arrSet['repeatFixedDates'] = null;
         }
-
-        $arrDates = array();
-        $next = $arrSet['startTime'];
-        $arrDates[$next] = date('d.m.Y H:i', $next);
 
         // changed default recurring
         if ($dc->activeRecord->recurring) {
@@ -649,13 +659,22 @@ class tl_calendar_events_ext extends \Backend
             $strtotime = '+ ' . $arg . ' ' . $unit;
             $arrSet['repeatEnd'] = strtotime($strtotime, $arrSet['endTime']);
 
-            //store the list of dates
+            // store the list of dates
             $next = $arrSet['startTime'];
+            $nextEnd = $arrSet['endTime'];
             $count = $dc->activeRecord->recurrences;
 
-            //array of the exception dates
+            // array of the exception dates
             $arrDates = array();
             $arrDates[$next] = date('d.m.Y H:i', $next);
+
+            // array of all recurrences
+            $arrAllRecurrences[$next] = array(
+                'int_start' => $next,
+                'int_end' => $nextEnd,
+                'str_start' => \Date::parse($GLOBALS['TL_CONFIG']['datimFormat'], $next),
+                'str_end' => \Date::parse($GLOBALS['TL_CONFIG']['datimFormat'], $nextEnd)
+            );
 
             if ($count == 0) {
                 $arrSet['repeatEnd'] = 2145913200;
@@ -689,6 +708,16 @@ class tl_calendar_events_ext extends \Backend
                 }
                 if ($store === true) {
                     $arrDates[$next] = date('d.m.Y H:i', $next);
+
+                    // array of all recurrences
+                    $strtotime = strtotime($timetoadd, $nextEnd);
+                    $nextEnd = $strtotime;
+                    $arrAllRecurrences[$next] = array(
+                        'int_start' => $next,
+                        'int_end' => $nextEnd,
+                        'str_start' => \Date::parse($GLOBALS['TL_CONFIG']['datimFormat'], $next),
+                        'str_end' => \Date::parse($GLOBALS['TL_CONFIG']['datimFormat'], $nextEnd)
+                    );
                 }
 
                 //check if have the configured max value
@@ -704,25 +733,35 @@ class tl_calendar_events_ext extends \Backend
             7 => 'july', 8 => 'august', 9 => 'september', 10 => 'october', 11 => 'november', 12 => 'december',
         );
 
-        //extended version recurring
+        // extended version recurring
         if ($dc->activeRecord->recurringExt) {
             $arrRange = deserialize($dc->activeRecord->repeatEachExt);
 
             $arg = $arrRange['value'];
             $unit = $arrRange['unit'];
 
-            //next month of the event
+            // next month of the event
             $month = (int)date('n', $dc->activeRecord->startDate);
-            //year of the event
+            // year of the event
             $year = (int)date('Y', $dc->activeRecord->startDate);
-            //search date for the next event
+            // search date for the next event
             $next = (int)$arrSet['startTime'];
-            //last month
+            $nextEnd = $arrSet['endTime'];
+
+            // last month
             $count = (int)$dc->activeRecord->recurrences;
 
-            //array of the exception dates
+            // array of the exception dates
             $arrDates = array();
             $arrDates[$next] = date('d.m.Y H:i', $next);
+
+            // array of all recurrences
+            $arrAllRecurrences[$next] = array(
+                'int_start' => $next,
+                'int_end' => $nextEnd,
+                'str_start' => \Date::parse($GLOBALS['TL_CONFIG']['datimFormat'], $next),
+                'str_end' => \Date::parse($GLOBALS['TL_CONFIG']['datimFormat'], $nextEnd)
+            );
 
             if ($count > 0) {
                 for ($i = 0; $i < $count; $i++) {
@@ -740,6 +779,16 @@ class tl_calendar_events_ext extends \Backend
                     $strtotime = strtotime($timetoadd, $next);
                     $next = strtotime(date("d.m.Y", $strtotime) . ' ' . date("H:i", $arrSet['startTime']));
                     $arrDates[$next] = date('d.m.Y H:i', $next);
+
+                    // array of all recurrences
+                    $strtotime = strtotime($timetoadd, $nextEnd);
+                    $nextEnd = strtotime(date("d.m.Y", $strtotime) . ' ' . date("H:i", $arrSet['endTime']));
+                    $arrAllRecurrences[$next] = array(
+                        'int_start' => $next,
+                        'int_end' => $nextEnd,
+                        'str_start' => \Date::parse($GLOBALS['TL_CONFIG']['datimFormat'], $next),
+                        'str_end' => \Date::parse($GLOBALS['TL_CONFIG']['datimFormat'], $nextEnd)
+                    );
                 }
                 $arrSet['repeatEnd'] = $next;
             } else {
@@ -889,6 +938,7 @@ class tl_calendar_events_ext extends \Backend
 
                     $dateToFind = strtotime(date("d.m.Y", $row['exception']) . ' ' . date("H:i", $dc->activeRecord->startTime));
                     $dateToSave = strtotime(date("d.m.Y", $row['exception']) . ' ' . $row['new_start']);
+                    $dateToSaveEnd = strtotime(date("d.m.Y", $row['exception']) . ' ' . $row['new_end']);
 
                     // Set endtime to starttime always...
                     if ($dc->activeRecord->ignoreEndTime) {
@@ -906,6 +956,16 @@ class tl_calendar_events_ext extends \Backend
                         if (array_key_exists($dateToFind, $arrDates)) {
                             $arrDates[$dateToFind] = date('d.m.Y H:i', $dateToSave);
                         }
+
+                        // Find the date and replace it
+                        if (array_key_exists($dateToFind, $arrAllRecurrences)) {
+                            $arrAllRecurrences[$dateToFind] = array(
+                                'int_start' => $dateToSave,
+                                'int_end' => $dateToSaveEnd,
+                                'str_start' => \Date::parse($GLOBALS['TL_CONFIG']['datimFormat'], $dateToSave),
+                                'str_end' => \Date::parse($GLOBALS['TL_CONFIG']['datimFormat'], $dateToSaveEnd)
+                            );
+                        }
                     }
                     if (count($exceptionRows) < $maxELCount) {
                         $exceptionRows[$row['exception']] = $row;
@@ -922,10 +982,19 @@ class tl_calendar_events_ext extends \Backend
         if (count($maxRepeatEnd) > 1) {
             $arrSet['repeatEnd'] = max($maxRepeatEnd);
         }
+
         // Set the array of dates
-        $arrAllDates = $arrDates + $arrFixDates;
-        ksort($arrAllDates);
-        $arrSet['repeatDates'] = $arrAllDates;
+        if (is_array($arrDates) && is_array($arrFixDates)) {
+            $arrAllDates = $arrDates + $arrFixDates;
+            ksort($arrAllDates);
+            $arrSet['repeatDates'] = $arrAllDates;
+        }
+
+        // sort $arrAllRecurrences
+        if (is_array($arrAllRecurrences)) {
+            ksort($arrAllRecurrences);
+            $arrSet['allRecurrences'] = $arrAllRecurrences;
+        }
 
         // Execute the update sql
         $this->Database->prepare("UPDATE tl_calendar_events %s WHERE id=?")->set($arrSet)->execute($dc->id);
