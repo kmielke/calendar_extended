@@ -1,0 +1,29 @@
+{
+    "name": "kmielke/calendar_extended",
+    "description": "Contao calendar extension",
+    "keywords":["contao", "calendar", "events"],
+    "type":"contao-module",
+    "license":"LGPL-3.0+",
+    "authors": [
+        {
+            "name": "Kester Mielke",
+            "email": "mail@kester-mielke.de"
+        }
+    ],
+    "require": {
+        "php":">=5.3.2",
+        "contao/core": "^3.5",
+        "contao-community-alliance/composer-plugin": "^3.0",
+        "menatwork/contao-multicolumnwizard": "^3.3"
+    },
+    "replace": {
+        "contao-legacy/calendar_extended": "self.version"
+    },
+    "extra":{
+        "contao": {
+            "sources":{
+                "": "system/modules/calendar_extended"
+            }
+        }
+    }
+}
