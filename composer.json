@@ -1,6 +1,6 @@
 {
     "name": "kmielke/calendar_extended",
-    "description": "Eine Erweiterung für das Standard Kalender Modul vom Contao CMS.",
+    "description": "Contao calendar extension. Better recurring events and exceptions.",
     "keywords":["contao", "calendar", "events"],
     "type":"contao-module",
     "license":"LGPL-3.0+",
