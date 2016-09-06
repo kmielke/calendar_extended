@@ -225,11 +225,16 @@ class ModuleEventlist extends \EventsExt
 
             foreach ($days as $day => $events) {
                 foreach ($events as $event) {
-                    // Filter events if list shows past events and the event is still current
-                    if (strpos($this->cal_format, 'past_') !== false) {
-                        if (($event['endTime'] >= time()) || ($event['repeatEnd'] >= time())) {
-                            continue;
-                        }
+                    // Use repeatEnd if > 0 (see #8447)
+                    if (($event['repeatEnd'] ?: $event['endTime']) < $strBegin || $event['startTime'] > $strEnd)
+                    {
+                        continue;
+                    }
+
+                    // Skip occurrences in the past
+                    if (strtotime($event['datetime']) < $strBegin)
+                    {
+                        continue;
                     }
 
                     // We have to get start and end from DB again, because start is overwritten in addEvent()
@@ -450,11 +455,11 @@ class ModuleEventlist extends \EventsExt
             if ($this->cal_noSpan) {
                 $objTemplate->day = $event['day'];
                 $objTemplate->date = $event['date'];
-                $objTemplate->span = ($event['time'] == '' && $event['day'] == '') ? $event['date'] : '';
-            } else {
+            }
+            else
+            {
                 $objTemplate->day = $event['firstDay'];
                 $objTemplate->date = $event['firstDate'];
-                $objTemplate->span = '';
             }
 
             $objTemplate->addImage = false;
