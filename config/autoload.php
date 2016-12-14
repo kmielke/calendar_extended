@@ -28,6 +28,7 @@ ClassLoader::addClasses(array
 	'Contao\ModuleEventMenu'         => 'system/modules/calendar_extended/modules/ModuleEventMenu.php',
 	'Contao\ModuleEventReader'       => 'system/modules/calendar_extended/modules/ModuleEventReader.php',
 	'Contao\ModuleEventRegistration' => 'system/modules/calendar_extended/modules/ModuleEventRegistration.php',
+	'Contao\ModuleFullcalendar'      => 'system/modules/calendar_extended/modules/ModuleFullcalendar.php',
 	'Contao\ModuleTimeTable'         => 'system/modules/calendar_extended/modules/ModuleTimeTable.php',
 	'Contao\ModuleYearView'          => 'system/modules/calendar_extended/modules/ModuleYearView.php',
 ));
@@ -38,8 +39,11 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
+	'cal_fc_default'       => 'system/modules/calendar_extended/templates',
+	'cal_fc_google'        => 'system/modules/calendar_extended/templates',
 	'cal_timetable'        => 'system/modules/calendar_extended/templates',
 	'cal_yearview'         => 'system/modules/calendar_extended/templates',
 	'evr_registration'     => 'system/modules/calendar_extended/templates',
 	'mod_evr_registration' => 'system/modules/calendar_extended/templates',
+	'mod_fc_fullcalendar'  => 'system/modules/calendar_extended/templates',
 ));

@@ -53,6 +53,8 @@ $GLOBALS['TL_LANG']['tl_module']['range_date']      = array('Anzeigeformat (erwe
 $GLOBALS['TL_LANG']['tl_module']['range_from']      = array('Datum von', 'Start-Datum der Events.');
 $GLOBALS['TL_LANG']['tl_module']['range_to']        = array('Datum bis', 'End-Datum der Events.');
 
+$GLOBALS['TL_LANG']['tl_module']['allowEdit']       = array('Events bearbeiten', 'Das Bearbeiten (Datum und/oder Zeit ändern) von Events ohne Wiederholungen erlauben.');
+
 $GLOBALS['TL_LANG']['tl_module']['cal_times_range'] = array('Zeitfenster für den Stundenplan.', 'Zeigt die Zeiten links als Label im Stundeninterval an.');
 $GLOBALS['TL_LANG']['tl_module']['time_range_from'] = array('Zeit von', 'Startzeit für den Stundenplan.');
 $GLOBALS['TL_LANG']['tl_module']['time_range_to']   = array('Zeit bis', 'Endzeit für den Stundenplan.');
@@ -77,3 +79,4 @@ $GLOBALS['TL_LANG']['tl_module']['regerror']['daevt']       = 'Das Event ist zur
 $GLOBALS['TL_LANG']['tl_module']['regerror']['dline']       = 'Der Abmeldeschluss ist erreicht. Eine Abmeldung ist auf diesem Weg nicht mehr möglich.';
 $GLOBALS['TL_LANG']['tl_module']['regerror']['admin']       = 'Bitte kontaktieren Sie den Administrator.';
 
+$GLOBALS['TL_LANG']['tl_module']['fc_useGoCal']             = array('Google Kalendar', 'Einstellungen für die Nutzung eines Google Kalenders.');

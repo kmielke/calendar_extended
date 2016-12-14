@@ -271,6 +271,38 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['range_date'] = array
 );
 
 /**
+ * Fullcalendar
+ */
+// Palette for fullcalendar
+$GLOBALS['TL_DCA']['tl_module']['palettes']['fullcalendar'] = '
+    {title_legend},name,headline,type;
+    {config_legend},cal_calendar,allowEdit;
+    {template_legend:hide},cal_ctemplate;
+    {protected_legend:hide},protected;
+    {expert_legend:hide},guests,cssID,space';
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['cal_ctemplate'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['cal_ctemplate'],
+    'default' => 'cal_fc_default',
+    'exclude' => true,
+    'inputType' => 'select',
+    'options_callback' => array('calendar_Ext', 'getCalendarTemplates'),
+    'eval' => array('tl_class'=>'w50'),
+    'sql' => "varchar(32) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['allowEdit'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['allowEdit'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'w50'),
+    'sql' => "char(1) NOT NULL default ''"
+);
+
+
+/**
  * Class timetableExt
  *
  * Provide miscellaneous methods that are used by the data configuration array.
@@ -379,14 +411,22 @@ class calendar_Ext extends Backend
     public function checkDuration($varValue)
     {
         if (strlen($varValue) > 0) {
-            if (($timestamp = strtotime($varValue, time())) === false) {
-                throw new Exception($GLOBALS['TL_LANG']['tl_module']['displayDurationError'] . ': ' . $timestamp);
-            }
             if (($timestamp = date('dmY', strtotime($varValue, time()))) === date('dmY', time())) {
                 throw new Exception($GLOBALS['TL_LANG']['tl_module']['displayDurationError2'] . ': ' . $timestamp);
             }
         }
         return $varValue;
+    }
+
+
+    /**
+     * Return all calendar templates as array
+     *
+     * @return array
+     */
+    public function getCalendarTemplates()
+    {
+        return $this->getTemplateGroup('cal_fc_');
     }
 
 

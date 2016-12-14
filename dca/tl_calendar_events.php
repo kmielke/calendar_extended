@@ -209,7 +209,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regperson'] = array
         'columnsCallback' => array('tl_calendar_events_ext', 'setmaxperson'),
         'buttons' => array('up' => false, 'down' => false, 'delete' => false, 'copy' => false)
     ),
-    'sql' => "text NULL"
+    'sql' => "blob NULL"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regform'] = array
@@ -360,7 +360,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatExceptions'] = array
         'columnsCallback' => array('tl_calendar_events_ext', 'listMultiExceptions'),
         'buttons' => array('up' => false, 'down' => false)
     ),
-    'sql' => "text NULL"
+    'sql' => "blob NULL"
 );
 
 // list of exceptions
@@ -374,7 +374,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatExceptionsInt'] = arra
         'columnsCallback' => array('tl_calendar_events_ext', 'listMultiExceptions'),
         'buttons' => array('up' => false, 'down' => false)
     ),
-    'sql' => "text NULL"
+    'sql' => "blob NULL"
 );
 
 // list of exceptions
@@ -388,22 +388,22 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatExceptionsPer'] = arra
         'columnsCallback' => array('tl_calendar_events_ext', 'listMultiExceptions'),
         'buttons' => array('up' => false, 'down' => false)
     ),
-    'sql' => "text NULL"
+    'sql' => "blob NULL"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatDates'] = array
 (
-    'sql' => "text NULL"
+    'sql' => "blob NULL"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['allRecurrences'] = array
 (
-    'sql' => "text NULL"
+    'sql' => "blob NULL"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['exceptionList'] = array
 (
-    'sql' => "text NULL"
+    'sql' => "blob NULL"
 );
 
 // display the end of the recurrences (read only)
@@ -603,13 +603,13 @@ class tl_calendar_events_ext extends \Backend
 
         // Set endtime to starttime always...
         if ($dc->activeRecord->ignoreEndTime) {
-            $arrSet['endTime'] = $arrSet['startTime'];
+            $arrSet['endTime'] = strtotime(date('d.m.Y', $arrSet['endTime']) . ' 23:59:59');
         } // Adjust end time of "all day" events
         elseif ((strlen($dc->activeRecord->endDate) && $arrSet['endDate'] == $arrSet['endTime']) || $arrSet['startTime'] == $arrSet['endTime']) {
             $arrSet['endTime'] = (strtotime('+ 1 day', $arrSet['endTime']) - 1);
         }
 
-        $arrSet['repeatEnd'] = 0;
+        $arrSet['repeatEnd'] = $arrSet['endTime'];
 
         // Array of possible repeatEnd dates...
         $maxRepeatEnd = array();

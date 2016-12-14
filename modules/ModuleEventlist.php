@@ -174,8 +174,14 @@ class ModuleEventlist extends \EventsExt
 
         // we will overwrite $strBegin, $strEnd if cal_format_ext is set
         if ($this->cal_format_ext != '') {
-            //$strBegin = strtotime($arrRange[0]['date_from']);
-            $strEnd = strtotime($this->cal_format_ext, strtotime(\Date::parse('d.m.Y', $strBegin) . ' 23:59'));
+            $times = explode('|', $this->cal_format_ext);
+
+            if (count($times) == 1) {
+                $strEnd = strtotime($times[0], strtotime((\Date::parse('d.m.Y', $strBegin) . ' 23:59')));
+            } elseif (count($times) == 2) {
+                $strBegin = strtotime($times[0]);
+                $strEnd = strtotime($times[1], strtotime((\Date::parse('d.m.Y', $strBegin) . ' 23:59')));
+            }
         }
 
         // we will overwrite $strBegin, $strEnd if range_date is set
@@ -231,8 +237,8 @@ class ModuleEventlist extends \EventsExt
                         continue;
                     }
 
-                    // Skip occurrences in the past
-                    if (strtotime($event['datetime']) < $strBegin)
+					// Skip occurrences in the past but show running events (see #8497)
+					if ($event['repeatEnd'] && strtotime($event['datetime']) < $strBegin)
                     {
                         continue;
                     }
@@ -315,12 +321,13 @@ class ModuleEventlist extends \EventsExt
                     }
 
                     // Set endtime to starttime always...
-                    if ((int)$event['ignoreEndTime'] == 1) {
+                    if ((int)$event['ignoreEndTime'] === 1) {
+                        $event['date'] = \Date::parse($objPage->datimFormat, $event['startTime']) . ' - ' .   \Date::parse($objPage->dateFormat, $event['endTime']);
                         $event['endTime'] = '';
                         $event['time'] = '';
-                        if ($event['addTime']) {
-                            $event['time'] = \Date::parse($objPage->timeFormat, $event['startTime']);
-                        }
+//                        if ($event['addTime']) {
+//                            $event['time'] = \Date::parse($objPage->timeFormat, $event['startTime']);
+//                        }
                     }
 
                     // check the repeat values

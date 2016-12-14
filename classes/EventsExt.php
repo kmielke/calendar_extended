@@ -158,11 +158,7 @@ class EventsExt extends \Events
                 // store the entry if everything is fine...
                 if ($store === true) {
                     $eventEnd = $objEvents->endTime;
-                    //if ($objEvents->recurring && !$showRecurrences)
-                    //{
-                    //    $eventEnd = $objEvents->repeatEnd;
-                    //}
-                    $eventUrl = $strUrl . "?day=" . date("Ymd", $objEvents->startTime) . "&amp;times=" . $objEvents->startTime . "," . $objEvents->endTime;
+                    $eventUrl = $strUrl; // . "?day=" . date("Ymd", $objEvents->startTime) . "&amp;times=" . $objEvents->startTime . "," . $objEvents->endTime;
                     $this->addEvent($objEvents, $objEvents->startTime, $eventEnd, $eventUrl, $intStart, $intEnd, $id);
 
                     // increase $cntRecurrences if event is in scope
@@ -389,15 +385,16 @@ class EventsExt extends \Events
                             // new start time
                             $strNewDate = $fixedDate['new_repeat'];
                             $strNewTime = (strlen($fixedDate['new_start']) ? $fixedDate['new_start'] : $orgDateStart->time);
-                            $newDateStart = new \Date(trim($strNewDate . ' ' . $strNewTime), \Date::getNumericDatimFormat());
+                            //$newDateStart = new \Date(trim($strNewDate . ' ' . $strNewTime), \Date::getNumericDatimFormat());
+                            $newDateStart = new \Date(trim($strNewDate . ' ' . $strNewTime), \Config::get('datimFormat'));
 
                             $objEvents->startTime = $newDateStart->timestamp;
                             $dateNextStart = date('Ymd', $objEvents->startTime);
 
                             // new end time
                             $strNewTime = (strlen($fixedDate['new_end']) ? $fixedDate['new_end'] : $orgDateEnd->time);
-                            $newDateEnd = new \Date(trim($strNewDate . ' ' . $strNewTime), \Date::getNumericDatimFormat());
-
+                            //$newDateEnd = new \Date(trim($strNewDate . ' ' . $strNewTime), \Date::getNumericDatimFormat());
+                            $newDateEnd = new \Date(trim($strNewDate . ' ' . $strNewTime), \Config::get('datimFormat'));
                             // Use the multi-day span of the event
                             if ($orgDateSpan > 0) {
                                 $newDateEnd = new \Date(strtotime('+' . $orgDateSpan . ' days', $newDateEnd->timestamp), \Date::getNumericDatimFormat());

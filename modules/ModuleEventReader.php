@@ -214,6 +214,13 @@ class ModuleEventReader extends \EventsExt
             }
         }
 
+        // Fix date if we have to ignore the time
+        if ((int)$objEvent->ignoreEndTime === 1) {
+            $strDate = \Date::parse($objPage->datimFormat, $objEvent->startTime) . ' - ' . \Date::parse($objPage->dateFormat, $objEvent->endTime);
+            $objEvent->endTime = '';
+            $objEvent->time = '';
+        }
+
         $until = '';
         $recurring = '';
 

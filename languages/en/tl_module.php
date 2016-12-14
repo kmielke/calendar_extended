@@ -53,9 +53,12 @@ $GLOBALS['TL_LANG']['tl_module']['range_date']      = array('Event list format (
 $GLOBALS['TL_LANG']['tl_module']['range_from']      = array('Date from', 'Start-Date of the event list.');
 $GLOBALS['TL_LANG']['tl_module']['range_to']        = array('Date to', 'End-Date of the event list.');
 
+$GLOBALS['TL_LANG']['tl_module']['allowEdit']       = array('Edit events', 'Allow editing (change of date/time) of non reccuring events.');
+
 $GLOBALS['TL_LANG']['tl_module']['cal_times_range'] = array('Timeframe of timetable.', 'Displays the time al label on the left side.');
 $GLOBALS['TL_LANG']['tl_module']['time_range_from'] = array('Time from', 'Starttime for timetalble.');
 $GLOBALS['TL_LANG']['tl_module']['time_range_to']   = array('Time to', 'Endtime for timetable.');
+
 $GLOBALS['TL_LANG']['tl_module']['cellhight']       = array('Row height of events', 'Height of the cell of an event in px per hour. Standard is 1px per minute and thus 60px at an interval of 1 hour.');
 $GLOBALS['TL_LANG']['tl_module']['regform']         = array('Notifications', 'Please choose a notifications.');
 $GLOBALS['TL_LANG']['tl_module']['regtype']         = array('Kind of confirmation', 'Please choose the kind of the confirmation.');

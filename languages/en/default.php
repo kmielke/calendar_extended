@@ -28,9 +28,10 @@ $GLOBALS['TL_LANG']['MSC']['cal_third']     = 'This event is repeated every thir
 $GLOBALS['TL_LANG']['MSC']['cal_fourth']    = 'This event is repeated every fourth %s of the month';
 $GLOBALS['TL_LANG']['MSC']['cal_last']      = 'This event is repeated every last %s of the month';
 
-$GLOBALS['TL_LANG']['tl_calendar_events']['regperson']          = array('Number of participants', 'Count of min and max participants, registration and free places.');
-
 $GLOBALS['TL_LANG']['MSC']['reginfo']       = 'Course starts as planned. Please register.';
 $GLOBALS['TL_LANG']['MSC']['regmini']       = 'Minimum number of participants has not been reached. Please register.';
 $GLOBALS['TL_LANG']['MSC']['regmaxi']       = 'Maximum number of participants has been reached. Registration is no longer possible.';
 $GLOBALS['TL_LANG']['MSC']['regdone']       = 'Deadline. No more registrations possible.';
+
+$GLOBALS['TL_LANG']['tl_module']['confirm_drop']     = 'Are you sure you want to move the event?';
+$GLOBALS['TL_LANG']['tl_module']['confirm_resize']   = 'Are you sure you want to change the event?';
