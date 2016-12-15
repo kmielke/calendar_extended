@@ -208,6 +208,26 @@ class ModuleFullcalendar extends \EventsExt
                 $this->$type();
             }
         } else {
+            $assets_path = 'system/modules/calendar_extended/assets';
+
+            $GLOBALS['TL_CSS'][] = $assets_path . '/fullcalendar/fullcalendar.css|static';
+            $GLOBALS['TL_CSS'][] = 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css';
+
+            if ($objPage->hasJQuery !== '1')
+            {
+                $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/lib/jquery.min.js|static';
+            }
+
+//            if ($useGUI) {
+//                $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/lib/jquery-ui.min.js|static';
+//                $GLOBALS['TL_CSS'][] = $assets_path . '/fullcalendar/lib/cupertino/jquery-ui.min.css|static';
+//            }
+
+            $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/lib/moment.min.js|static';
+            $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/fullcalendar.js|static';
+            $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/gcal.js|static';
+            $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/locale-all.js|static';
+
             /** @var \FrontendTemplate|object $objTemplate */
             $objTemplate = new \FrontendTemplate(($this->cal_ctemplate ? $this->cal_ctemplate : 'cal_fc_default'));
 
