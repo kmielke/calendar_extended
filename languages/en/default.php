@@ -35,3 +35,4 @@ $GLOBALS['TL_LANG']['MSC']['regdone']       = 'Deadline. No more registrations p
 
 $GLOBALS['TL_LANG']['tl_module']['confirm_drop']     = 'Are you sure you want to move the event?';
 $GLOBALS['TL_LANG']['tl_module']['confirm_resize']   = 'Are you sure you want to change the event?';
+$GLOBALS['TL_LANG']['tl_module']['fetch_error']      = 'Error while loading events!';

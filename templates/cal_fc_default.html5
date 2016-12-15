@@ -64,14 +64,17 @@
             timezone: "local",
 
             // Fullcalendar events
-            events: {
+            eventSources: [{
                 url: '<?php echo $this->url; ?>',
-                type: 'POST',
-                data: {type : 'fetchEvents'},
+                type:  'POST',
+                data:  {
+                    type: 'fetchEvents',
+                    REQUEST_TOKEN: "<?php echo REQUEST_TOKEN; ?>",
+                },
                 error: function() {
-                    alert('there was an error while fetching events!');
+                    alert('<?php echo $this->fetch_error; ?>');
                 }
-            },
+            }],
 
             // Render the font-awesome icon if exists
             eventRender: function (event, element, view) {

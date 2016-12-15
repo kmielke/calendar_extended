@@ -35,6 +35,7 @@ $GLOBALS['TL_LANG']['MSC']['regdone']       = 'Anmeldeschluss. Es ist keine weit
 
 $GLOBALS['TL_LANG']['tl_module']['confirm_drop']        = 'Möchten Sie das Event wirklich verschieben?';
 $GLOBALS['TL_LANG']['tl_module']['confirm_resize']      = 'Möchten Sie das Event wirklich ändern?';
+$GLOBALS['TL_LANG']['tl_module']['fetch_error']         = 'Beim Laden der Daten ist ein Fehler aufgetreten!';
 
 $GLOBALS['TL_LANG']['tl_module']['fc_config_legend']    = 'Einstellungen Fullcalendar';
 $GLOBALS['TL_LANG']['tl_module']['fc_google_legend']    = 'Einstellungen Google Kalender';

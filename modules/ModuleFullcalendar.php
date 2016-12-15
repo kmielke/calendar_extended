@@ -35,6 +35,7 @@ class ModuleFullcalendar extends \EventsExt
      */
     protected $strLink;
 
+
     /**
      * Template
      * @var string
@@ -138,10 +139,8 @@ class ModuleFullcalendar extends \EventsExt
         $intDay = \Input::get('day');
 
         // Jump to the current period
-        if (!isset($_GET['year']) && !isset($_GET['month']) && !isset($_GET['day']))
-        {
-            switch ($this->cal_format)
-            {
+        if (!isset($_GET['year']) && !isset($_GET['month']) && !isset($_GET['day'])) {
+            switch ($this->cal_format) {
                 case 'cal_year':
                     $intYear = date('Y');
                     break;
@@ -161,33 +160,23 @@ class ModuleFullcalendar extends \EventsExt
         $blnDynamicFormat = (!$this->cal_ignoreDynamic && in_array($this->cal_format, array('cal_day', 'cal_month', 'cal_year')));
 
         // Create the date object
-        try
-        {
-            if ($blnDynamicFormat && $intYear)
-            {
+        try {
+            if ($blnDynamicFormat && $intYear) {
                 $this->Date = new \Date($intYear, 'Y');
                 $this->cal_format = 'cal_year';
                 $this->headline .= ' ' . date('Y', $this->Date->tstamp);
-            }
-            elseif ($blnDynamicFormat && $intMonth)
-            {
+            } elseif ($blnDynamicFormat && $intMonth) {
                 $this->Date = new \Date($intMonth, 'Ym');
                 $this->cal_format = 'cal_month';
                 $this->headline .= ' ' . \Date::parse('F Y', $this->Date->tstamp);
-            }
-            elseif ($blnDynamicFormat && $intDay)
-            {
+            } elseif ($blnDynamicFormat && $intDay) {
                 $this->Date = new \Date($intDay, 'Ymd');
                 $this->cal_format = 'cal_day';
                 $this->headline .= ' ' . \Date::parse($objPage->dateFormat, $this->Date->tstamp);
-            }
-            else
-            {
+            } else {
                 $this->Date = new \Date();
             }
-        }
-        catch (\OutOfBoundsException $e)
-        {
+        } catch (\OutOfBoundsException $e) {
             /** @var \PageError404 $objHandler */
             $objHandler = new $GLOBALS['TL_PTY']['error_404']();
             $objHandler->generate($objPage->id);
@@ -213,8 +202,7 @@ class ModuleFullcalendar extends \EventsExt
             $GLOBALS['TL_CSS'][] = $assets_path . '/fullcalendar/fullcalendar.css|static';
             $GLOBALS['TL_CSS'][] = 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css';
 
-            if ($objPage->hasJQuery !== '1')
-            {
+            if ($objPage->hasJQuery !== '1') {
                 $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/lib/jquery.min.js|static';
             }
 
@@ -238,6 +226,7 @@ class ModuleFullcalendar extends \EventsExt
 
             $objTemplate->confirm_drop = $GLOBALS['TL_LANG']['tl_module']['confirm_drop'];
             $objTemplate->confirm_resize = $GLOBALS['TL_LANG']['tl_module']['confirm_resize'];
+            $objTemplate->fetch_error = $GLOBALS['TL_LANG']['tl_module']['fetch_error'];
 
             // Set the formular
             $objTemplate->event_formular = \Form::getForm(1);
@@ -287,8 +276,11 @@ class ModuleFullcalendar extends \EventsExt
 
         // Create the JSON of all events
         foreach ($arrAllEvents as $key => $days) {
+
             foreach ($days as $day => $events) {
+
                 foreach ($events as $event) {
+
                     // Use repeatEnd if > 0 (see #8447)
                     if (($event['repeatEnd'] ?: $event['endTime']) < $intStart || $event['startTime'] > $intEnd) {
                         continue;
@@ -361,15 +353,15 @@ class ModuleFullcalendar extends \EventsExt
                     if (array_search($event['id'], $multiday_event) === false) {
                         // Add the event to array of events
                         $json_events[] = array(
-                            'id'        => $event['id'],
-                            'title'     => $title,
-                            'start'     => $event['datetime_start'],
-                            'end'       => $event['datetime_end'],
-                            'teaser'    => $event['teaser'],
-                            'allDay'    => $allDay,
-                            'url'       => $event['href'],
-                            'editable'  => $editable,
-                            'icon'      => $icon
+                            'id' => $event['id'],
+                            'title' => $title,
+                            'start' => $event['datetime_start'],
+                            'end' => $event['datetime_end'],
+                            'teaser' => $event['teaser'],
+                            'allDay' => $allDay,
+                            'url' => $event['href'],
+                            'editable' => $editable,
+                            'icon' => $icon
                         );
                     }
 
@@ -380,6 +372,7 @@ class ModuleFullcalendar extends \EventsExt
                 }
             }
         }
+
         // Free resources
         unset($event, $events, $arrAllEvents, $multiday_event);
 
@@ -402,7 +395,7 @@ class ModuleFullcalendar extends \EventsExt
         if ($fields->numRows > 0) {
             while ($fields->next()) {
                 $ff[$fields->name] = substr($fields->name, 5);
-                $ff['t_'.$fields->name] = $fields->type;
+                $ff['t_' . $fields->name] = $fields->type;
             }
         }
 
