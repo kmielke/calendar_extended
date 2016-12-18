@@ -320,30 +320,36 @@ class ModuleFullcalendar extends \EventsExt
                     $event['datetime_end'] = date('Y-m-d\TH:i:s', $event['endTime']);
                     $allDay = ($event['addTime']) ? false : true;
 
-                    // $title = html_entity_decode($event['title'].'('.$title_prefix.')')
+                    // Set title
                     $title = html_entity_decode($event['title']);
 
                     // Some options
                     $editable = ($this->allowEdit && FE_USER_LOGGED_IN) ? true : false;
                     $multiday = false;
-                    $recurring = true;
+                    $recurring = false;
 
                     /*
                      * Editing is allowd if we have a single or multi day event. Any kind of recurring event
                      * is not allowed right now.
                      */
-                    if (\Date::parse('dmY', $event['startTime']) != \Date::parse('dmY', $event['endTime'])) {
-                        $multiday = true;
-                        $recurring = false;
-                    }
-
-                    // Disable editing...
+                    // Disable editing if event is recurring...
                     if ($event['recurring'] || $event['recurringExt'] || $event['useExceptions']) {
                         $editable = false;
+                        $recurring = true;
                     }
                     $row = deserialize($event['repeatFixedDates']);
                     if ($row[0]['new_repeat'] > 0) {
                         $editable = false;
+                        $recurring = true;
+                    }
+
+                    // If event is not recurring
+                    if (!$recurring) {
+                        // Multi day event?
+                        if (\Date::parse('dmY', $event['startTime']) != \Date::parse('dmY', $event['endTime'])) {
+                            $multiday = true;
+                            $recurring = false;
+                        }
                     }
 
                     // Set the icon
@@ -366,7 +372,7 @@ class ModuleFullcalendar extends \EventsExt
                     }
 
                     // Remember if multi day event
-                    if ($multiday) {
+                    if ($multiday && array_search($event['id'], $multiday_event) === false) {
                         $multiday_event[] = $event['id'];
                     }
                 }
