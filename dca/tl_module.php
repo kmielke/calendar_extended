@@ -277,7 +277,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['range_date'] = array
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fullcalendar'] = '
     {title_legend},name,headline,type;
     {config_legend},cal_calendar;
-    {template_legend:hide},cal_ctemplate,editable,eventLimit,businessHours;weekNumbers,weekNumbersWithinDays;
+    {template_legend:hide},cal_ctemplate,cal_startDay,editable,businessHours,weekNumbers,weekNumbersWithinDays;
     {protected_legend:hide},protected;
     {expert_legend:hide},guests,cssID,space';
 

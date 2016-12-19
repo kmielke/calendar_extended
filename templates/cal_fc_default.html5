@@ -58,6 +58,7 @@
             weekNumbers: '<?php echo $this->weekNumbers; ?>',
             weekNumbersWithinDays: '<?php echo $this->weekNumbersWithinDays; ?>',
             weekNumberCalculation: 'ISO',
+            firstDay: '<?php echo $this->firstDay; ?>',
             businessHours: '<?php echo $this->businessHours; ?>',
             editable: '<?php echo $this->editable; ?>',
             eventLimit: '<?php echo $this->eventLimit; ?>',

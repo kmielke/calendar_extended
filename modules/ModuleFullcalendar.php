@@ -224,6 +224,7 @@ class ModuleFullcalendar extends \EventsExt
             $objTemplate->url = $this->strLink;
             $objTemplate->locale = $GLOBALS['TL_LANGUAGE'];
             $objTemplate->defaultDate = date('Y-m-d\TH:i:sP', $this->Date->tstamp);
+            $objTemplate->firstDay = $this->cal_startDay;
             $objTemplate->editable = ($this->editable && FE_USER_LOGGED_IN) ? true : false;
             $objTemplate->businessHours = ($this->businessHours) ? true : false;
 
