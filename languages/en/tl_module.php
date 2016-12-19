@@ -55,6 +55,9 @@ $GLOBALS['TL_LANG']['tl_module']['range_to']        = array('Date to', 'End-Date
 
 $GLOBALS['TL_LANG']['tl_module']['editable']        = array('Edit events', 'Allow editing (change of date/time) of non reccuring events.');
 $GLOBALS['TL_LANG']['tl_module']['businessHours']   = array('Business hours', 'Show business hours.');
+$GLOBALS['TL_LANG']['tl_module']['eventLimit']      = array('Event limit', 'Limits the number of events displayed on a day.');
+$GLOBALS['TL_LANG']['tl_module']['weekNumbers']     = array('Week numbers', 'Determines if week numbers should be displayed on the calendar.');
+$GLOBALS['TL_LANG']['tl_module']['weekNumbersWithinDays'] = array('Week numbers within days', 'Determines the styling for week numbers in month view and the basic views.');
 
 $GLOBALS['TL_LANG']['tl_module']['cal_times_range'] = array('Timeframe of timetable.', 'Displays the time al label on the left side.');
 $GLOBALS['TL_LANG']['tl_module']['time_range_from'] = array('Time from', 'Starttime for timetalble.');

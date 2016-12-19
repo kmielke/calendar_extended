@@ -55,6 +55,9 @@ $GLOBALS['TL_LANG']['tl_module']['range_to']        = array('Datum bis', 'End-Da
 
 $GLOBALS['TL_LANG']['tl_module']['editable']        = array('Events bearbeiten', 'Das Bearbeiten (Datum und/oder Zeit ändern) von Events ohne Wiederholungen erlauben.');
 $GLOBALS['TL_LANG']['tl_module']['businessHours']   = array('Arbeitszeiten', 'Arbeitszeiten hervorheben.');
+$GLOBALS['TL_LANG']['tl_module']['eventLimit']      = array('Events limitieren', 'Limitiert die Anzahl der Events eines Tages.');
+$GLOBALS['TL_LANG']['tl_module']['weekNumbers']     = array('Kalenderwochen', 'Kaldenderwochen werden im Kalendaer angezeigt.');
+$GLOBALS['TL_LANG']['tl_module']['weekNumbersWithinDays'] = array('Kalenderwochen in den Tagen', 'Anzeige der Kalenderwochen in den Tagen in der Monats- und Basisansicht.');
 
 $GLOBALS['TL_LANG']['tl_module']['cal_times_range'] = array('Zeitfenster für den Stundenplan.', 'Zeigt die Zeiten links als Label im Stundeninterval an.');
 $GLOBALS['TL_LANG']['tl_module']['time_range_from'] = array('Zeit von', 'Startzeit für den Stundenplan.');
