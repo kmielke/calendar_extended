@@ -276,8 +276,8 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['range_date'] = array
 // Palette for fullcalendar
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fullcalendar'] = '
     {title_legend},name,headline,type;
-    {config_legend},cal_calendar,allowEdit;
-    {template_legend:hide},cal_ctemplate;
+    {config_legend},cal_calendar;
+    {template_legend:hide},cal_ctemplate,editable,eventLimit,businessHours;weekNumbers,weekNumbersWithinDays;
     {protected_legend:hide},protected;
     {expert_legend:hide},guests,cssID,space';
 
@@ -292,9 +292,45 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['cal_ctemplate'] = array
     'sql' => "varchar(32) NOT NULL default ''"
 );
 
-$GLOBALS['TL_DCA']['tl_module']['fields']['allowEdit'] = array
+$GLOBALS['TL_DCA']['tl_module']['fields']['eventLimit'] = array
 (
-    'label' => &$GLOBALS['TL_LANG']['tl_module']['allowEdit'],
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['eventLimit'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'clr w50'),
+    'sql' => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['editable'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['editable'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'clr w50'),
+    'sql' => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['businessHours'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['businessHours'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'w50'),
+    'sql' => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['weekNumbers'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['weekNumbers'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'w50'),
+    'sql' => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['weekNumbersWithinDays'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['weekNumbersWithinDays'],
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => array('tl_class' => 'w50'),

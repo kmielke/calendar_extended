@@ -53,7 +53,8 @@ $GLOBALS['TL_LANG']['tl_module']['range_date']      = array('Event list format (
 $GLOBALS['TL_LANG']['tl_module']['range_from']      = array('Date from', 'Start-Date of the event list.');
 $GLOBALS['TL_LANG']['tl_module']['range_to']        = array('Date to', 'End-Date of the event list.');
 
-$GLOBALS['TL_LANG']['tl_module']['allowEdit']       = array('Edit events', 'Allow editing (change of date/time) of non reccuring events.');
+$GLOBALS['TL_LANG']['tl_module']['editable']        = array('Edit events', 'Allow editing (change of date/time) of non reccuring events.');
+$GLOBALS['TL_LANG']['tl_module']['businessHours']   = array('Business hours', 'Show business hours.');
 
 $GLOBALS['TL_LANG']['tl_module']['cal_times_range'] = array('Timeframe of timetable.', 'Displays the time al label on the left side.');
 $GLOBALS['TL_LANG']['tl_module']['time_range_from'] = array('Time from', 'Starttime for timetalble.');

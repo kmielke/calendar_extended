@@ -55,12 +55,12 @@
             },
             height: 800,
             defaultView: 'agendaWeek',
-            weekNumbers: true,
-            weekNumbersWithinDays: true,
+            weekNumbers: '<?php echo $this->weekNumbers; ?>',
+            weekNumbersWithinDays: '<?php echo $this->weekNumbersWithinDays; ?>',
             weekNumberCalculation: 'ISO',
-            businessHours: true,
-            editable: true,
-            eventLimit: true,
+            businessHours: '<?php echo $this->businessHours; ?>',
+            editable: '<?php echo $this->editable; ?>',
+            eventLimit: '<?php echo $this->eventLimit; ?>',
             timezone: "local",
 
             // Fullcalendar events

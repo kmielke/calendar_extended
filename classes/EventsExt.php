@@ -158,7 +158,7 @@ class EventsExt extends \Events
                 // store the entry if everything is fine...
                 if ($store === true) {
                     $eventEnd = $objEvents->endTime;
-                    $eventUrl = $strUrl; // . "?day=" . date("Ymd", $objEvents->startTime) . "&amp;times=" . $objEvents->startTime . "," . $objEvents->endTime;
+                    $eventUrl = $strUrl . "?day=" . date("Ymd", $objEvents->startTime) . "&amp;times=" . $objEvents->startTime . "," . $objEvents->endTime;
                     $this->addEvent($objEvents, $objEvents->startTime, $eventEnd, $eventUrl, $intStart, $intEnd, $id);
 
                     // increase $cntRecurrences if event is in scope

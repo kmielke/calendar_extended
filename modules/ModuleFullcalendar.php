@@ -140,6 +140,7 @@ class ModuleFullcalendar extends \EventsExt
 
         // Jump to the current period
         if (!isset($_GET['year']) && !isset($_GET['month']) && !isset($_GET['day'])) {
+            $this->cal_format = 'cal_day';
             switch ($this->cal_format) {
                 case 'cal_year':
                     $intYear = date('Y');
@@ -222,14 +223,20 @@ class ModuleFullcalendar extends \EventsExt
             // Set some fullcalendar options
             $objTemplate->url = $this->strLink;
             $objTemplate->locale = $GLOBALS['TL_LANGUAGE'];
-            $objTemplate->defaultDate = date('Y-m-d\TH:i:sP', time());
+            $objTemplate->defaultDate = date('Y-m-d\TH:i:sP', $this->Date->tstamp);
+            $objTemplate->editable = ($this->editable && FE_USER_LOGGED_IN) ? true : false;
+            $objTemplate->businessHours = ($this->businessHours) ? true : false;
+
+            $objTemplate->weekNumbers = $this->weekNumbers;
+            $objTemplate->weekNumbersWithinDays = $this->weekNumbersWithinDays;
+            $objTemplate->eventLimit = $this->eventLimit;
 
             $objTemplate->confirm_drop = $GLOBALS['TL_LANG']['tl_module']['confirm_drop'];
             $objTemplate->confirm_resize = $GLOBALS['TL_LANG']['tl_module']['confirm_resize'];
             $objTemplate->fetch_error = $GLOBALS['TL_LANG']['tl_module']['fetch_error'];
 
             // Set the formular
-            $objTemplate->event_formular = \Form::getForm(1);
+            // $objTemplate->event_formular = \Form::getForm(1);
 
             // Render the template
             $this->Template->fullcalendar = $objTemplate->parse();
@@ -324,7 +331,7 @@ class ModuleFullcalendar extends \EventsExt
                     $title = html_entity_decode($event['title']);
 
                     // Some options
-                    $editable = ($this->allowEdit && FE_USER_LOGGED_IN) ? true : false;
+                    $editable = ($this->editable && FE_USER_LOGGED_IN) ? true : false;
                     $multiday = false;
                     $recurring = false;
 
@@ -426,7 +433,7 @@ class ModuleFullcalendar extends \EventsExt
     protected function updateEventTimes()
     {
         if ($event = \Input::post('event')) {
-            $this->updateEvent($event);
+            return $this->updateEvent($event);
         }
 
     }
@@ -448,7 +455,7 @@ class ModuleFullcalendar extends \EventsExt
                 }
             }
 
-            $this->updateEvent($event);
+            return $this->updateEvent($event);
         }
     }
 
@@ -457,6 +464,7 @@ class ModuleFullcalendar extends \EventsExt
      * Update the event
      *
      * @param $event
+     * @return boolean
      */
     protected function updateEvent($event)
     {
@@ -464,17 +472,32 @@ class ModuleFullcalendar extends \EventsExt
         $id = $event['id'];
         unset($event['id']);
 
+        // Check if it is allowed to edit this event
+        $update_event = \CalendarEventsModel::findById($id);
+        if ($update_event->recurring || $update_event->recurringExt || $update_event->useExceptions) {
+            return false;
+        }
+        $row = deserialize($update_event->repeatFixedDates);
+        if ($row[0]['new_repeat'] > 0) {
+            return false;
+        }
+
         // Set all relevant date and time values
-        $event['startDate'] = ($event['startDate']) ? $event['startDate'] : strtotime(date('Ymd', $event['startTime']));
+        $event['startDate'] = ($event['startDate']) ? $event['startDate'] : strtotime(date('d.m.Y', $event['startTime']));
         $event['repeatEnd'] = $event['startDate'];
         if ($event['endTime']) {
-            $event['endDate'] = ($event['endDate']) ? $event['endDate'] : strtotime(date('Ymd', $event['endTime']));
-            $event['repeatEnd'] = $event['endDate'];
+            $event['repeatEnd'] = $event['endTime'];
+            // Set endDate only if it was set before...
+            if (strlen($update_event->endDate)) {
+                $event['endDate'] = ($event['endDate']) ? $event['endDate'] : strtotime(date('d.m.Y', $event['endTime']));
+            }
         }
 
         // Update the event
         \Database::getInstance()
             ->prepare("update tl_calendar_events %s where id=?")
             ->set($event)->execute($id);
+
+        return true;
     }
 }
