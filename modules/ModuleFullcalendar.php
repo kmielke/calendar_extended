@@ -93,22 +93,22 @@ class ModuleFullcalendar extends \EventsExt
                 list($cssColor, $cssOpacity) = deserialize($objBG->bg_color);
 
                 if (!empty($cssColor)) {
-                    $this->calConf[$cal]['background'] .= 'background-color:#' . $cssColor . ';';
+                    $this->calConf[$cal]['background'] .= '#' . $cssColor;
                 }
-                if (!empty($cssOpacity)) {
-                    $this->calConf[$cal]['background'] .= 'opacity:' . ($cssOpacity / 100) . ';';
-                }
+//                if (!empty($cssOpacity)) {
+//                    $this->calConf[$cal]['background'] .= 'opacity:' . ($cssOpacity / 100) . ';';
+//                }
             }
 
             if ($objBG->fg_color) {
                 list($cssColor, $cssOpacity) = deserialize($objBG->fg_color);
 
                 if (!empty($cssColor)) {
-                    $this->calConf[$cal]['foreground'] .= 'color:#' . $cssColor . ';';
+                    $this->calConf[$cal]['foreground'] .= '#' . $cssColor;
                 }
-                if (!empty($cssOpacity)) {
-                    $this->calConf[$cal]['foreground'] .= 'opacity:' . ($cssOpacity / 100) . ';';
-                }
+//                if (!empty($cssOpacity)) {
+//                    $this->calConf[$cal]['foreground'] .= 'opacity:' . ($cssOpacity / 100) . ';';
+//                }
             }
         }
 
@@ -207,10 +207,8 @@ class ModuleFullcalendar extends \EventsExt
                 $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/lib/jquery.min.js|static';
             }
 
-//            if ($useGUI) {
-//                $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/lib/jquery-ui.min.js|static';
-//                $GLOBALS['TL_CSS'][] = $assets_path . '/fullcalendar/lib/cupertino/jquery-ui.min.css|static';
-//            }
+            $GLOBALS['TL_CSS'][] = $assets_path . '/fullcalendar/lib/cupertino/jquery-ui.min.css|static';
+            $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/lib/jquery-ui.min.js|static';
 
             $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/lib/moment.min.js|static';
             $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/fullcalendar.js|static';
@@ -363,6 +361,10 @@ class ModuleFullcalendar extends \EventsExt
                     // Set the icon
                     $icon = ($recurring) ? 'fa-repeat' : 'fa-calendar-o';
 
+                    // Set the colors of the calendar
+                    $bgstyle = ($this->calConf[$event['pid']]['background']) ? $this->calConf[$event['pid']]['background'] : '';
+                    $fgstyle = ($this->calConf[$event['pid']]['foreground']) ? $this->calConf[$event['pid']]['foreground'] : '';
+
                     // Igone if this is not the first multi day entry
                     if (array_search($event['id'], $multiday_event) === false) {
                         // Add the event to array of events
@@ -371,11 +373,14 @@ class ModuleFullcalendar extends \EventsExt
                             'title' => $title,
                             'start' => $event['datetime_start'],
                             'end' => $event['datetime_end'],
-                            'teaser' => $event['teaser'],
+                            'description' => $event['teaser'],
                             'allDay' => $allDay,
+                            'overlap' => false,
                             'url' => $event['href'],
                             'editable' => $editable,
-                            'icon' => $icon
+                            'icon' => $icon,
+                            'backgroundColor' => $bgstyle,
+                            'textColor' => $fgstyle
                         );
                     }
 
