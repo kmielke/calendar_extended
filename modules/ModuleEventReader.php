@@ -380,6 +380,8 @@ class ModuleEventReader extends \EventsExt
                         // Einsetzen der aktuell Event ID, damit diese mit dem Formular gespeichert wird.
                         $regform = str_replace('value="eventid"', 'value="' . $objEvent->id . '"', $regform);
                         $regform = str_replace('value="eventtitle"', 'value="' . $objEvent->title . '"', $regform);
+                        $regform = str_replace('value="eventstart"', 'value="' . \Date::parse($objPage->datimFormat, $intStartTime) . '"', $regform);
+                        $regform = str_replace('value="eventend"', 'value="' . \Date::parse($objPage->datimFormat, $intEndTime) . '"', $regform);
                         $regform = str_replace('value="published"', 'value="' . $published . '"', $regform);
                         $objTemplate->regform = $regform;
                     }
