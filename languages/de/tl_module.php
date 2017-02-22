@@ -68,6 +68,7 @@ $GLOBALS['TL_LANG']['tl_module']['regform']         = array('Benachrichtigung', 
 $GLOBALS['TL_LANG']['tl_module']['regtype']         = array('Art der Bestätigung', 'Wählen Sie die art der Bestätigung aus.');
 $GLOBALS['TL_LANG']['tl_module']['regtypes'][1]     = 'Bestätigung Anmeldung';
 $GLOBALS['TL_LANG']['tl_module']['regtypes'][0]     = 'Bestätigung Abmeldung';
+$GLOBALS['TL_LANG']['tl_module']['ignore_urlparameter'] = array('URL Parameter nicht anhängen', 'Es werden keine Paramter (date, week, month, ...) an die Event URL gehängt.');
 
 /**
  * References

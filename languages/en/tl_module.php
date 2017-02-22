@@ -68,6 +68,7 @@ $GLOBALS['TL_LANG']['tl_module']['regform']         = array('Notifications', 'Pl
 $GLOBALS['TL_LANG']['tl_module']['regtype']         = array('Kind of confirmation', 'Please choose the kind of the confirmation.');
 $GLOBALS['TL_LANG']['tl_module']['regtypes'][1]     = 'Confirm register';
 $GLOBALS['TL_LANG']['tl_module']['regtypes'][0]     = 'Confirm unregister';
+$GLOBALS['TL_LANG']['tl_module']['ignore_urlparameter'] = array('ignore url parameter', 'No parameter (date, week, month, ...) will be added to the URL.');
 
 /**
  * References

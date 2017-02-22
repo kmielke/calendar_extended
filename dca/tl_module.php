@@ -20,7 +20,7 @@
 $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'] = str_replace
 (
     ';{redirect_legend}',
-    ';{config_ext_legend},cal_holiday;{redirect_legend}',
+    ';{config_ext_legend},cal_holiday,ignore_urlparameter;{redirect_legend}',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar']
 );
 
@@ -46,7 +46,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] = str_replace
 $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist'] = str_replace
 (
     ';{template_legend:hide}',
-    ';{config_ext_legend},cal_holiday,show_holiday,cal_format_ext,range_date,displayDuration,showRecurrences,hide_started,pubTimeRecurrences,showOnlyNext;{template_legend:hide}',
+    ';{config_ext_legend},cal_holiday,show_holiday,ignore_urlparameter,cal_format_ext,displayDuration,range_date,showRecurrences,hide_started,pubTimeRecurrences,showOnlyNext;{template_legend:hide}',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist']
 );
 
@@ -107,6 +107,16 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['show_holiday'] = array
     'sql' => "char(1) NOT NULL default ''"
 );
 
+$GLOBALS['TL_DCA']['tl_module']['fields']['ignore_urlparameter'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['ignore_urlparameter'],
+    'default' => 0,
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'w50'),
+    'sql' => "char(1) NOT NULL default ''"
+);
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['pubTimeRecurrences'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['pubTimeRecurrences'],
@@ -122,7 +132,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['cal_format_ext'] = array
     'label' => &$GLOBALS['TL_LANG']['tl_module']['cal_format_ext'],
     'exclude' => true,
     'inputType' => 'text',
-    'eval' => array('tl_class' => 'clr'),
+    'eval' => array('tl_class' => 'w50'),
     'save_callback' => array
     (
         array('calendar_Ext', 'checkDuration')
@@ -135,7 +145,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['displayDuration'] = array
     'label' => &$GLOBALS['TL_LANG']['tl_module']['displayDuration'],
     'exclude' => true,
     'inputType' => 'text',
-    'eval' => array('tl_class' => 'clr'),
+    'eval' => array('tl_class' => 'w50'),
     'save_callback' => array
     (
         array('calendar_Ext', 'checkDuration')

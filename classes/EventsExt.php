@@ -158,7 +158,10 @@ class EventsExt extends \Events
                 // store the entry if everything is fine...
                 if ($store === true) {
                     $eventEnd = $objEvents->endTime;
-                    $eventUrl = $strUrl . "?day=" . date("Ymd", $objEvents->startTime) . "&amp;times=" . $objEvents->startTime . "," . $objEvents->endTime;
+                    $eventUrl = $strUrl;
+                    if (!$this->ignore_urlparameter) {
+                        $eventUrl .= "?day=" . date("Ymd", $objEvents->startTime) . "&amp;times=" . $objEvents->startTime . "," . $objEvents->endTime;
+                    }
                     $this->addEvent($objEvents, $objEvents->startTime, $eventEnd, $eventUrl, $intStart, $intEnd, $id);
 
                     // increase $cntRecurrences if event is in scope
@@ -345,7 +348,10 @@ class EventsExt extends \Events
                             }
                         }
                         if ($store === true) {
-                            $eventUrl = $strUrl . "?day=" . date("Ymd", $objEvents->startTime) . "&amp;times=" . $objEvents->startTime . "," . $objEvents->endTime;
+                            $eventUrl = $strUrl;
+                            if (!$this->ignore_urlparameter) {
+                                $eventUrl .= "?day=" . date("Ymd", $objEvents->startTime) . "&amp;times=" . $objEvents->startTime . "," . $objEvents->endTime;
+                            }
                             $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
                         }
 
@@ -410,7 +416,10 @@ class EventsExt extends \Events
                             $objEvents->pos_idx++;
 
                             // add the irregular event to the array
-                            $eventUrl = $strUrl . "?day=" . date("Ymd", $objEvents->startTime) . "&amp;times=" . $objEvents->startTime . "," . $objEvents->endTime;
+                            $eventUrl = $strUrl;
+                            if (!$this->ignore_urlparameter) {
+                                $eventUrl .= "?day=" . date("Ymd", $objEvents->startTime) . "&amp;times=" . $objEvents->startTime . "," . $objEvents->endTime;
+                            }
                             $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
 
                             // Restore the original values
