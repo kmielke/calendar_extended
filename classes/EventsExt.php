@@ -244,7 +244,7 @@ class EventsExt extends \Events
                             $endTime = strtotime($strtotime . ' ' . $eventEndTime, $objEvents->endTime);
 
                             $chkmonth = (int)date('n', $startTime);
-                            if ($chkmonth != $intmonth) {
+                            if ($chkmonth != $month) {
                                 $addmonth = false;
                                 $strtotime = 'first day of ' . $arrMonth[$month] . ' ' . $year;
                                 $objEvents->startTime = strtotime($strtotime . ' ' . $eventStartTime, $startTime);
