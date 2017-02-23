@@ -225,6 +225,7 @@ class EventsExt extends \Events
                         $arg = $arrRepeat['value'];
                         $unit = $arrRepeat['unit'];
 
+                        $addmonth = true;
                         if ($objEvents->recurring) {
                             // this is the contao default
                             $strtotime = '+ ' . $arg . ' ' . $unit;
@@ -232,15 +233,26 @@ class EventsExt extends \Events
                             $objEvents->endTime = strtotime($strtotime, $objEvents->endTime);
                         } else {
                             // extended version.
-                            $intyear = date('Y', $objEvents->startTime);
-                            $intmonth = date('n', $objEvents->startTime) + 1;
+                            $intyear = (int)date('Y', $objEvents->startTime);
+                            $intmonth = (int)date('n', $objEvents->startTime) + 1;
 
                             $year = ($intmonth == 13) ? ($intyear + 1) : $intyear;
                             $month = ($intmonth == 13) ? 1 : $intmonth;
 
                             $strtotime = $arg . ' ' . $unit . ' of ' . $arrMonth[$month] . ' ' . $year;
-                            $objEvents->startTime = strtotime($strtotime . ' ' . $eventStartTime, $objEvents->startTime);
-                            $objEvents->endTime = strtotime($strtotime . ' ' . $eventEndTime, $objEvents->endTime);
+                            $startTime = strtotime($strtotime . ' ' . $eventStartTime, $objEvents->startTime);
+                            $endTime = strtotime($strtotime . ' ' . $eventEndTime, $objEvents->endTime);
+
+                            $chkmonth = (int)date('n', $startTime);
+                            if ($chkmonth != $intmonth) {
+                                $addmonth = false;
+                                $strtotime = 'first day of ' . $arrMonth[$month] . ' ' . $year;
+                                $objEvents->startTime = strtotime($strtotime . ' ' . $eventStartTime, $startTime);
+                                $objEvents->endTime = strtotime($strtotime . ' ' . $eventEndTime, $endTime);
+                            } else {
+                                $objEvents->startTime = $startTime;
+                                $objEvents->endTime = $endTime;
+                            }
                         }
                         $nextTime = $objEvents->endTime;
 
@@ -347,7 +359,7 @@ class EventsExt extends \Events
                                 $store = false;
                             }
                         }
-                        if ($store === true) {
+                        if ($store === true && $addmonth === true) {
                             $eventUrl = $strUrl;
                             if (!$this->ignore_urlparameter) {
                                 $eventUrl .= "?day=" . date("Ymd", $objEvents->startTime) . "&amp;times=" . $objEvents->startTime . "," . $objEvents->endTime;

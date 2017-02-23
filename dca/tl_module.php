@@ -57,6 +57,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['eventreader'] = str_replace
     '{config_legend},cal_calendar,cal_holiday',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['eventreader']
 );
+
 // Palette for registration
 $GLOBALS['TL_DCA']['tl_module']['palettes']['evr_registration'] = '{title_legend},name,headline,type;{registration_legend},nc_notification,regtype;';
 //'{redirect_legend},jumpTo;{template_legend:hide},cal_ctemplate,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
@@ -472,7 +473,7 @@ class calendar_Ext extends Backend
      */
     public function getCalendarTemplates()
     {
-        return $this->getTemplateGroup('cal_fc_');
+        return $this->getTemplateGroup('cal_');
     }
 
 
