@@ -89,6 +89,10 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatFixedDates'] = array
         'columnsCallback' => array('tl_calendar_events_ext', 'listFixedDates'),
         'buttons' => array('up' => false, 'down' => false)
     ),
+    'save_callback' => array
+    (
+        array('tl_calendar_events_ext', 'checkFixedDates')
+    ),
     'sql' => "blob NULL"
 );
 
@@ -1273,6 +1277,24 @@ class tl_calendar_events_ext extends \Backend
         );
 
         return $columnFields;
+    }
+
+    /**
+     * checkFixedDates()
+     *
+     * @param $varValue
+     * @return mixed
+     * @throws Exception
+     */
+    public function checkFixedDates($varValue)
+    {
+        if (strlen($varValue) > 0) {
+            if (!strtotime($varValue)) {
+                throw new Exception();
+            }
+        }
+
+        return $varValue;
     }
 
     /**
