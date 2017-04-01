@@ -1288,8 +1288,10 @@ class tl_calendar_events_ext extends \Backend
      */
     public function checkFixedDates($varValue)
     {
-        if (strlen($varValue) > 0) {
-            if (!strtotime($varValue)) {
+        if (strlen($varValue)) {
+            $myValue = deserialize($varValue);
+
+            if (strlen($myValue[0]['new_repeat'])) {
                 throw new Exception();
             }
         }
