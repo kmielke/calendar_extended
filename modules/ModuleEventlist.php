@@ -201,7 +201,7 @@ class ModuleEventlist extends \EventsExt
         }
 
         // we have to check if we have to show recurrences and pass it to the getAllEventsExt function...
-        $showRecurrences = ($this->showRecurrences) ? false : true;
+        $showRecurrences = ((int)$this->showRecurrences === 1) ? true : false;
 
         // Get all events
         $arrAllEvents = $this->getAllEventsExt($this->cal_calendar, $strBegin, $strEnd, array($this->cal_holiday, $showRecurrences));
@@ -223,7 +223,8 @@ class ModuleEventlist extends \EventsExt
         $currTime = \Date::floorToMinute();
         // Remove events outside the scope
         foreach ($arrAllEvents as $key => $days) {
-            if ($showRecurrences == true) {
+            // Do not show recurrences
+            if ($showRecurrences) {
                 if ($key < $dateBegin || $key > $dateEnd) {
                     continue;
                 }
