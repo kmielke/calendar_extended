@@ -89,10 +89,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['repeatFixedDates'] = array
         'columnsCallback' => array('tl_calendar_events_ext', 'listFixedDates'),
         'buttons' => array('up' => false, 'down' => false)
     ),
-    'save_callback' => array
-    (
-        array('tl_calendar_events_ext', 'checkFixedDates')
-    ),
     'sql' => "blob NULL"
 );
 
@@ -568,6 +564,7 @@ class tl_calendar_events_ext extends \Backend
                 }
             }
         }
+        return true;
     }
 
 
@@ -631,6 +628,14 @@ class tl_calendar_events_ext extends \Backend
                 if (!strlen($fixedDate['new_repeat'])) {
                     continue;
                 }
+
+                // Check the date
+                try {
+                    $newDate = new Date($fixedDate['new_repeat']);
+                } catch (Exception $e) {
+                    return false;
+                }
+
                 $new_fix_date = strtotime($fixedDate['new_repeat']);
 
                 // Check if we have a new start time
@@ -1238,6 +1243,7 @@ class tl_calendar_events_ext extends \Backend
         return $columnFields;
     }
 
+
     /**
      * listFixedDates()
      */
@@ -1279,25 +1285,6 @@ class tl_calendar_events_ext extends \Backend
         return $columnFields;
     }
 
-    /**
-     * checkFixedDates()
-     *
-     * @param $varValue
-     * @return mixed
-     * @throws Exception
-     */
-    public function checkFixedDates($varValue)
-    {
-        if (strlen($varValue)) {
-            $myValue = deserialize($varValue);
-
-            if (strlen($myValue[0]['new_repeat'])) {
-                throw new Exception();
-            }
-        }
-
-        return $varValue;
-    }
 
     /**
      * @param $a
