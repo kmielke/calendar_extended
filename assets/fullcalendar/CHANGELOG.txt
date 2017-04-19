@@ -1,4 +1,67 @@
 
+v3.3.1 (2017-04-01)
+-------------------
+
+Bugfixes:
+- stale calendar title when navigate away from then back to the a view (#3604)
+- js error when gotoDate immediately after calendar initialization (#3598)
+- agenda view scrollbars causes misalignment in jquery 3.2.1 (#3612)
+- navigation bug when trying to navigate to a day of another week (#3610)
+- dateIncrement not working when duration and dateIncrement have different units
+
+
+v3.3.0 (2017-03-23)
+-------------------
+
+Features:
+- `visibleRange` - complete control over view's date range (#2847, #3105, #3245)
+- `validRange` - restrict date range (#429)
+- `changeView` - pass in a date or visibleRange as second param (#3366)
+- `dateIncrement` - customize prev/next jump (#2710)
+- `dateAlignment` - custom view alignment, like start-of-week (#3113)
+- `dayCount` - force a fixed number-of-days, even with hiddenDays (#2753)
+- `showNonCurrentDates` - option to hide day cells for prev/next months (#437)
+- can define a defaultView with a duration/visibleRange/dayCount with needing
+  to create a custom view in the `views` object. Known as a "Generic View".
+
+Behavior Changes:
+- when custom view is specified with duration `{days:7}`,
+  it will no longer align with the start of the week. (#2847)
+- when `gotoDate` is called on a custom view with a duration of multiple days,
+  the view will always shift to begin with the given date. (#3515)
+
+Bugfixes:
+- event rendering when excessive `minTime`/`maxTime` (#2530)
+- event dragging not shown when excessive `minTime`/`maxTime` (#3055)
+- excessive `minTime`/`maxTime` not reflected in event fetching (#3514)
+	- when minTime is negative, or maxTime beyond 24 hours, when event data is requested
+	  via a function or a feed, the given data params will have time parts.
+- external event dragging via touchpunch broken (#3544)
+- can't make an immediate new selection after existing selection, with mouse.
+  introduced in v3.2.0 (#3558)
+
+
+v3.2.0 (2017-02-14)
+-------------------
+
+Features:
+- `selectMinDistance`, threshold before a mouse selection begins (#2428)
+
+Bugfixes:
+- iOS 10, unwanted scrolling while dragging events/selection (#3403)
+- dayClick triggered when swiping on touch devices (#3332)
+- dayClick not functioning on Firefix mobile (#3450)
+- title computed incorrectly for views with no weekends (#2884)
+- unwanted scrollbars in month-view when non-integer width (#3453, #3444)
+- incorrect date formatting for locales with non-standlone month/day names (#3478)
+- date formatting, incorrect omission of trailing period for certain locales (#2504, #3486)
+- formatRange should collapse same week numbers (#3467)
+- Taiwanese locale updated (#3426)
+- Finnish noEventsMessage updated (#3476)
+- Croatian (hr) buttonText is blank (#3270)
+- JSON feed PHP example, date range math bug (#3485)
+
+
 v3.1.0 (2016-12-05)
 -------------------
 
