@@ -199,24 +199,24 @@ class ModuleEventReader extends \EventsExt
         $strDate = \Date::parse($objPage->dateFormat, $intStartTime);
 
         if ($span > 0) {
-            $strDate = \Date::parse($objPage->dateFormat, $intStartTime) . ' – ' . \Date::parse($objPage->dateFormat, $intEndTime);
+            $strDate = \Date::parse($objPage->dateFormat, $intStartTime) . $GLOBALS['TL_LANG']['MSC']['cal_timeSeparator'] . \Date::parse($objPage->dateFormat, $intEndTime);
         }
 
         $strTime = '';
 
         if ($objEvent->addTime) {
             if ($span > 0) {
-                $strDate = \Date::parse($objPage->datimFormat, $intStartTime) . ' – ' . \Date::parse($objPage->datimFormat, $intEndTime);
+                $strDate = \Date::parse($objPage->datimFormat, $intStartTime) . $GLOBALS['TL_LANG']['MSC']['cal_timeSeparator'] . \Date::parse($objPage->datimFormat, $intEndTime);
             } elseif ($intStartTime == $intEndTime) {
                 $strTime = \Date::parse($objPage->timeFormat, $intStartTime);
             } else {
-                $strTime = \Date::parse($objPage->timeFormat, $intStartTime) . ' – ' . \Date::parse($objPage->timeFormat, $intEndTime);
+                $strTime = \Date::parse($objPage->timeFormat, $intStartTime) . $GLOBALS['TL_LANG']['MSC']['cal_timeSeparator'] . \Date::parse($objPage->timeFormat, $intEndTime);
             }
         }
 
         // Fix date if we have to ignore the time
         if ((int)$objEvent->ignoreEndTime === 1) {
-            $strDate = \Date::parse($objPage->datimFormat, $objEvent->startTime) . ' - ' . \Date::parse($objPage->dateFormat, $objEvent->endTime);
+            $strDate = \Date::parse($objPage->datimFormat, $objEvent->startTime) . $GLOBALS['TL_LANG']['MSC']['cal_timeSeparator'] . \Date::parse($objPage->dateFormat, $objEvent->endTime);
             $objEvent->endTime = '';
             $objEvent->time = '';
         }
@@ -227,11 +227,14 @@ class ModuleEventReader extends \EventsExt
         // Recurring event
         if ($objEvent->recurring) {
             $arrRange = deserialize($objEvent->repeatEach);
+
+            if (is_array($arrRange) && isset($arrRange['unit']) && isset($arrRange['value'])) {
             $strKey = 'cal_' . $arrRange['unit'];
             $recurring = sprintf($GLOBALS['TL_LANG']['MSC'][$strKey], $arrRange['value']);
 
-            if ($objEvent->recurrences > 0) {
-                $until = sprintf($GLOBALS['TL_LANG']['MSC']['cal_until'], \Date::parse($objPage->dateFormat, $objEvent->repeatEnd));
+                if ($objEvent->recurrences > 0) {
+                    $until = sprintf($GLOBALS['TL_LANG']['MSC']['cal_until'], \Date::parse($objPage->dateFormat, $objEvent->repeatEnd));
+                }
             }
         }
 
@@ -442,7 +445,10 @@ class ModuleEventReader extends \EventsExt
                 return $strDetails;
             };
 
-            $objTemplate->hasDetails = (\ContentModel::countPublishedByPidAndTable($id, 'tl_calendar_events') > 0);
+            $objTemplate->hasDetails = function () use ($id)
+            {
+                return \ContentModel::countPublishedByPidAndTable($id, 'tl_calendar_events') > 0;
+            };
         }
 
         $objTemplate->addImage = false;

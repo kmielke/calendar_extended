@@ -17,6 +17,13 @@
 
         xEvent['id'] = event.id;
         xEvent['startTime'] = event.start.unix();
+        xEvent['allDay'] = event.allDay;
+
+        if (!event.allDay && !event.end) {
+            var defaultDuration = moment.duration($('#calendar').fullCalendar('option', 'defaultTimedEventDuration'));
+            event.end = event.start.clone().add(defaultDuration);
+        }
+
         if (event.end) {
             xEvent['endTime'] = event.end.unix();
         }

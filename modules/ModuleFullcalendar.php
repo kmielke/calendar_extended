@@ -478,6 +478,10 @@ class ModuleFullcalendar extends \EventsExt
         $id = $event['id'];
         unset($event['id']);
 
+        // Get allDay value
+        $allDay = ($event['allDay'] === 'true') ? true : false;
+        unset($event['allDay']);
+
         // Check if it is allowed to edit this event
         $update_event = \CalendarEventsModel::findById($id);
         if ($update_event->recurring || $update_event->recurringExt || $update_event->useExceptions) {
@@ -497,6 +501,15 @@ class ModuleFullcalendar extends \EventsExt
             if (strlen($update_event->endDate)) {
                 $event['endDate'] = ($event['endDate']) ? $event['endDate'] : strtotime(date('d.m.Y', $event['endTime']));
             }
+        }
+
+        // Check the allDay value
+        if ($allDay) {
+            $event['addTime'] = '';
+            $event['startTime'] = '';
+            $event['endTime'] = '';
+        } else {
+            $event['addTime'] = 1;
         }
 
         // Update the event
