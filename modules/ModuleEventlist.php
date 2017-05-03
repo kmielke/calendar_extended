@@ -201,7 +201,7 @@ class ModuleEventlist extends \EventsExt
         }
 
         // we have to check if we have to show recurrences and pass it to the getAllEventsExt function...
-        $showRecurrences = ((int)$this->showRecurrences === 1) ? true : false;
+        $showRecurrences = ((int)$this->showRecurrences === 1) ? false : true;
 
         // Get all events
         $arrAllEvents = $this->getAllEventsExt($this->cal_calendar, $strBegin, $strEnd, array($this->cal_holiday, $showRecurrences));
