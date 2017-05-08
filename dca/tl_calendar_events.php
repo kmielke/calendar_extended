@@ -989,10 +989,14 @@ class tl_calendar_events_ext extends \Backend
         }
 
         // we have to remove the excaption dates from array
-        $exceptionRows = deserialize($arrSet['exceptionList']);
-        foreach ($exceptionRows as $date => $value) {
-            if (is_array($arrDates) && key_exists($date, $arrDates)) {
-                unset($arrDates[$date]);
+        if ($arrSet['exceptionList']) {
+            $exceptionRows = deserialize($arrSet['exceptionList']);
+            if (is_array($exceptionRows)) {
+                foreach ($exceptionRows as $date => $value) {
+                    if (is_array($arrDates) && key_exists($date, $arrDates)) {
+                        unset($arrDates[$date]);
+                    }
+                }
             }
         }
 
