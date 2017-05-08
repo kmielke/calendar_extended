@@ -168,7 +168,7 @@ class ModuleEventReader extends \EventsExt
             $arrFixedDates = deserialize($objEvent->repeatFixedDates);
 
             // Check if there are valid data in the array...
-            if (strlen($arrFixedDates[0]['new_repeat'])) {
+            if (is_array($arrFixedDates) && strlen($arrFixedDates[0]['new_repeat'])) {
                 foreach ($arrFixedDates as $fixedDate) {
                     $nextValueDate = ($fixedDate['new_repeat']) ? strtotime($fixedDate['new_repeat']) : $intStartTime;
                     if (strlen($fixedDate['new_start'])) {
@@ -274,9 +274,11 @@ class ModuleEventReader extends \EventsExt
         // get moveReason from fixed dates if exists...
         if (!is_null($objEvent->repeatFixedDates)) {
             $arrFixedDates = deserialize($objEvent->repeatFixedDates);
-            foreach ($arrFixedDates as $fixedDate) {
-                if (date("Ymd", strtotime($fixedDate['new_repeat'])) == date("Ymd", $intStartTime)) {
-                    $moveReason = ($fixedDate['reason']) ? $fixedDate['reason'] : null;
+            if (is_array($arrFixedDates)) {
+                foreach ($arrFixedDates as $fixedDate) {
+                    if (date("Ymd", strtotime($fixedDate['new_repeat'])) == date("Ymd", $intStartTime)) {
+                        $moveReason = ($fixedDate['reason']) ? $fixedDate['reason'] : null;
+                    }
                 }
             }
         }
@@ -299,16 +301,18 @@ class ModuleEventReader extends \EventsExt
         $nextDate = null;
         if ($objEvent->repeatDates) {
             $arrNext = deserialize($objEvent->repeatDates);
-            foreach ($arrNext as $k => $nextDate) {
-                if (strtotime($nextDate) > time()) {
-                    // check if we have the correct weekday
-                    if ($useWeekdays && $unit === 'days') {
-                        if (!in_array(date('w', $k), $weekdays)) {
-                            continue;
+            if (is_array($arrNext)) {
+                foreach ($arrNext as $k => $nextDate) {
+                    if (strtotime($nextDate) > time()) {
+                        // check if we have the correct weekday
+                        if ($useWeekdays && $unit === 'days') {
+                            if (!in_array(date('w', $k), $weekdays)) {
+                                continue;
+                            }
                         }
+                        $nextDate = \Date::parse($objPage->datimFormat, $k);
+                        break;
                     }
-                    $nextDate = \Date::parse($objPage->datimFormat, $k);
-                    break;
                 }
             }
             $event['nextDate'] = $nextDate;
