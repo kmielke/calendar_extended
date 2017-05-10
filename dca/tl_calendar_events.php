@@ -603,8 +603,9 @@ class tl_calendar_events_ext extends \Backend
         }
 
         // Set endtime to starttime always...
-        if ($dc->activeRecord->ignoreEndTime) {
-            $arrSet['endTime'] = strtotime(date('d.m.Y', $arrSet['endTime']) . ' 23:59:59');
+        if ($dc->activeRecord->addTime && $dc->activeRecord->ignoreEndTime) {
+            //$arrSet['endTime'] = strtotime(date('d.m.Y', $arrSet['endTime']) . ' 23:59:59');
+            $arrSet['endTime'] = $arrSet['startTime'];
         } // Adjust end time of "all day" events
         elseif ((strlen($dc->activeRecord->endDate) && $arrSet['endDate'] == $arrSet['endTime']) || $arrSet['startTime'] == $arrSet['endTime']) {
             $arrSet['endTime'] = (strtotime('+ 1 day', $arrSet['endTime']) - 1);

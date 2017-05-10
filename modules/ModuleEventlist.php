@@ -322,13 +322,13 @@ class ModuleEventlist extends \EventsExt
                     }
 
                     // Set endtime to starttime always...
-                    if ((int)$event['ignoreEndTime'] === 1) {
+                    if ((int)$event['addTime'] === 1 && (int)$event['ignoreEndTime'] === 1) {
                         $event['date'] = \Date::parse($objPage->datimFormat, $event['startTime']) . ' - ' .   \Date::parse($objPage->dateFormat, $event['endTime']);
                         $event['endTime'] = '';
                         $event['time'] = '';
-//                        if ($event['addTime']) {
-//                            $event['time'] = \Date::parse($objPage->timeFormat, $event['startTime']);
-//                        }
+                        if ((int)$event['addTime'] === 1) {
+                            $event['time'] = \Date::parse($objPage->timeFormat, $event['startTime']);
+                        }
                     }
 
                     // check the repeat values
