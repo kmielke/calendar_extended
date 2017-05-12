@@ -85,7 +85,7 @@ class ModuleEventRegistration extends \Module
         }
 
         // Event auf Existens prüfen
-        $objEvent = \CalendarEventsModel::findById($event_id);
+        $objEvent = \CalendarEventsModelExt::findById($event_id);
         if (!$objEvent) {
             $objTemplate->hasError = true;
             $msgError[] = $GLOBALS['TL_LANG']['tl_module']['regerror']['noevt'];

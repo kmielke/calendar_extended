@@ -19,7 +19,7 @@ ClassLoader::addClasses(array
 	'Contao\TimePeriodExt'           => 'system/modules/calendar_extended/classes/TimePeriodExt.php',
 
 	// Models
-	'Contao\CalendarEventsModel'     => 'system/modules/calendar_extended/models/CalendarEventsModel.php',
+	'Contao\CalendarEventsModelExt'  => 'system/modules/calendar_extended/models/CalendarEventsModelExt.php',
 	'Contao\CalendarLeadsModel'      => 'system/modules/calendar_extended/models/CalendarLeadsModel.php',
 
 	// Modules

@@ -537,7 +537,7 @@ class tl_calendar_events_ext extends \Backend
             $nonUniqueEvents = array();
 
             // find all events
-            $objEvents = \CalendarEventsModel::findCurrentByPid(
+            $objEvents = \CalendarEventsModelExt::findCurrentByPid(
                 (int)$dc->activeRecord->pid,
                 (int)$dc->activeRecord->startTime,
                 (int)$dc->activeRecord->endTime);

@@ -98,7 +98,7 @@ class EventsExt extends \Events
             }
 
             // Get the events of the current period
-            $objEvents = \CalendarEventsModel::findCurrentByPid($id, $intStart, $intEnd);
+            $objEvents = \CalendarEventsModelExt::findCurrentByPid($id, $intStart, $intEnd);
 
             if ($objEvents === null) {
                 continue;
@@ -471,7 +471,7 @@ class EventsExt extends \Events
                 }
 
                 // Get the events of the current period
-                $objEvents = \CalendarEventsModel::findCurrentByPid($id, $intStart, $intEnd);
+                $objEvents = \CalendarEventsModelExt::findCurrentByPid($id, $intStart, $intEnd);
 
                 if ($objEvents === null) {
                     continue;

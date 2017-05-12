@@ -11,13 +11,13 @@ Ausnahmen, und verschiedene Ansichten.
 Installation
 ------------
 
-*!!! Die Version im Contao ER wird nicht mehr gepflegt. !!!*
+**!!! Die Version im Contao ER wird nicht mehr gepflegt. !!!**
 
 Die Erweiterung kann über ein laufendes Contao über die Composer Paketverwaltung installiert werden.
 
 
 Alternativ kann die Erweiterung manuell installiert werden. Aktuelle Releases sind hier zu finden.
-https://github.com/kmielke/calendar_extended/releases
+- https://github.com/kmielke/calendar_extended/releases
 
 Bei der manuellen Installation ist daruf zu achten, dass die Abhängigkeiten ebenfalls installiert werden müssen,
 wenn diese noch nicht vorhaden sind.
@@ -35,7 +35,8 @@ Dokumentation und Support
 -------------------------
 
 Doku gibt es hier:
-- http://de.contaowiki.org/Calendar_extended
+- http://de.contaowiki.org/Calendar_extended (möglicherweise nicht ganz aktuell)
 
-Support über GitHup oder 
+Support über GitHup oder das Contao Forum
+- https://github.com/kmielke/calendar_extended/issues
 - https://community.contao.org/de/showthread.php?19576-Erweiterung-calendar_extended
