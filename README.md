@@ -4,7 +4,8 @@ calendar_extended
 Über die Erweiterung
 --------------------
 
-calendar_extended ist eine Erweiterung für das Standard Kalender Modul vom Contao CMS.
+calendar_extended ist eine Erweiterung für das Standard Kalender Modul vom Contao CMS. Sie bietet erweiterte Wiederholungen,
+Ausnahmen, und verschiedene Ansichten.
 
 
 Installation
