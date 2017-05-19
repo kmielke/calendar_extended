@@ -136,7 +136,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['cal_format_ext'] = array
     'eval' => array('tl_class' => 'w50'),
     'save_callback' => array
     (
-        array('calendar_Ext', 'checkDuration')
+        array('calendar_Ext', 'checkCalFormat')
     ),
     'sql' => "varchar(128) NOT NULL default ''"
 );
@@ -459,6 +459,22 @@ class calendar_Ext extends Backend
     {
         if (strlen($varValue) > 0) {
             if (($timestamp = date('dmY', strtotime($varValue, time()))) === date('dmY', time())) {
+                throw new Exception($GLOBALS['TL_LANG']['tl_module']['displayDurationError2'] . ': ' . $timestamp);
+            }
+        }
+        return $varValue;
+    }
+
+
+    /**
+     * @param $varValue
+     * @return mixed
+     * @throws Exception
+     */
+    public function checkCalFormat($varValue)
+    {
+        if (strlen($varValue) > 0) {
+            if (($timestamp = date('dmYHis', strtotime($varValue, time()))) === date('dmYHis', time())) {
                 throw new Exception($GLOBALS['TL_LANG']['tl_module']['displayDurationError2'] . ': ' . $timestamp);
             }
         }

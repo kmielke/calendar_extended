@@ -177,10 +177,11 @@ class ModuleEventlist extends \EventsExt
             $times = explode('|', $this->cal_format_ext);
 
             if (count($times) == 1) {
-                $strEnd = strtotime($times[0], strtotime((\Date::parse('d.m.Y', $strBegin) . ' 23:59')));
+                $strBegin = time();
+                $strEnd = strtotime($times[0], $strBegin);
             } elseif (count($times) == 2) {
-                $strBegin = strtotime($times[0]);
-                $strEnd = strtotime($times[1], strtotime((\Date::parse('d.m.Y', $strBegin) . ' 23:59')));
+                $strBegin = strtotime($times[0]) ? strtotime($times[0]) : time();
+                $strEnd = strtotime($times[1], $strBegin);
             }
         }
 
