@@ -20,7 +20,7 @@
 $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'] = str_replace
 (
     ';{redirect_legend}',
-    ';{config_ext_legend},cal_holiday,ignore_urlparameter;{redirect_legend}',
+    ';{config_ext_legend},cal_holiday,show_holiday,ignore_urlparameter;{redirect_legend}',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar']
 );
 

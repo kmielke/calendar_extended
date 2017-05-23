@@ -274,7 +274,7 @@ class ModuleCalendar extends \EventsExt
             if ($intDay < 1 || $intDay > $intDaysInMonth) {
                 $arrDays[$strWeekClass][$i]['label'] = '&nbsp;';
                 $arrDays[$strWeekClass][$i]['class'] = 'days empty' . $strClass;
-                $arrDays[$strWeekClass][$i]['events'] = array();
+//                $arrDays[$strWeekClass][$i]['events'] = array();
 
                 continue;
             }
@@ -293,7 +293,7 @@ class ModuleCalendar extends \EventsExt
             if (empty($intKey) || !isset($arrAllEvents[$intKey])) {
                 $arrDays[$strWeekClass][$i]['label'] = $intDay;
                 $arrDays[$strWeekClass][$i]['class'] = 'days' . $strClass;
-                $arrDays[$strWeekClass][$i]['events'] = array();
+//                $arrDays[$strWeekClass][$i]['events'] = array();
 
                 continue;
             }
@@ -317,9 +317,13 @@ class ModuleCalendar extends \EventsExt
 
             $arrDays[$strWeekClass][$i]['label'] = $intDay;
             $arrDays[$strWeekClass][$i]['class'] = 'days active' . $strClass;
-            $arrDays[$strWeekClass][$i]['href'] = $this->strLink . (\Config::get('disableAlias') ? '&amp;' : '?') . 'day=' . $intKey;
-            $arrDays[$strWeekClass][$i]['title'] = sprintf(specialchars($GLOBALS['TL_LANG']['MSC']['cal_events']), count($arrEvents));
-            $arrDays[$strWeekClass][$i]['events'] = $arrEvents;
+            if (count($arrEvents) > 0) {
+                $arrDays[$strWeekClass][$i]['href'] = $this->strLink . (\Config::get('disableAlias') ? '&amp;' : '?') . 'day=' . $intKey;
+                $arrDays[$strWeekClass][$i]['title'] = sprintf(specialchars($GLOBALS['TL_LANG']['MSC']['cal_events']), count($arrEvents));
+                $arrDays[$strWeekClass][$i]['events'] = $arrEvents;
+            } else {
+                unset($arrDays[$strWeekClass][$i]['events']);
+            }
         }
 
         return $arrDays;
