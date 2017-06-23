@@ -223,7 +223,7 @@ class ModuleFullcalendar extends \EventsExt
             $objTemplate->locale = $GLOBALS['TL_LANGUAGE'];
             $objTemplate->defaultDate = date('Y-m-d\TH:i:sP', $this->Date->tstamp);
             $objTemplate->firstDay = $this->cal_startDay;
-            $objTemplate->editable = ($this->editable && FE_USER_LOGGED_IN) ? true : false;
+            $objTemplate->editable = ($this->fc_editable && FE_USER_LOGGED_IN) ? true : false;
             $objTemplate->businessHours = ($this->businessHours) ? true : false;
 
             $objTemplate->weekNumbers = $this->weekNumbers;
@@ -330,7 +330,7 @@ class ModuleFullcalendar extends \EventsExt
                     $title = html_entity_decode($event['title']);
 
                     // Some options
-                    $editable = ($this->editable && FE_USER_LOGGED_IN) ? true : false;
+                    $editable = ($this->fc_editable && FE_USER_LOGGED_IN) ? true : false;
                     $multiday = false;
                     $recurring = false;
 

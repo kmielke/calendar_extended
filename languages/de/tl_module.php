@@ -53,7 +53,7 @@ $GLOBALS['TL_LANG']['tl_module']['range_date']      = array('Anzeigeformat (erwe
 $GLOBALS['TL_LANG']['tl_module']['range_from']      = array('Datum von', 'Start-Datum der Events.');
 $GLOBALS['TL_LANG']['tl_module']['range_to']        = array('Datum bis', 'End-Datum der Events.');
 
-$GLOBALS['TL_LANG']['tl_module']['editable']        = array('Events bearbeiten', 'Das Bearbeiten (Datum und/oder Zeit ändern) von Events ohne Wiederholungen erlauben.');
+$GLOBALS['TL_LANG']['tl_module']['fc_editable']     = array('Events bearbeiten', 'Das Bearbeiten (Datum und/oder Zeit ändern) von Events ohne Wiederholungen erlauben.');
 $GLOBALS['TL_LANG']['tl_module']['businessHours']   = array('Arbeitszeiten', 'Arbeitszeiten hervorheben.');
 $GLOBALS['TL_LANG']['tl_module']['eventLimit']      = array('Events limitieren', 'Limitiert die Anzahl der Events eines Tages.');
 $GLOBALS['TL_LANG']['tl_module']['weekNumbers']     = array('Kalenderwochen', 'Kaldenderwochen werden im Kalendaer angezeigt.');

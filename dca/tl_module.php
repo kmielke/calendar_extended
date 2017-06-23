@@ -288,7 +288,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['range_date'] = array
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fullcalendar'] = '
     {title_legend},name,headline,type;
     {config_legend},cal_calendar;
-    {template_legend:hide},cal_ctemplate,cal_startDay,editable,businessHours,weekNumbers,weekNumbersWithinDays;
+    {template_legend:hide},cal_ctemplate,cal_startDay,fc_editable,businessHours,weekNumbers,weekNumbersWithinDays;
     {protected_legend:hide},protected;
     {expert_legend:hide},guests,cssID,space';
 
@@ -312,9 +312,9 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['eventLimit'] = array
     'sql' => "char(1) NOT NULL default ''"
 );
 
-$GLOBALS['TL_DCA']['tl_module']['fields']['editable'] = array
+$GLOBALS['TL_DCA']['tl_module']['fields']['fc_editable'] = array
 (
-    'label' => &$GLOBALS['TL_LANG']['tl_module']['editable'],
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fc_editable'],
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => array('tl_class' => 'clr w50'),

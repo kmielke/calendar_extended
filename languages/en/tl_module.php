@@ -53,7 +53,7 @@ $GLOBALS['TL_LANG']['tl_module']['range_date']      = array('Event list format (
 $GLOBALS['TL_LANG']['tl_module']['range_from']      = array('Date from', 'Start-Date of the event list.');
 $GLOBALS['TL_LANG']['tl_module']['range_to']        = array('Date to', 'End-Date of the event list.');
 
-$GLOBALS['TL_LANG']['tl_module']['editable']        = array('Edit events', 'Allow editing (change of date/time) of non reccuring events.');
+$GLOBALS['TL_LANG']['tl_module']['fc_editable']     = array('Edit events', 'Allow editing (change of date/time) of non reccuring events.');
 $GLOBALS['TL_LANG']['tl_module']['businessHours']   = array('Business hours', 'Show business hours.');
 $GLOBALS['TL_LANG']['tl_module']['eventLimit']      = array('Event limit', 'Limits the number of events displayed on a day.');
 $GLOBALS['TL_LANG']['tl_module']['weekNumbers']     = array('Week numbers', 'Determines if week numbers should be displayed on the calendar.');
