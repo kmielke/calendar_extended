@@ -226,7 +226,7 @@ class ModuleEventlist extends \EventsExt
         foreach ($arrAllEvents as $key => $days) {
             // Do not show recurrences
             if ($showRecurrences) {
-                if ($key < $dateBegin || $key > $dateEnd) {
+                if (($key < $dateBegin) && ($key > $dateEnd)) {
                     continue;
                 }
             }
@@ -311,7 +311,7 @@ class ModuleEventlist extends \EventsExt
 
                     $event['firstDay'] = $GLOBALS['TL_LANG']['DAYS'][date('w', $day)];
                     $event['firstDate'] = \Date::parse($objPage->dateFormat, $day);
-                    $event['datetime'] = date('Y-m-d', $day);
+//                    $event['datetime'] = date('Y-m-d', $day);
 
                     $event['calendar_title'] = $this->calConf[$event['pid']]['calendar'];
 
@@ -324,12 +324,13 @@ class ModuleEventlist extends \EventsExt
 
                     // Set endtime to starttime always...
                     if ((int)$event['addTime'] === 1 && (int)$event['ignoreEndTime'] === 1) {
-                        $event['date'] = \Date::parse($objPage->datimFormat, $event['startTime']) . ' - ' .   \Date::parse($objPage->dateFormat, $event['endTime']);
-                        $event['endTime'] = '';
-                        $event['time'] = '';
-                        if ((int)$event['addTime'] === 1) {
-                            $event['time'] = \Date::parse($objPage->timeFormat, $event['startTime']);
-                        }
+                        $event['time'] = \Date::parse($objPage->timeFormat, $event['startTime']);
+//                        $event['date'] = \Date::parse($objPage->datimFormat, $event['startTime']) . ' - ' .   \Date::parse($objPage->dateFormat, $event['endTime']);
+//                        $event['endTime'] = '';
+//                        $event['time'] = '';
+//                        if ((int)$event['addTime'] === 1) {
+//                            $event['time'] = \Date::parse($objPage->timeFormat, $event['startTime']);
+//                        }
                     }
 
                     // check the repeat values
