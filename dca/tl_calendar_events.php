@@ -185,6 +185,15 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['useRegistration'] = array
     'sql' => "char(1) NOT NULL default ''"
 );
 
+//$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['isBooked'] = array
+//(
+//    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['isBooked'],
+//    'exclude' => true,
+//    'inputType' => 'checkbox',
+//    'eval' => array('submitOnChange' => true, 'tl_class' => 'w50'),
+//    'sql' => "char(1) NOT NULL default ''"
+//);
+
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['regconfirm'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['regconfirm'],
@@ -990,16 +999,16 @@ class tl_calendar_events_ext extends \Backend
         }
 
         // we have to remove the excaption dates from array
-        if ($arrSet['exceptionList']) {
-            $exceptionRows = deserialize($arrSet['exceptionList']);
-            if (is_array($exceptionRows)) {
-                foreach ($exceptionRows as $date => $value) {
-                    if (is_array($arrDates) && key_exists($date, $arrDates)) {
-                        unset($arrDates[$date]);
-                    }
-                }
-            }
-        }
+//        if ($arrSet['exceptionList']) {
+//            $exceptionRows = deserialize($arrSet['exceptionList']);
+//            if (is_array($exceptionRows)) {
+//                foreach ($exceptionRows as $date => $value) {
+//                    if (is_array($arrDates) && key_exists($date, $arrDates)) {
+//                        unset($arrDates[$date]);
+//                    }
+//                }
+//            }
+//        }
 
         if (count($maxRepeatEnd) > 1) {
             $arrSet['repeatEnd'] = max($maxRepeatEnd);
