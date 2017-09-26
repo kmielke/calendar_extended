@@ -51,7 +51,7 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['isHolidayCal'] = array
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => array('submitOnChange' => true, 'tl_class' => 'w50'),
-    'sql' => "char(1) NOT NULL default '0'"
+    'sql' => "char(1) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['allowEvents'] = array
@@ -61,7 +61,7 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['allowEvents'] = array
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => array('tl_class' => 'w50'),
-    'sql' => "char(1) NOT NULL default '0'"
+    'sql' => "char(1) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['uniqueEvents'] = array
@@ -71,5 +71,5 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['uniqueEvents'] = array
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => array('tl_class' => 'w50'),
-    'sql' => "char(1) NOT NULL default '0'"
+    'sql' => "char(1) NOT NULL default ''"
 );

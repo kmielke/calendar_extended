@@ -407,7 +407,7 @@ class ModuleEventReader extends \EventsExt
                 // Reg Info's für die Ausgabe
                 $objTemplate->reginfo = $values[0];
 
-                unset($values, $arrsql);
+                unset($values);
             }
         }
 
