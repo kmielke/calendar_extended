@@ -70,6 +70,8 @@ $GLOBALS['TL_LANG']['tl_module']['regtypes'][1]     = 'Bestätigung Anmeldung';
 $GLOBALS['TL_LANG']['tl_module']['regtypes'][0]     = 'Bestätigung Abmeldung';
 $GLOBALS['TL_LANG']['tl_module']['ignore_urlparameter'] = array('URL Parameter nicht anhängen', 'Es werden keine Paramter (date, week, month, ...) an die Event URL gehängt.');
 
+$GLOBALS['TL_LANG']['tl_module']['filter_fields']   = array('Event Filterung', 'Felder auswählen, auf die im Frontend Template gefiltert werden kann.');
+
 /**
  * References
  */
@@ -77,6 +79,7 @@ $GLOBALS['TL_LANG']['tl_module']['displayDurationError']    = 'strtotime Wert ni
 $GLOBALS['TL_LANG']['tl_module']['displayDurationError2']   = 'strtotime Wert flasch. Ergibt aktuelles Datum.';
 $GLOBALS['TL_LANG']['tl_module']['config_ext_legend']       = 'Modul-Konfiguration (erweitert)';
 $GLOBALS['TL_LANG']['tl_module']['registration_legend']     = 'Anmeldung / Abmeldung (Benachrichtigung und Typ)';
+$GLOBALS['TL_LANG']['tl_module']['filter_legend']           = 'Filter';
 
 $GLOBALS['TL_LANG']['tl_module']['regerror']['param']       = 'Es ist ein Fehler mit den Parametern aufgetreten.';
 $GLOBALS['TL_LANG']['tl_module']['regerror']['noevt']       = 'Das Event ist nicht mehr vorhanden.';

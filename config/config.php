@@ -47,6 +47,12 @@ $GLOBALS['TL_CONFIG']['tl_calendar_events']['weekdays'][4] = 'thursday';
 $GLOBALS['TL_CONFIG']['tl_calendar_events']['weekdays'][5] = 'friday';
 $GLOBALS['TL_CONFIG']['tl_calendar_events']['weekdays'][6] = 'saturday';
 
+// Event Filter
+$GLOBALS['TL_CONFIG']['tl_calendar_events']['filter']['title'] = '';
+$GLOBALS['TL_CONFIG']['tl_calendar_events']['filter']['location_name'] = '';
+$GLOBALS['TL_CONFIG']['tl_calendar_events']['filter']['location_str'] = '';
+$GLOBALS['TL_CONFIG']['tl_calendar_events']['filter']['location_plz'] = '';
+
 /**
  * Front end modules
  */
@@ -88,3 +94,8 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['event_registration'] = arr
         'file_content'         => array('recipient_email')
     )
 );
+
+/**
+ * Event Hook
+ */
+$GLOBALS['TL_HOOKS']['getAllEvents'][] = array('EventUrls', 'modifyEventUrl');

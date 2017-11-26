@@ -16,6 +16,7 @@ ClassLoader::addClasses(array
 (
 	// Classes
 	'Contao\EventsExt'               => 'system/modules/calendar_extended/classes/EventsExt.php',
+	'Contao\EventUrls'               => 'system/modules/calendar_extended/classes/EventUrls.php',
 	'Contao\TimePeriodExt'           => 'system/modules/calendar_extended/classes/TimePeriodExt.php',
 
 	// Models

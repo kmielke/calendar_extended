@@ -740,7 +740,7 @@ class tl_calendar_events_ext extends \Backend
                 }
 
                 //check if have the configured max value
-                if (count($arrDates) == $maxCount && $unit == "days") {
+                if (count($arrDates) == $maxCount) {
                     break;
                 }
             }
@@ -808,6 +808,11 @@ class tl_calendar_events_ext extends \Backend
                         'str_start' => \Date::parse($GLOBALS['TL_CONFIG']['datimFormat'], $next),
                         'str_end' => \Date::parse($GLOBALS['TL_CONFIG']['datimFormat'], $nextEnd)
                     );
+
+                    //check if have the configured max value
+                    if (count($arrDates) == $maxCount) {
+                        break;
+                    }
                 }
                 $arrSet['repeatEnd'] = $next;
             } else {
@@ -831,8 +836,14 @@ class tl_calendar_events_ext extends \Backend
                         $month = 1;
                         $year += 1;
                     }
+
+                    //check if have the configured max value
+                    if (count($arrDates) == $maxCount) {
+                        break;
+                    }
                 }
             }
+
             $maxRepeatEnd[] = $arrSet['repeatEnd'];
         }
         unset($next);
@@ -997,18 +1008,6 @@ class tl_calendar_events_ext extends \Backend
             }
             $arrSet['exceptionList'] = (count($exceptionRows) > 0) ? serialize($exceptionRows) : null;
         }
-
-        // we have to remove the excaption dates from array
-//        if ($arrSet['exceptionList']) {
-//            $exceptionRows = deserialize($arrSet['exceptionList']);
-//            if (is_array($exceptionRows)) {
-//                foreach ($exceptionRows as $date => $value) {
-//                    if (is_array($arrDates) && key_exists($date, $arrDates)) {
-//                        unset($arrDates[$date]);
-//                    }
-//                }
-//            }
-//        }
 
         if (count($maxRepeatEnd) > 1) {
             $arrSet['repeatEnd'] = max($maxRepeatEnd);

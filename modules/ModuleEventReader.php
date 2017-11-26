@@ -385,6 +385,7 @@ class ModuleEventReader extends \EventsExt
                         $published = ($objEvent->regconfirm) ? 0 : 1;
 
                         // Einsetzen der aktuell Event ID, damit diese mit dem Formular gespeichert wird.
+                        $regform = str_replace('input type="number" name="count" ', 'input type="number" name="count" max="' . $values[0]['free'] . '"', $regform);
                         $regform = str_replace('value="eventid"', 'value="' . $objEvent->id . '"', $regform);
                         $regform = str_replace('value="eventtitle"', 'value="' . $objEvent->title . '"', $regform);
                         $regform = str_replace('value="eventstart"', 'value="' . \Date::parse($objPage->datimFormat, $intStartTime) . '"', $regform);

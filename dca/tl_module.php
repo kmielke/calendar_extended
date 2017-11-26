@@ -23,6 +23,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'] = str_replace
     ';{config_ext_legend},cal_holiday,show_holiday,ignore_urlparameter;{redirect_legend}',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar']
 );
+$GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'] .= ';{filter_legend},filter_fields';
 
 // Palette for timetable
 $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable'] = $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'];
@@ -32,6 +33,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable'] = str_replace
     ',showDate,hideEmptyDays,use_navigation,linkCurrent,cal_times,cal_times_range,cellhight;{redirect_legend}',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['timetable']
 );
+$GLOBALS['TL_DCA']['tl_module']['palettes']['timetable'] .= ';{filter_legend},filter_fields';
 
 // Palette for yearview
 $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] = $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar'];
@@ -41,6 +43,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] = str_replace
     ',use_horizontal,use_navigation,linkCurrent;{protected_legend:hide}',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['yearview']
 );
+$GLOBALS['TL_DCA']['tl_module']['palettes']['yearview'] .= ';{filter_legend},filter_fields';
 
 // Palette for eventlist
 $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist'] = str_replace
@@ -49,6 +52,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist'] = str_replace
     ';{config_ext_legend},cal_holiday,show_holiday,ignore_urlparameter,cal_format_ext,displayDuration,range_date,showRecurrences,hide_started,pubTimeRecurrences,showOnlyNext;{template_legend:hide}',
     $GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist']
 );
+$GLOBALS['TL_DCA']['tl_module']['palettes']['eventlist'] .= ';{filter_legend},filter_fields';
 
 // Palette for eventreader
 $GLOBALS['TL_DCA']['tl_module']['palettes']['eventreader'] = str_replace
@@ -59,7 +63,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['eventreader'] = str_replace
 );
 
 // Palette for registration
-$GLOBALS['TL_DCA']['tl_module']['palettes']['evr_registration'] = '{title_legend},name,headline,type;{registration_legend},nc_notification,regtype;';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['evr_registration'] = '{title_legend},name,headline,type;{registration_legend},nc_notification,regtype;{filter_legend},filter_fields';
 //'{redirect_legend},jumpTo;{template_legend:hide},cal_ctemplate,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 
 /**
@@ -348,6 +352,18 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['weekNumbersWithinDays'] = array
     'sql' => "char(1) NOT NULL default ''"
 );
 
+/**
+ * Filter
+ */
+$GLOBALS['TL_DCA']['tl_module']['fields']['filter_fields'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['filter_fields'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'options_callback' => array('calendar_Ext', 'getEventField'),
+    'eval' => array('tl_class' => 'long', 'multiple' => true),
+    'sql' => "blob NULL"
+);
 
 /**
  * Class timetableExt
@@ -367,6 +383,32 @@ class calendar_Ext extends Backend
     {
         parent::__construct();
         $this->import('BackendUser', 'User');
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getEventField()
+    {
+        // Load tl_calendar_events data
+        \Controller::loadDataContainer('tl_calendar_events');
+        \System::loadLanguageFile('tl_calendar_events');
+
+        // Get the event fields
+        $arr_fields = ($GLOBALS['TL_CONFIG']['tl_calendar_events']['filter'])
+            ? $GLOBALS['TL_CONFIG']['tl_calendar_events']['filter']
+            : $GLOBALS['TL_DCA']['tl_calendar_events']['fields'];
+
+        $event_fields = [];
+        foreach ($arr_fields as $k => $v) {
+            if (strlen($GLOBALS['TL_LANG']['tl_calendar_events'][$k][0])) {
+                $label = (strlen($v['label'])) ? $v['label'] : $GLOBALS['TL_LANG']['tl_calendar_events'][$k][0];
+                $event_fields[$k] = $label;
+            }
+        }
+
+        return $event_fields;
     }
 
 

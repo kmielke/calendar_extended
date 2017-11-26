@@ -121,6 +121,17 @@ class EventsExt extends \Events
                     }
                 }
 
+                // get the event filter data
+                $filter = [];
+                if ($this->filter_fields) {
+                    $filter_fields = deserialize($this->filter_fields);
+                    foreach ($filter_fields as $field) {
+                        $filter[$field] = $objEvents->$field;
+                    }
+                    // filter_data can be used in the template
+                    $objEvents->filter_data = json_encode($filter, JSON_FORCE_OBJECT);
+                }
+
                 // Count irregular recurrences
                 $arrayFixedDates = deserialize($objEvents->repeatFixedDates) ? deserialize($objEvents->repeatFixedDates) : null;
                 if (!is_null($arrayFixedDates)) {
@@ -158,11 +169,8 @@ class EventsExt extends \Events
                 // store the entry if everything is fine...
                 if ($store === true) {
                     $eventEnd = $objEvents->endTime;
-                    $eventUrl = $strUrl;
-                    if (!$this->ignore_urlparameter) {
-                        $eventUrl .= "?day=" . date("Ymd", $objEvents->startTime) . "&amp;times=" . $objEvents->startTime . "," . $objEvents->endTime;
-                    }
-                    $this->addEvent($objEvents, $objEvents->startTime, $eventEnd, $eventUrl, $intStart, $intEnd, $id);
+
+                    $this->addEvent($objEvents, $objEvents->startTime, $eventEnd, $strUrl, $intStart, $intEnd, $id);
 
                     // increase $cntRecurrences if event is in scope
                     if ($dateNextStart >= $dateBegin && $dateNextEnd <= $dateEnd) {
@@ -360,11 +368,7 @@ class EventsExt extends \Events
                             }
                         }
                         if ($store === true && $addmonth === true) {
-                            $eventUrl = $strUrl;
-                            if (!$this->ignore_urlparameter) {
-                                $eventUrl .= "?day=" . date("Ymd", $objEvents->startTime) . "&amp;times=" . $objEvents->startTime . "," . $objEvents->endTime;
-                            }
-                            $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
+                            $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
                         }
 
                         // reset this values...
@@ -427,12 +431,7 @@ class EventsExt extends \Events
                             // position of the event
                             $objEvents->pos_idx++;
 
-                            // add the irregular event to the array
-                            $eventUrl = $strUrl;
-                            if (!$this->ignore_urlparameter) {
-                                $eventUrl .= "?day=" . date("Ymd", $objEvents->startTime) . "&amp;times=" . $objEvents->startTime . "," . $objEvents->endTime;
-                            }
-                            $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $eventUrl, $intStart, $intEnd, $id);
+                            $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
 
                             // Restore the original values
                             $objEvents->startTime = $orgDateStart->timestamp;
@@ -456,8 +455,6 @@ class EventsExt extends \Events
         if ($arrHolidays != null) {
             // run thru all holiday calendars
             foreach ($arrHolidays as $id) {
-                $strUrl = $this->strUrl;
-
                 $objAE = $this->Database->prepare("SELECT allowEvents FROM tl_calendar WHERE id = ?")
                     ->limit(1)->execute($id);
                 $allowEvents = ($objAE->allowEvents == 1) ? true : false;
@@ -559,5 +556,4 @@ class EventsExt extends \Events
 
         return $this->arrEvents;
     }
-
 }
