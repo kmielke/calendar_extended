@@ -48,10 +48,10 @@ $GLOBALS['TL_CONFIG']['tl_calendar_events']['weekdays'][5] = 'friday';
 $GLOBALS['TL_CONFIG']['tl_calendar_events']['weekdays'][6] = 'saturday';
 
 // Event Filter
-$GLOBALS['TL_CONFIG']['tl_calendar_events']['filter']['title'] = '';
-$GLOBALS['TL_CONFIG']['tl_calendar_events']['filter']['location_name'] = '';
-$GLOBALS['TL_CONFIG']['tl_calendar_events']['filter']['location_str'] = '';
-$GLOBALS['TL_CONFIG']['tl_calendar_events']['filter']['location_plz'] = '';
+$GLOBALS['TL_CONFIG']['tl_calendar_events']['filter']['title'] = [];
+$GLOBALS['TL_CONFIG']['tl_calendar_events']['filter']['location_name'] = [];
+$GLOBALS['TL_CONFIG']['tl_calendar_events']['filter']['location_str'] = [];
+$GLOBALS['TL_CONFIG']['tl_calendar_events']['filter']['location_plz'] = [];
 
 /**
  * Front end modules
