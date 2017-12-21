@@ -16,7 +16,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModuleCalendar extends \EventsExt
+class ModuleCalendar extends EventsExt
 {
 
     /**
@@ -43,6 +43,7 @@ class ModuleCalendar extends \EventsExt
      * Do not show the module if no calendar has been selected
      *
      * @return string
+     * @throws \Exception
      */
     public function generate()
     {
@@ -241,6 +242,7 @@ class ModuleCalendar extends \EventsExt
      * Return all weeks of the current month as array
      *
      * @return array
+     * @throws \Exception
      */
     protected function compileWeeks()
     {
@@ -317,11 +319,9 @@ class ModuleCalendar extends \EventsExt
 
             $arrDays[$strWeekClass][$i]['label'] = $intDay;
             $arrDays[$strWeekClass][$i]['class'] = 'days active' . $strClass;
-//            if (count($arrEvents) > 0) {
-                $arrDays[$strWeekClass][$i]['href'] = $this->strLink . (\Config::get('disableAlias') ? '&amp;' : '?') . 'day=' . $intKey;
-                $arrDays[$strWeekClass][$i]['title'] = sprintf(specialchars($GLOBALS['TL_LANG']['MSC']['cal_events']), count($arrEvents));
-                $arrDays[$strWeekClass][$i]['events'] = $arrEvents;
-//            }
+            $arrDays[$strWeekClass][$i]['href'] = $this->strLink . (\Config::get('disableAlias') ? '&amp;' : '?') . 'day=' . $intKey;
+            $arrDays[$strWeekClass][$i]['title'] = sprintf(specialchars($GLOBALS['TL_LANG']['MSC']['cal_events']), count($arrEvents));
+            $arrDays[$strWeekClass][$i]['events'] = $arrEvents;
         }
 
         return $arrDays;

@@ -452,7 +452,7 @@ class tl_calendar_events_ext extends \Backend
      * @param DataContainer $dc
      * @return null
      */
-    public function getWeekday($varValue, \DataContainer $dc)
+    public function getWeekday($varValue, DataContainer $dc)
     {
         if ($varValue === '') {
             return 9;
@@ -546,7 +546,7 @@ class tl_calendar_events_ext extends \Backend
             $nonUniqueEvents = array();
 
             // find all events
-            $objEvents = \CalendarEventsModelExt::findCurrentByPid(
+            $objEvents = CalendarEventsModelExt::findCurrentByPid(
                 (int)$dc->activeRecord->pid,
                 (int)$dc->activeRecord->startTime,
                 (int)$dc->activeRecord->endTime);
@@ -725,12 +725,23 @@ class tl_calendar_events_ext extends \Backend
                         $store = false;
                     }
                 }
+
+                $value = (int)$arrRange['value'];
+                $wdays = (is_array(deserialize($dc->activeRecord->repeatWeekday)))
+                    ? deserialize($dc->activeRecord->repeatWeekday)
+                    : false;
+
+                if ($unit === 'days' && $value === 1 && $wdays) {
+                    $wday = date('N', $next);
+                    $store = in_array($wday, $wdays);
+                }
+
+                $strtotime = strtotime($timetoadd, $nextEnd);
+                $nextEnd = $strtotime;
                 if ($store === true) {
                     $arrDates[$next] = date('d.m.Y H:i', $next);
 
                     // array of all recurrences
-                    $strtotime = strtotime($timetoadd, $nextEnd);
-                    $nextEnd = $strtotime;
                     $arrAllRecurrences[$next] = array(
                         'int_start' => $next,
                         'int_end' => $nextEnd,
