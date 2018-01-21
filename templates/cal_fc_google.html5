@@ -29,7 +29,7 @@
 
             eventSources: [
                 {
-                   googleCalendarId: '<google login'
+                    googleCalendarId: '<google login>'
                 },
                 {
                     googleCalendarId: 'de.german#holiday@group.v.calendar.google.com'

@@ -202,14 +202,14 @@ class ModuleFullcalendar extends \EventsExt
 
             $GLOBALS['TL_CSS'][] = $assets_path . '/fullcalendar/fullcalendar.css|static';
             $GLOBALS['TL_CSS'][] = 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css';
+            // $GLOBALS['TL_CSS'][] = $assets_path . '/fullcalendar/lib/cupertino/jquery-ui.min.css|static';
 
             if ($objPage->hasJQuery !== '1') {
                 $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/lib/jquery.min.js|static';
             }
 
-            $GLOBALS['TL_CSS'][] = $assets_path . '/fullcalendar/lib/cupertino/jquery-ui.min.css|static';
+//            $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/lib/jquery.min.js|static';
             $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/lib/jquery-ui.min.js|static';
-
             $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/lib/moment.min.js|static';
             $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/fullcalendar.js|static';
             $GLOBALS['TL_JAVASCRIPT'][] = $assets_path . '/fullcalendar/gcal.js|static';
@@ -258,8 +258,12 @@ class ModuleFullcalendar extends \EventsExt
      */
     protected function fetchEvents()
     {
+        // Get start and end of displayed timerange
         $intStart = (\Input::post('start')) ? strtotime(\Input::post('start')) : $this->intStart;
         $intEnd = (\Input::post('end')) ? strtotime(\Input::post('end')) : $this->intEnd;
+        if (date('H', $intEnd) === '00') {
+            $intEnd = strtotime('-1 min', $intEnd);
+        }
 
         // Get all events
         $arrAllEvents = $this->getAllEventsExt($this->cal_calendar, $intStart, $intEnd, array($this->cal_holiday));
@@ -322,9 +326,14 @@ class ModuleFullcalendar extends \EventsExt
                     }
 
                     // Set start and end of each event to the right format for the fullcalendar
-                    $event['datetime_start'] = date('Y-m-d\TH:i:s', $event['startTime']);
-                    $event['datetime_end'] = date('Y-m-d\TH:i:s', $event['endTime']);
                     $allDay = ($event['addTime']) ? false : true;
+                    if ($allDay) {
+                        $event['datetime_start'] = date('Y-m-d', $event['startTime']);
+                        $event['datetime_end'] = date('Y-m-d', $event['endTime']);
+                    } else {
+                        $event['datetime_start'] = date('Y-m-d\TH:i:s', $event['startTime']);
+                        $event['datetime_end'] = date('Y-m-d\TH:i:s', $event['endTime']);
+                    }
 
                     // Set title
                     $title = html_entity_decode($event['title']);
@@ -335,8 +344,8 @@ class ModuleFullcalendar extends \EventsExt
                     $recurring = false;
 
                     /*
-                     * Editing is allowd if we have a single or multi day event. Any kind of recurring event
-                     * is not allowed right now.
+                     * Editing is allowd if we have a single or multi day event.
+                     * Any kind of recurring event is not allowed right now.
                      */
                     // Disable editing if event is recurring...
                     if ($event['recurring'] || $event['recurringExt'] || $event['useExceptions']) {
@@ -368,20 +377,21 @@ class ModuleFullcalendar extends \EventsExt
                     // Igone if this is not the first multi day entry
                     if (array_search($event['id'], $multiday_event) === false) {
                         // Add the event to array of events
-                        $json_events[] = array(
-                            'id' => $event['id'],
-                            'title' => $title,
-                            'start' => $event['datetime_start'],
-                            'end' => $event['datetime_end'],
-                            'description' => $event['teaser'],
-                            'allDay' => $allDay,
-                            'overlap' => false,
-                            'url' => $event['href'],
-                            'editable' => $editable,
-                            'icon' => $icon,
-                            'backgroundColor' => $bgstyle,
-                            'textColor' => $fgstyle
-                        );
+                        $jevent = [];
+                        $jevent['id'] = $event['id'];
+                        $jevent['title'] = $title;
+                        $jevent['start'] = $event['datetime_start'];
+                        $jevent['end'] = $event['datetime_end'];
+                        $jevent['description'] = $event['teaser'];
+                        $jevent['allDay'] = $allDay;
+                        $jevent['overlap'] = false;
+                        $jevent['url'] = $event['href'];
+                        $jevent['editable'] = $editable;
+                        $jevent['icon'] = $icon;
+                        $jevent['backgroundColor'] = $bgstyle;
+                        $jevent['textColor'] = $fgstyle;
+
+                        $json_events[] = $jevent;
                     }
 
                     // Remember if multi day event
@@ -420,7 +430,7 @@ class ModuleFullcalendar extends \EventsExt
 
         // Get the event
         $id = \Input::post('event');
-        $event = \CalendarEventsModelExt::findById($id);
+        $event = CalendarEventsModelExt::findById($id);
 
         // Replace the edit_* value with the db value
         foreach ($ff as $k => $v) {
@@ -483,7 +493,7 @@ class ModuleFullcalendar extends \EventsExt
         unset($event['allDay']);
 
         // Check if it is allowed to edit this event
-        $update_event = \CalendarEventsModelExt::findById($id);
+        $update_event = CalendarEventsModelExt::findById($id);
         if ($update_event->recurring || $update_event->recurringExt || $update_event->useExceptions) {
             return false;
         }

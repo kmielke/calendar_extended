@@ -77,20 +77,27 @@
                 type:  'POST',
                 data:  {
                     type: 'fetchEvents',
-                    REQUEST_TOKEN: "<?php echo REQUEST_TOKEN; ?>",
+                    REQUEST_TOKEN: "<?php echo REQUEST_TOKEN; ?>"
+                },
+                success: function(result) {
+                    console.log(result);
                 },
                 error: function() {
-                    alert('<?php echo $this->fetch_error; ?>');
+                    alert('ERROR: <?php echo $this->fetch_error; ?>');
                 }
             }],
 
             // Render the font-awesome icon if exists
-            eventRender: function (event, element, view) {
+            eventRender: function (event, element) {
+                var type = '.fc-time';
+                if (event.allDay) {
+                    type = '.fc-title';
+                }
                 if (event.editable) {
-                    element.find(".fc-time").prepend('<i class="fa fa-pencil-square-o" aria-hidden="true" style="padding-right:5px;"></i>');
+                    element.find(type).prepend('<i class="fa fa-pencil-square-o" aria-hidden="true" style="padding-right:5px;"></i>');
                 }
                 if (event.icon) {
-                    element.find(".fc-time").prepend('<i class="fa ' + event.icon + '" aria-hidden="true" style="padding-right:5px;"></i>');
+                    element.find(type).prepend('<i class="fa ' + event.icon + '" aria-hidden="true" style="padding-right:5px;"></i>');
                 }
             },
 
