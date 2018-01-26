@@ -3,7 +3,7 @@
     "description": "Contao calendar extension. Better recurring events and exceptions.",
     "keywords":["contao", "fullcalendar", "calendar", "events", "exceptions", "registration", "vacations"],
     "type":"contao-module",
-    "license":"LGPL-3.0+",
+    "license":"LGPL-3.0-or-later",
     "authors": [
         {
             "name": "Kester Mielke",
