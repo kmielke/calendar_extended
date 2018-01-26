@@ -33,7 +33,8 @@
             type: 'POST',
             data: {
                 type: 'updateEventTimes',
-                event: xEvent
+                event: xEvent,
+                REQUEST_TOKEN: "<?php echo REQUEST_TOKEN; ?>"
             },
             datatype: 'json',
             async: false,
