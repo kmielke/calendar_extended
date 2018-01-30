@@ -280,7 +280,8 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['range_date'] = array
     'eval' => array
     (
         'columnsCallback' => array('calendar_Ext', 'getRange'),
-        'buttons' => array('up' => false, 'down' => false, 'copy' => false)
+        'buttons' => array('up' => false, 'down' => false, 'copy' => false),
+        'tl_class' => 'clr'
     ),
     'sql' => "text NULL"
 );
